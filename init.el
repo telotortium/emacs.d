@@ -14,6 +14,13 @@
 (require 'evil)
 (evil-mode 1)
 
+;; Line and column numbers
+(require 'linum-relative)
+(linum-relative 1)
+(linum-mode 1)
+(line-number-mode 1)
+(column-number-mode 1)
+
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
 ;;----------------------------------------------------------------------------
