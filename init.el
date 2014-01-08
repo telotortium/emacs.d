@@ -28,6 +28,10 @@
 (defalias 'ack-find-file-same 'ack-and-a-half-find-file-same)
 (setq ack-and-a-half-arguments '("--nopager"))
 
+;; Syntax highlighting for Vimscript files
+(require 'vimrc-mode)
+(add-to-list 'auto-mode-alist '(".vim\\(rc\\)?$" . vimrc-mode))
+
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
 ;;----------------------------------------------------------------------------
