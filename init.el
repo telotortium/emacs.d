@@ -10,6 +10,7 @@
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 
+(setq evil-want-C-u-scroll t)
 (require 'evil)
 (evil-mode 1)
 
