@@ -1,2 +1,5 @@
 /auto-save-list
 /elpa
+
+# Ignore local changes
+init-local.el
