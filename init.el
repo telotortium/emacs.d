@@ -21,6 +21,13 @@
 (line-number-mode 1)
 (column-number-mode 1)
 
+(require 'ack-and-a-half)
+(defalias 'ack 'ack-and-a-half)
+(defalias 'ack-same 'ack-and-a-half-same)
+(defalias 'ack-find-file 'ack-and-a-half-find-file)
+(defalias 'ack-find-file-same 'ack-and-a-half-find-file-same)
+(setq ack-and-a-half-arguments '("--nopager"))
+
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
 ;;----------------------------------------------------------------------------
