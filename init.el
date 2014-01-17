@@ -49,6 +49,18 @@
 (linum-relative 1)
 (global-linum-mode)
 
+;; auto-complete
+(setq dabbrev-case-fold-search t)
+(require 'auto-complete-config)
+(ac-config-default)
+(require 'ac-dabbrev)
+(add-to-list 'ac-sources 'ac-source-dabbrev)
+;
+(setq ac-auto-show-menu 0.4)
+(setq ac-use-menu-map t)
+(define-key ac-menu-map "\C-n" 'ac-next)
+(define-key ac-menu-map "\C-p" 'ac-previous)
+
 (require 'ack-and-a-half)
 (defalias 'ack 'ack-and-a-half)
 (defalias 'ack-same 'ack-and-a-half-same)
