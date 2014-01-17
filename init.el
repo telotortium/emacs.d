@@ -26,6 +26,12 @@
                        "C-7" "C-8" "C-9" "C-0")))
   (define-key evil-normal-state-map key (lambda () (interactive))))
 
+;; Auto-indent
+(add-to-list 'load-path (expand-file-name "clean-aindent" user-emacs-directory))
+(if (fboundp 'clean-aindent)
+    (require 'clean-aindent)
+  (define-key global-map (kbd "RET") 'newline-and-indent))
+
 ;; Automatically wrap long lines
 (setq-default fill-column 79)
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
