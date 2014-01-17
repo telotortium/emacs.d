@@ -31,6 +31,9 @@
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 (add-hook 'prog-mode-hook 'turn-on-auto-fill)
 
+;; Highlight too-long columns
+(dolist (hook '(c-mode-hook c++-mode-hook python-mode-hook))
+  (add-hook hook '(lambda () (font-lock-set-up-width-warning 80))))
 
 ;; Line and column numbers
 (require 'linum)
