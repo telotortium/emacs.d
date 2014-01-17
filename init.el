@@ -26,6 +26,10 @@
                        "C-7" "C-8" "C-9" "C-0")))
   (define-key evil-normal-state-map key (lambda () (interactive))))
 
+;; Convenience bindings for isearch buffer
+(define-key isearch-mode-map (kbd "<up>")   'isearch-ring-retreat)
+(define-key isearch-mode-map (kbd "<down>") 'isearch-ring-advance)
+
 ;; Auto-indent
 (add-to-list 'load-path (expand-file-name "clean-aindent" user-emacs-directory))
 (if (fboundp 'clean-aindent)
