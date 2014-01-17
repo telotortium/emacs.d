@@ -26,6 +26,11 @@
                        "C-7" "C-8" "C-9" "C-0")))
   (define-key evil-normal-state-map key (lambda () (interactive))))
 
+;; Automatically wrap long lines
+(setq-default fill-column 79)
+(add-hook 'text-mode-hook 'turn-on-auto-fill)
+(add-hook 'prog-mode-hook 'turn-on-auto-fill)
+
 
 ;; Line and column numbers
 (require 'linum)
