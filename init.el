@@ -10,9 +10,22 @@
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 
+;; Evil keybindings
 (setq evil-want-C-u-scroll t)
 (require 'evil)
 (evil-mode 1)
+; Disable all the C-<number> keys, and give C-^ and C-6 the same behavior as
+; they have in Vim.
+(defun switch-to-previous-buffer ()
+  (interactive)
+  (switch-to-buffer (other-buffer (current-buffer))))
+(define-key evil-normal-state-map (kbd "C-^") 'switch-to-previous-buffer)
+(define-key evil-normal-state-map (kbd "C-6") 'switch-to-previous-buffer)
+(dolist (key (mapcar 'kbd
+                     '("C-1" "C-2" "C-3" "C-4" "C-5"
+                       "C-7" "C-8" "C-9" "C-0")))
+  (define-key evil-normal-state-map key (lambda () (interactive))))
+
 
 ;; Line and column numbers
 (require 'linum)
