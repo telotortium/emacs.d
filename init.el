@@ -96,6 +96,13 @@
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
 
+;; Save mini-buffer history
+(setq savehist-additional-variables
+      '(kill-ring search-ring regexp-search-ring compile-history))
+(setq savehist-file "~/.emacs.d/tmp/savehist")
+(setq history-length 5000)
+(savehist-mode 1)
+
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
 ;;----------------------------------------------------------------------------

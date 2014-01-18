@@ -1,5 +1,6 @@
 /auto-save-list
 /elpa
+/tmp
 
 # Ignore local changes
 init-local.el
