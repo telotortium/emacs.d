@@ -31,7 +31,12 @@
 (define-key isearch-mode-map (kbd "<down>") 'isearch-ring-advance)
 
 ;; Auto-indent
-(add-to-list 'load-path (expand-file-name "clean-aindent" user-emacs-directory))
+(add-to-list 'load-path
+	     (expand-file-name
+	      (apply 'concat
+	       (mapcar 'file-name-as-directory
+		       '("site-lisp" "clean-aindent")))
+	      user-emacs-directory))
 (if (fboundp 'clean-aindent)
     (require 'clean-aindent)
   (define-key global-map (kbd "RET") 'newline-and-indent))
