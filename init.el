@@ -50,6 +50,9 @@
 (dolist (hook '(c-mode-hook c++-mode-hook python-mode-hook))
   (add-hook hook '(lambda () (font-lock-set-up-width-warning 80))))
 
+;; Disable scrollbars
+(scroll-bar-mode -1)
+
 ;; Line and column numbers
 (require 'linum)
 (require 'linum-relative)
