@@ -28,6 +28,7 @@
 
 ;; Make default encoding UTF-8 everywhere
 (setq current-language-environment "UTF-8")
+(prefer-coding-system 'utf-8)
 
 ;; Convenience bindings for isearch buffer
 (define-key isearch-mode-map (kbd "<up>")   'isearch-ring-retreat)
