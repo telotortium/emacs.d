@@ -26,6 +26,10 @@
                        "C-7" "C-8" "C-9" "C-0")))
   (define-key evil-normal-state-map key (lambda () (interactive))))
 
+;; Make default encoding UTF-8 everywhere
+(setq current-language-environment "UTF-8")
+(prefer-coding-system 'utf-8)
+
 ;; Convenience bindings for isearch buffer
 (define-key isearch-mode-map (kbd "<up>")   'isearch-ring-retreat)
 (define-key isearch-mode-map (kbd "<down>") 'isearch-ring-advance)
@@ -85,7 +89,7 @@
 (add-to-list 'auto-mode-alist '(".vim\\(rc\\)?$" . vimrc-mode))
 
 (require 'markdown-mode)
-(setq markdown-command "pandoc -f markdown -t html")
+(setq markdown-command "pandoc -f markdown -t html -s --mathjax")
 (autoload 'markdown-mode "markdown-mode"
   "Major mode for editing Markdown files" t)
 (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
