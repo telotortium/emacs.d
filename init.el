@@ -103,7 +103,9 @@
 ;; Save mini-buffer history
 (setq savehist-additional-variables
       '(kill-ring search-ring regexp-search-ring compile-history))
-(setq savehist-file "~/.emacs.d/tmp/savehist")
+(setq savehist-file
+      (expand-file-name (concat (file-name-as-directory "tmp") "savehist")
+			user-emacs-directory))
 (setq history-length 5000)
 (savehist-mode 1)
 
