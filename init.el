@@ -109,6 +109,10 @@
 (setq history-length 5000)
 (savehist-mode 1)
 
+;; Disable tool bar
+(message "turn off tool bar")
+(tool-bar-mode -1)
+
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
 ;;----------------------------------------------------------------------------
