@@ -36,6 +36,10 @@
 (define-key evil-normal-state-map " " 'evil-ex)
 (define-key evil-visual-state-map " " 'evil-ex)
 
+;; Shortcut to M-x
+(evil-ex-define-cmd     "mx" 'execute-extended-command)
+(define-key evil-ex-map "mx" 'execute-extended-command)
+
 ; RET to break line - undo in one step
 (define-key evil-motion-state-map (kbd "RET") nil)
 (define-key evil-normal-state-map (kbd "RET")
