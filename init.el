@@ -31,6 +31,11 @@
 ; Kill current buffer but keep its frame around
 (define-key evil-normal-state-map "Q" 'kill-this-buffer)
 
+; Space to get to ex mode
+(define-key evil-motion-state-map " " nil)
+(define-key evil-normal-state-map " " 'evil-ex)
+(define-key evil-visual-state-map " " 'evil-ex)
+
 ; C-c as general purpose escape key sequence (from EmacsWiki Evil page).
 (defun my-esc (prompt)
   "Functionality for escaping generally.  Includes exiting Evil insert state and C-g binding. "
