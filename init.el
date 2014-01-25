@@ -10,10 +10,12 @@
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 
+
 ;; Evil keybindings
 (setq evil-want-C-u-scroll t)
 (require 'evil)
 (evil-mode 1)
+
 ; Disable all the C-<number> keys, and give C-^ and C-6 the same behavior as
 ; they have in Vim.
 (defun switch-to-previous-buffer ()
