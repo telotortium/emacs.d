@@ -28,6 +28,10 @@
                        "C-7" "C-8" "C-9" "C-0")))
   (define-key evil-normal-state-map key (lambda () (interactive))))
 
+; Kill current buffer but keep its frame around
+(define-key evil-normal-state-map "Q" 'kill-this-buffer)
+
+
 ;; Make default encoding UTF-8 everywhere
 (setq current-language-environment "UTF-8")
 (prefer-coding-system 'utf-8)
