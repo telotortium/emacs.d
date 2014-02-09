@@ -140,7 +140,7 @@
 (add-to-list 'auto-mode-alist '(".vim\\(rc\\)?$" . vimrc-mode))
 
 (require 'markdown-mode)
-(setq markdown-command "pandoc -f markdown -t html -s --mathjax")
+(setq markdown-command "pandoc -f markdown -t html --toc -s --mathjax")
 (autoload 'markdown-mode "markdown-mode"
   "Major mode for editing Markdown files" t)
 (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
