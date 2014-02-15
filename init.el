@@ -96,6 +96,9 @@
     (require 'clean-aindent)
   (define-key global-map (kbd "RET") 'newline-and-indent))
 
+;; No tabs
+(setq-default indent-tabs-mode nil)
+
 ;; Automatically wrap long lines
 (setq-default fill-column 79)
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
