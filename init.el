@@ -172,6 +172,8 @@
 (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
 (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
 
+;; Javascript
+(add-to-list 'auto-mode-alist '("\\.javascript\\'" . javascript-mode))
 
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
