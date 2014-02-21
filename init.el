@@ -1,3 +1,4 @@
+; -*- lexical-binding: t -*-
 ;;; This file bootstraps the configuration, which is divided into
 ;;; a number of other files.
 
@@ -144,10 +145,21 @@
 
 (require 'markdown-mode)
 (setq markdown-command "pandoc -f markdown -t html --toc -s --mathjax")
-(autoload 'markdown-mode "markdown-mode"
-  "Major mode for editing Markdown files" t)
 (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+;; Make `<tab>` only call `indent-relative` in Evil insert mode, not cycle.
+(add-hook 'markdown-mode-hook
+          (lambda ()
+            (if (and
+                 (featurep 'auto-complete-config)
+                 global-auto-complete-mode)
+                (auto-complete-mode t))
+            (define-key markdown-mode-map (kbd "<tab>")
+              (lambda (&rest args)
+                (interactive "P")
+                (cond ((and (featurep 'evil) (evil-insert-state-p))
+                       (apply 'indent-relative args))
+                      (t (apply 'markdown-cycle args)))))))
 
 ;; Give buffers editing files with the same basename more distinctive names
 ;; based on directory.
