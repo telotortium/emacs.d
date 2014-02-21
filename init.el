@@ -212,6 +212,10 @@
 (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
 (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
 
+(require 'rainbow-delimiters)
+(global-rainbow-delimiters-mode)
+
+(show-paren-mode 1)
 
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
