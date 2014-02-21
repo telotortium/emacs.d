@@ -134,6 +134,19 @@
 (column-number-mode 1)
 (linum-relative 1)
 (global-linum-mode)
+;; Delay updates to line numbering to retain performance in >1000 line files.
+(add-hook 'linum-before-numbering-hook
+          (lambda ()
+            ;; Hysteresis, in  case setting these variables causes expensive
+            ;; processing to happen.
+            (setq-local linum-num-lines (count-lines (point-min) (point-max)))
+            (cond
+             ((> linum-num-lines 1000)
+              (setq-local linum-delay t)
+              (setq-local linum-eager t))
+             ((<= linum-num-lines 900)
+              (setq-local linum-delay nil)
+              (setq-local linum-eager t)))))
 
 ;; auto-complete
 (setq dabbrev-case-fold-search t)
