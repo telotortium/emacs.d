@@ -73,9 +73,8 @@
 ; Works around the fact that Evil uses read-event directly when in operator
 ; state, which doesn't use the key-translation-map.
 (define-key evil-operator-state-map (kbd "C-c") 'keyboard-quit)
-; Not sure what behavior this changes, but might as well set it, seeing the
-; Elisp manual's documentation of it.
-(set-quit-char "C-c")
+; Only changes anything in terminal Emacs. Rebind it to the ASCII value of C-c.
+(set-quit-char ?\C-c)
 
 ;; change mode-line color by evil state
 (let ((default-color (cons (face-background 'mode-line)
