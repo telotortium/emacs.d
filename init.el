@@ -78,7 +78,7 @@
 
 ;; change mode-line color by evil state
 (let ((default-color (cons (face-background 'mode-line)
-			   (face-foreground 'mode-line))))
+                           (face-foreground 'mode-line))))
   (add-hook 'post-command-hook
             (lambda ()
               (let ((color (cond ((minibufferp) default-color)
@@ -102,11 +102,11 @@
 
 ;; Auto-indent
 (add-to-list 'load-path
-	     (expand-file-name
-	      (apply 'concat
-	       (mapcar 'file-name-as-directory
-		       '("site-lisp" "clean-aindent")))
-	      user-emacs-directory))
+             (expand-file-name
+              (apply 'concat
+                     (mapcar 'file-name-as-directory
+                             '("site-lisp" "clean-aindent")))
+              user-emacs-directory))
 (if (fboundp 'clean-aindent)
     (require 'clean-aindent)
   (define-key global-map (kbd "RET") 'newline-and-indent))
@@ -201,7 +201,7 @@
       '(kill-ring search-ring regexp-search-ring compile-history))
 (setq savehist-file
       (expand-file-name (concat (file-name-as-directory "tmp") "savehist")
-			user-emacs-directory))
+                        user-emacs-directory))
 (setq history-length 5000)
 (savehist-mode 1)
 
