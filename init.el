@@ -116,8 +116,11 @@
 
 ;; Automatically wrap long lines
 (setq-default fill-column 79)
+(defun prog-mode-wrap-hook
+  (set (make-local-variable 'comment-auto-fill-only-comments) t)
+  (auto-fill-mode t))
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
-(add-hook 'prog-mode-hook 'turn-on-auto-fill)
+(add-hook 'prog-mode-hook 'prog-mode-wrap-hook)
 
 ;; Highlight too-long columns
 (dolist (hook '(c-mode-hook c++-mode-hook python-mode-hook))
