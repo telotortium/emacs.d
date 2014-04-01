@@ -232,6 +232,12 @@
 
 (show-paren-mode 1)
 
+;; Go mode - use 4-space tabs since gofmt formats with tabs by default
+(add-hook 'go-mode-hook
+          (lambda ()
+            (setq tab-width 4)
+            (setq tab-stop-list (number-sequence 4 200 4))))
+
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
 ;;----------------------------------------------------------------------------
