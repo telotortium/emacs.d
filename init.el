@@ -244,6 +244,11 @@
   (load custom-file))
 
 ;;----------------------------------------------------------------------------
+;; Subfiles
+;;----------------------------------------------------------------------------
+(require 'whitespace-conf nil t)
+
+;;----------------------------------------------------------------------------
 ;; Allow users to provide an optional "init-local" containing personal settings
 ;;----------------------------------------------------------------------------
 (when (file-exists-p (expand-file-name "init-local.el" user-emacs-directory))
