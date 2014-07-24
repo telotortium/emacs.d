@@ -12,6 +12,18 @@
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 
 
+;; Smex
+(autoload 'smex "smex"
+  "Smex is a M-x enhancement for Emacs, it provides a convenient interface to
+your recently and most frequently used commands.")
+
+(global-set-key (kbd "M-x") 'smex)
+
+(setq smex-save-file
+      (expand-file-name (concat (file-name-as-directory "cache") "smex-items")
+                        user-emacs-directory))
+
+
 ;; Evil keybindings
 (setq evil-want-C-u-scroll t)
 (require 'evil)
@@ -38,8 +50,8 @@
 (define-key evil-visual-state-map " " 'evil-ex)
 
 ;; Shortcut to M-x
-(evil-ex-define-cmd     "mx" 'execute-extended-command)
-(define-key evil-ex-map "mx" 'execute-extended-command)
+(evil-ex-define-cmd     "mx" 'smex)
+(define-key evil-ex-map "mx" 'smex)
 
 ; RET to break line - undo in one step
 (define-key evil-motion-state-map (kbd "RET") nil)
@@ -200,7 +212,7 @@
 (setq savehist-additional-variables
       '(kill-ring search-ring regexp-search-ring compile-history))
 (setq savehist-file
-      (expand-file-name (concat (file-name-as-directory "tmp") "savehist")
+      (expand-file-name (concat (file-name-as-directory "cache") "savehist")
                         user-emacs-directory))
 (setq history-length 5000)
 (savehist-mode 1)
