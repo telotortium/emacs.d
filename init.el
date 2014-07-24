@@ -200,7 +200,7 @@
 (setq savehist-additional-variables
       '(kill-ring search-ring regexp-search-ring compile-history))
 (setq savehist-file
-      (expand-file-name (concat (file-name-as-directory "tmp") "savehist")
+      (expand-file-name (concat (file-name-as-directory "cache") "savehist")
                         user-emacs-directory))
 (setq history-length 5000)
 (savehist-mode 1)
