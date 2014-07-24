@@ -235,6 +235,7 @@
 ;; Go mode - use 4-space tabs since gofmt formats with tabs by default
 (add-hook 'go-mode-hook
           (lambda ()
+            (setq whitespace-line-column 99)
             (setq tab-width 4)
             (setq tab-stop-list (number-sequence 4 200 4))))
 
