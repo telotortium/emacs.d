@@ -25,6 +25,11 @@ your recently and most frequently used commands.")
 
 
 ;; Evil keybindings
+; Space as leader
+(require 'evil-leader)
+(global-evil-leader-mode)
+(evil-leader/set-leader "<SPC>")
+
 (setq evil-want-C-u-scroll t)
 (require 'evil)
 (evil-mode 1)
