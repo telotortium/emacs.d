@@ -49,14 +49,6 @@ your recently and most frequently used commands.")
 ; Kill current buffer but keep its frame around
 (define-key evil-normal-state-map "Q" 'kill-this-buffer)
 
-; Swap : and ;
-(define-key evil-motion-state-map ";" nil)
-(define-key evil-normal-state-map ";" 'evil-ex)
-(define-key evil-visual-state-map ";" 'evil-ex)
-(define-key evil-motion-state-map ":" 'evil-repeat-find-char)
-(define-key evil-normal-state-map ":" 'evil-repeat-find-char)
-(define-key evil-visual-state-map ":" 'evil-repeat-find-char)
-
 (evil-leader/set-key
   ";" 'evil-ex
   ":" 'evil-ex)
