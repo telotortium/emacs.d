@@ -255,6 +255,18 @@ your recently and most frequently used commands.")
             (setq tab-width 4)
             (setq tab-stop-list (number-sequence 4 200 4))))
 
+;; Org mode
+(custom-set-variables
+ '(org-agenda-files (quote ("~/Google Drive/notes/todo.org")))
+ '(org-default-notes-file "~/Google Drive/notes/notes.org")
+ '(org-agenda-span 7)
+ '(org-agenda-start-on-weekday nil)
+ '(org-capture-templates
+   (quote (("t" "Tasks" entry (file+headline (nth 0 org-agenda-files) "Tasks")
+            "* TODO %?\n  %u")
+           ("n" "Notes" entry (file+headline org-default-notes-file "Notes")
+            "* %u %?")))))
+
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
 ;;----------------------------------------------------------------------------
