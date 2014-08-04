@@ -272,7 +272,8 @@ your recently and most frequently used commands."
    (quote (("t" "Tasks" entry (file+headline (nth 0 org-agenda-files) "Tasks")
             "* TODO %?\n  %u")
            ("n" "Notes" entry (file+headline org-default-notes-file "Notes")
-            "* %u %?")))))
+            "* %u %?"))))
+ '(org-src-fontify-natively t))
 
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
