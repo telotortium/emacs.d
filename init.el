@@ -139,10 +139,6 @@ your recently and most frequently used commands."
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 (add-hook 'prog-mode-hook 'prog-mode-wrap-hook)
 
-;; Highlight too-long columns
-(dolist (hook '(c-mode-hook c++-mode-hook python-mode-hook))
-  (add-hook hook '(lambda () (font-lock-set-up-width-warning 80))))
-
 ;; Disable scrollbars
 (scroll-bar-mode -1)
 
