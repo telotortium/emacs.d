@@ -20,9 +20,10 @@ your recently and most frequently used commands."
 
 (global-set-key (kbd "M-x") 'smex)
 
-(setq smex-save-file
-      (expand-file-name (concat (file-name-as-directory "cache") "smex-items")
-                        user-emacs-directory))
+(custom-set-variables
+ '(smex-save-file
+   (expand-file-name (concat (file-name-as-directory "cache") "smex-items")
+                     user-emacs-directory)))
 
 
 ;; Evil keybindings
@@ -31,7 +32,8 @@ your recently and most frequently used commands."
 (global-evil-leader-mode)
 (evil-leader/set-leader "<SPC>")
 
-(setq evil-want-C-u-scroll t)
+(custom-set-variables
+ '(evil-want-C-u-scroll t))
 (require 'evil)
 (evil-mode 1)
 
@@ -110,7 +112,8 @@ your recently and most frequently used commands."
                 (set-face-foreground 'mode-line (cdr color))))))
 
 ;; Make default encoding UTF-8 everywhere
-(setq current-language-environment "UTF-8")
+(custom-set-variables
+ '(current-language-environment "UTF-8"))
 (prefer-coding-system 'utf-8)
 
 ;; Convenience bindings for isearch buffer
@@ -164,14 +167,16 @@ your recently and most frequently used commands."
               (setq-local linum-eager t)))))
 
 ;; auto-complete
-(setq dabbrev-case-fold-search t)
+(custom-set-variables
+ '(dabbrev-case-fold-search t))
 (require 'auto-complete-config)
 (ac-config-default)
 (require 'ac-dabbrev)
 (add-to-list 'ac-sources 'ac-source-dabbrev)
 ;
-(setq ac-auto-show-menu 0.4)
-(setq ac-use-menu-map t)
+(custom-set-variables
+ '(ac-auto-show-menu 0.4)
+ '(ac-use-menu-map t))
 (define-key ac-menu-map "\C-n" 'ac-next)
 (define-key ac-menu-map "\C-p" 'ac-previous)
 
@@ -180,14 +185,16 @@ your recently and most frequently used commands."
 (defalias 'ack-same 'ack-and-a-half-same)
 (defalias 'ack-find-file 'ack-and-a-half-find-file)
 (defalias 'ack-find-file-same 'ack-and-a-half-find-file-same)
-(setq ack-and-a-half-arguments '("--nopager"))
+(custom-set-variables
+ '(ack-and-a-half-arguments (quote ("--nopager"))))
 
 ;; Syntax highlighting for Vimscript files
 (require 'vimrc-mode)
 (add-to-list 'auto-mode-alist '(".vim\\(rc\\)?$" . vimrc-mode))
 
 (require 'markdown-mode)
-(setq markdown-command "pandoc -f markdown -t html --toc -s --mathjax")
+(custom-set-variables
+ '(markdown-command "pandoc -f markdown -t html --toc -s --mathjax"))
 (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 ;; Make `<tab>` only call `indent-relative` in Evil insert mode, not cycle.
@@ -207,15 +214,17 @@ your recently and most frequently used commands."
 ;; Give buffers editing files with the same basename more distinctive names
 ;; based on directory.
 (require 'uniquify)
-(setq uniquify-buffer-name-style 'post-forward-angle-brackets)
+(custom-set-variables
+ '(uniquify-buffer-name-style 'post-forward-angle-brackets))
 
 ;; Save mini-buffer history
-(setq savehist-additional-variables
-      '(kill-ring search-ring regexp-search-ring compile-history))
-(setq savehist-file
+(custom-set-variables
+ '(savehist-additional-variables
+      (quote (kill-ring search-ring regexp-search-ring compile-history)))
+ '(savehist-file
       (expand-file-name (concat (file-name-as-directory "cache") "savehist")
                         user-emacs-directory))
-(setq history-length 5000)
+ '(history-length 5000))
 (savehist-mode 1)
 
 ;; Disable tool bar
@@ -233,11 +242,12 @@ your recently and most frequently used commands."
 
 ;; Multi Web Mode - automatically switch to right major mode in HTML files
 (require 'multi-web-mode)
-(setq mweb-default-major-mode 'html-mode)
-(setq mweb-tags '((php-mode "<\\?php\\|<\\? \\|<\\?=" "\\?>")
-                  (js-mode "<script +\\(type=\"text/javascript\"\\|language=\"javascript\"\\)[^>]*>" "</script>")
-                  (css-mode "<style +type=\"text/css\"[^>]*>" "</style>")))
-(setq mweb-filename-extensions '("php" "htm" "html" "ctp" "phtml" "php4" "php5"))
+(custom-set-variables
+ '(mweb--major-mode 'html-mode)
+ '(mweb-tags (quote ((php-mode "<\\?php\\|<\\? \\|<\\?=" "\\?>")
+                     (js-mode "<script +\\(type=\"text/javascript\"\\|language=\"javascript\"\\)[^>]*>" "</script>")
+                     (css-mode "<style +type=\"text/css\"[^>]*>" "</style>"))))
+ '(mweb-filename-extensions '("php" "htm" "html" "ctp" "phtml" "php4" "php5")))
 (multi-web-global-mode 1)
 
 (require 'rainbow-delimiters)
