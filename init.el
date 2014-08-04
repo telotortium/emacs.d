@@ -273,7 +273,10 @@ your recently and most frequently used commands."
             "* TODO %?\n  %u")
            ("n" "Notes" entry (file+headline org-default-notes-file "Notes")
             "* %u %?"))))
- '(org-src-fontify-natively t))
+ '(org-src-fontify-natively t)
+ '(org-todo-keywords
+   (quote ((sequence "TODO(t)" "STARTED(s@)" "WAITING(w@/!)" "DELEGATED(l@)"
+                     "APPT" "|" "DONE(d!)" "DEFFERED(r@)" "CANCELLED(c@)")))))
 
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
