@@ -137,7 +137,7 @@ your recently and most frequently used commands."
 ;; Automatically wrap long lines
 (setq-default fill-column 79)
 (defun prog-mode-wrap-hook ()
-  (setq comment-auto-fill-only-comments t)
+  (setq-local comment-auto-fill-only-comments t)
   (auto-fill-mode t))
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 (add-hook 'prog-mode-hook 'prog-mode-wrap-hook)
@@ -258,9 +258,9 @@ your recently and most frequently used commands."
 ;; Go mode - use 4-space tabs since gofmt formats with tabs by default
 (add-hook 'go-mode-hook
           (lambda ()
-            (setq whitespace-line-column 99)
-            (setq tab-width 4)
-            (setq tab-stop-list (number-sequence 4 200 4))))
+            (setq-local whitespace-line-column 99)
+            (setq-local tab-width 4)
+            (setq-local tab-stop-list (number-sequence 4 200 4))))
 
 ;; Org mode
 (custom-set-variables
