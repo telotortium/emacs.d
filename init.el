@@ -275,7 +275,7 @@ your recently and most frequently used commands."
             "* %u %?"))))
  '(org-src-fontify-natively t)
  '(org-todo-keywords
-   (quote ((sequence "TODO(t)" "STARTED(s@)" "WAITING(w@/!)" "DELEGATED(l@)"
+   (quote ((sequence "TODO(t)" "STARTED(s@)" "PAUSED(p@)" "WAITING(w@/!)" "DELEGATED(l@)"
                      "APPT" "|" "DONE(d!)" "DEFFERED(r@)" "CANCELLED(c@)")))))
 
 ;;----------------------------------------------------------------------------
