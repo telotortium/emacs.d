@@ -278,6 +278,15 @@ your recently and most frequently used commands."
    (quote ((sequence "TODO(t)" "STARTED(s@)" "PAUSED(p@)" "WAITING(w@/!)" "DELEGATED(l@)"
                      "APPT" "|" "DONE(d!)" "DEFFERED(r@)" "CANCELLED(c@)")))))
 
+(require 'org)
+(require 'org-agenda)
+
+; No one needs both `h` and `H` for holidays -- online help in org-agenda.
+(org-defkey org-agenda-mode-map "h"
+            (lambda ()
+              (interactive)
+              (info "(org) Agenda Commands")))
+
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
 ;;----------------------------------------------------------------------------
