@@ -276,7 +276,13 @@ your recently and most frequently used commands."
  '(org-src-fontify-natively t)
  '(org-todo-keywords
    (quote ((sequence "TODO(t)" "STARTED(s@)" "PAUSED(p@)" "WAITING(w@/!)" "DELEGATED(l@)"
-                     "APPT" "|" "DONE(d!)" "DEFFERED(r@)" "CANCELLED(c@)")))))
+                     "APPT" "|" "DONE(d!)" "DEFFERED(r@)" "CANCELLED(c@)"))))
+  '(org-agenda-custom-commands
+    (quote (("n" "Agenda and all TODO's" ((agenda "") (alltodo)))
+            ("u" "Unscheduled TODOs" todo ""
+             ((org-agenda-skip-function
+               '(org-agenda-skip-entry-if 'scheduled 'deadline 'regexp "\n]+>"))
+              (org-agenda-overriding-header "Unscheduled TODO entries: ")))))))
 
 (require 'org)
 (require 'org-agenda)
