@@ -263,6 +263,11 @@ your recently and most frequently used commands."
             (setq-local tab-stop-list (number-sequence 4 200 4))))
 
 ;; Org mode
+(global-set-key "\C-ca" 'org-agenda)
+(global-set-key "\C-cb" 'org-iswitchb)
+(global-set-key "\C-cc" 'org-capture)
+(global-set-key "\C-cl" 'org-store-link)
+
 (custom-set-variables
  '(org-agenda-files (quote ("~/Google Drive/notes/todo.org")))
  '(org-default-notes-file "~/Google Drive/notes/notes.org")
