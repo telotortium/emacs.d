@@ -251,7 +251,7 @@ your recently and most frequently used commands."
 (multi-web-global-mode 1)
 
 (require 'rainbow-delimiters)
-(global-rainbow-delimiters-mode)
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
 (show-paren-mode 1)
 
