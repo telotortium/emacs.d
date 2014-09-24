@@ -262,6 +262,11 @@ your recently and most frequently used commands."
             (setq-local tab-width 4)
             (setq-local tab-stop-list (number-sequence 4 200 4))))
 
+;;; Don't put yanks into X clipboard buffer by default
+(setq x-select-enable-clipboard nil)
+(setq x-select-enable-primary t)
+(setq mouse-drag-copy-region t)
+
 ;; Org mode
 (global-set-key "\C-ca" 'org-agenda)
 (global-set-key "\C-cb" 'org-iswitchb)
