@@ -60,20 +60,6 @@ your recently and most frequently used commands."
 (evil-ex-define-cmd     "mx" 'smex)
 (define-key evil-ex-map "mx" 'smex)
 
-; RET to break line - undo in one step
-(define-key evil-motion-state-map (kbd "RET") nil)
-(define-key evil-normal-state-map (kbd "RET")
-  (lambda ()
-    (interactive)
-    (progn
-      (evil-start-undo-step)
-      (delete-horizontal-space)
-      (execute-kbd-macro [?i return]))))
-(define-key evil-visual-state-map (kbd "RET")
-  (lambda ()
-    (interactive)
-    (execute-kbd-macro [?c return])))
-
 ; C-c as general purpose escape key sequence (from EmacsWiki Evil page).
 (defun my-esc (prompt)
   "Functionality for escaping generally.  Includes exiting Evil insert state and C-g binding. "
