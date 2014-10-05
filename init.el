@@ -97,6 +97,9 @@ your recently and most frequently used commands."
                 (set-face-background 'mode-line (car color))
                 (set-face-foreground 'mode-line (cdr color))))))
 
+(require 'evil-surround)
+(global-evil-surround-mode 1)
+
 ;; Make default encoding UTF-8 everywhere
 (custom-set-variables
  '(current-language-environment "UTF-8"))
