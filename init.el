@@ -302,6 +302,7 @@ your recently and most frequently used commands."
             "* TODO %?\n  %u")
            ("n" "Notes" entry (file+headline org-default-notes-file "Notes")
             "* %u %?"))))
+ '(org-alphabetical-lists t)
  '(org-src-fontify-natively t)
  '(org-todo-keywords
    (quote ((sequence "TODO(t)" "STARTED(s@)" "PAUSED(p@)" "WAITING(w@/!)" "DELEGATED(l@)"
