@@ -256,6 +256,21 @@ your recently and most frequently used commands."
 (setq x-select-enable-primary t)
 (setq mouse-drag-copy-region t)
 
+;; Paredit mode
+(autoload 'enable-paredit-mode "paredit"
+  "Turn on pseudo-structural editing of Lisp code."
+  t)
+(defun activate-paredit-mode ()
+  (interactive)
+  (enable-paredit-mode)
+  (evil-paredit-mode 1))
+(add-hook 'emacs-lisp-mode-hook       #'activate-paredit-mode)
+(add-hook 'eval-expression-minibuffer-setup-hook #'activate-paredit-mode)
+(add-hook 'ielm-mode-hook             #'activate-paredit-mode)
+(add-hook 'lisp-mode-hook             #'activate-paredit-mode)
+(add-hook 'lisp-interaction-mode-hook #'activate-paredit-mode)
+(add-hook 'scheme-mode-hook           #'activate-paredit-mode)
+
 ;; Org mode
 (global-set-key "\C-ca" 'org-agenda)
 (global-set-key "\C-cb" 'org-iswitchb)
