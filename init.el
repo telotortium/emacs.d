@@ -98,6 +98,9 @@ your recently and most frequently used commands."
                 (set-face-background 'mode-line (car color))
                 (set-face-foreground 'mode-line (cdr color))))))
 
+(require 'evil-surround)
+(global-evil-surround-mode 1)
+
 ;; Make default encoding UTF-8 everywhere
 (custom-set-variables
  '(current-language-environment "UTF-8"))
@@ -254,6 +257,36 @@ your recently and most frequently used commands."
 (setq x-select-enable-primary t)
 (setq mouse-drag-copy-region t)
 
+;; Paredit mode
+(autoload 'enable-paredit-mode "paredit"
+  "Turn on pseudo-structural editing of Lisp code."
+  t)
+(defun activate-paredit-mode ()
+  (interactive)
+  (enable-paredit-mode)
+  (evil-paredit-mode 1))
+(add-hook 'emacs-lisp-mode-hook       #'activate-paredit-mode)
+(add-hook 'eval-expression-minibuffer-setup-hook #'activate-paredit-mode)
+(add-hook 'ielm-mode-hook             #'activate-paredit-mode)
+(add-hook 'lisp-mode-hook             #'activate-paredit-mode)
+(add-hook 'lisp-interaction-mode-hook #'activate-paredit-mode)
+(add-hook 'scheme-mode-hook           #'activate-paredit-mode)
+
+;; Slime
+(require 'ac-slime)
+(add-hook 'slime-mode-hook 'set-up-slime-ac)
+(add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
+(add-hook 'slime-repl-mode-hook #'activate-paredit-mode)
+;; Stop SLIME's REPL from grabbing DEL,
+;; which is annoying when backspacing over a '('
+(defun override-slime-repl-bindings-with-paredit ()
+  (define-key slime-repl-mode-map
+    (read-kbd-macro paredit-backward-delete-key) nil))
+(add-hook 'slime-repl-mode-hook 'override-slime-repl-bindings-with-paredit)
+(eval-after-load "auto-complete"
+  '(add-to-list 'ac-modes 'slime-repl-mode))
+(slime-setup '(slime-fancy slime-banner))
+
 ;; Org mode
 (global-set-key "\C-ca" 'org-agenda)
 (global-set-key "\C-cb" 'org-iswitchb)
@@ -270,6 +303,7 @@ your recently and most frequently used commands."
             "* TODO %?\n  %u")
            ("n" "Notes" entry (file+headline org-default-notes-file "Notes")
             "* %u %?"))))
+ '(org-alphabetical-lists t)
  '(org-src-fontify-natively t)
  '(org-todo-keywords
    (quote ((sequence "TODO(t)" "STARTED(s@)" "PAUSED(p@)" "WAITING(w@/!)" "DELEGATED(l@)"
