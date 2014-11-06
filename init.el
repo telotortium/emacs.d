@@ -330,6 +330,8 @@ your recently and most frequently used commands."
 
 (run-at-time "00:59" 3600 'org-save-all-org-buffers)
 
+(global-auto-revert-mode t)
+
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
 ;;----------------------------------------------------------------------------
