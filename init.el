@@ -21,6 +21,7 @@ your recently and most frequently used commands."
 (global-set-key (kbd "M-x") 'smex)
 
 (custom-set-variables
+ '(evil-search-module (quote evil-search))
  '(smex-save-file
    (expand-file-name (concat (file-name-as-directory "cache") "smex-items")
                      user-emacs-directory)))
