@@ -328,6 +328,8 @@ your recently and most frequently used commands."
               (interactive)
               (info "(org) Agenda Commands")))
 
+(run-at-time "00:59" 3600 'org-save-all-org-buffers)
+
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
 ;;----------------------------------------------------------------------------
