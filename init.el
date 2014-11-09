@@ -294,8 +294,6 @@ your recently and most frequently used commands."
 (global-set-key "\C-cl" 'org-store-link)
 
 (custom-set-variables
- '(org-agenda-files (quote ("~/Google Drive/notes/todo.org")))
- '(org-default-notes-file "~/Google Drive/notes/notes.org")
  '(org-agenda-span 7)
  '(org-agenda-start-on-weekday nil)
  '(org-capture-templates
