@@ -328,6 +328,19 @@ your recently and most frequently used commands."
 
 (run-at-time "00:59" 3600 'org-save-all-org-buffers)
 
+;; Fix org-column fonts
+(defun org-column-view-uses-fixed-width-face ()
+  ;; copy from org-faces.el
+  (when (fboundp 'set-face-attribute)
+    ;; Make sure that a fixed-width face is used when we have a column
+    ;; table.
+    (set-face-attribute 'org-column nil
+                        :height (face-attribute 'default :height)
+                        :family (face-attribute 'default :family))))
+
+(when (and (fboundp 'daemonp) (daemonp))
+  (add-hook 'org-mode-hook 'org-column-view-uses-fixed-width-face))
+
 (global-auto-revert-mode t)
 
 ;;----------------------------------------------------------------------------
