@@ -343,6 +343,7 @@ your recently and most frequently used commands."
 
 ;;; Make idle time more accurate on Linux (X idle time rather than just Emacs
 ;;; idle time)
+(custom-set-variables '(org-clock-idle-time 15))
 (let ((xprintidle (executable-find "xprintidle")))
   (when (and (eq system-type 'gnu/linux) xprintidle)
     (custom-set-variables '(org-clock-x11idle-program-name xprintidle))))
