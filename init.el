@@ -350,6 +350,9 @@ your recently and most frequently used commands."
 
 (global-auto-revert-mode t)
 
+(add-hook 'text-mode-hook 'flyspell-mode 'append)
+(add-hook 'prog-mode-hook 'flyspell-prog-mode 'append)
+
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
 ;;----------------------------------------------------------------------------
