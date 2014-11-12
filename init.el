@@ -354,6 +354,11 @@ your recently and most frequently used commands."
 (add-hook 'text-mode-hook 'flyspell-mode 'append)
 (add-hook 'prog-mode-hook 'flyspell-prog-mode 'append)
 
+;;; Remove trailing whitespace intelligently
+(require 'ws-butler)
+(add-hook 'text-mode-hook (lambda () (ws-butler-mode 1)))
+(add-hook 'prog-mode-hook (lambda () (ws-butler-mode 1)))
+
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
 ;;----------------------------------------------------------------------------
