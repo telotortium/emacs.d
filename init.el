@@ -346,7 +346,7 @@ your recently and most frequently used commands."
 (custom-set-variables '(org-clock-idle-time 15))
 (let ((xprintidle (executable-find "xprintidle")))
   (when (and (eq system-type 'gnu/linux) xprintidle)
-    (custom-set-variables '(org-clock-x11idle-program-name xprintidle))))
+    (custom-set-variables `(org-clock-x11idle-program-name ,xprintidle))))
 
 
 (global-auto-revert-mode t)
