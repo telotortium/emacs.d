@@ -303,6 +303,8 @@ your recently and most frequently used commands."
             "* %u %?"))))
  '(org-alphabetical-lists t)
  '(org-src-fontify-natively t)
+ '(org-pretty-entities t)
+ '(org-use-sub-superscripts '{})
  '(org-todo-keywords
    (quote ((sequence "TODO(t)" "STARTED(s@)" "PAUSED(p@)" "WAITING(w@/!)" "DELEGATED(l@)"
                      "APPT" "|" "DONE(d!)" "DEFFERED(r@)" "CANCELLED(c@)"))))
