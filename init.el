@@ -303,6 +303,8 @@ your recently and most frequently used commands."
             "* %u %?"))))
  '(org-alphabetical-lists t)
  '(org-src-fontify-natively t)
+ '(org-pretty-entities t)
+ '(org-use-sub-superscripts '{})
  '(org-todo-keywords
    (quote ((sequence "TODO(t)" "STARTED(s@)" "PAUSED(p@)" "WAITING(w@/!)" "DELEGATED(l@)"
                      "APPT" "|" "DONE(d!)" "DEFFERED(r@)" "CANCELLED(c@)"))))
@@ -346,13 +348,18 @@ your recently and most frequently used commands."
 (custom-set-variables '(org-clock-idle-time 15))
 (let ((xprintidle (executable-find "xprintidle")))
   (when (and (eq system-type 'gnu/linux) xprintidle)
-    (custom-set-variables '(org-clock-x11idle-program-name xprintidle))))
+    (custom-set-variables `(org-clock-x11idle-program-name ,xprintidle))))
 
 
 (global-auto-revert-mode t)
 
 (add-hook 'text-mode-hook (lambda () (flyspell-mode 1)) 'append)
 (add-hook 'prog-mode-hook (lambda () (flyspell-prog-mode 1)) 'append)
+
+;;; Remove trailing whitespace intelligently
+(require 'ws-butler)
+(add-hook 'text-mode-hook (lambda () (ws-butler-mode 1)))
+(add-hook 'prog-mode-hook (lambda () (ws-butler-mode 1)))
 
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
