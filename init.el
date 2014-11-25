@@ -292,7 +292,6 @@ your recently and most frequently used commands."
 (global-set-key "\C-cb" 'org-iswitchb)
 (global-set-key "\C-cc" 'org-capture)
 (global-set-key "\C-cl" 'org-store-link)
-
 (custom-set-variables
  '(org-agenda-span 7)
  '(org-agenda-start-on-weekday nil)
@@ -305,19 +304,39 @@ your recently and most frequently used commands."
  '(org-src-fontify-natively t)
  '(org-pretty-entities t)
  '(org-use-sub-superscripts '{})
+
+ ;; Todo settings
  '(org-todo-keywords
-   (quote ((sequence "TODO(t)" "STARTED(s@)" "PAUSED(p@)" "WAITING(w@/!)" "DELEGATED(l@)"
-                     "APPT" "|" "DONE(d!)" "DEFFERED(r@)" "CANCELLED(c@)"))))
-  '(org-agenda-custom-commands
-    (quote (("n" "Agenda and all TODO's" ((agenda "") (alltodo)))
-            ("u" "Unscheduled TODOs" todo ""
-             ((org-agenda-skip-function
-               '(org-agenda-skip-entry-if 'scheduled 'deadline 'regexp "\n]+>"))
-              (org-agenda-overriding-header "Unscheduled TODO entries: "))))))
-  '(org-columns-default-format "%80ITEM(Task) %10Effort(Effort){:} %10CLOCKSUM")
-  '(org-global-properties
-    (quote (("Effort_ALL" . "0:15 0:30 0:45 1:00 2:00 3:00 4:00 5:00 6:00 8:00")
-            ("SYTLE_ALL" . "habit")))))
+   (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+           (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING"))))
+ '(org-todo-keyword-faces
+   (quote (("TODO" :foreground "red" :weight bold)
+           ("NEXT" :foreground "blue" :weight bold)
+           ("DONE" :foreground "forest green" :weight bold)
+           ("WAITING" :foreground "orange" :weight bold)
+           ("HOLD" :foreground "magenta" :weight bold)
+           ("CANCELLED" :foreground "forest green" :weight bold)
+           ("MEETING" :foreground "forest green" :weight bold)
+           ("PHONE" :foreground "forest green" :weight bold))))
+ '(org-todo-state-tags-triggers
+   (quote (("CANCELLED" ("CANCELLED" . t))
+           ("WAITING" ("WAITING" . t))
+           ("HOLD" ("WAITING") ("HOLD" . t))
+           (done ("WAITING") ("HOLD"))
+           ("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
+           ("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
+           ("DONE" ("WAITING") ("CANCELLED") ("HOLD")))))
+
+ '(org-agenda-custom-commands
+   (quote (("n" "Agenda and all TODOs" ((agenda "") (alltodo)))
+           ("u" "Unscheduled TODOs" todo ""
+            ((org-agenda-skip-function
+              '(org-agenda-skip-entry-if 'scheduled 'deadline 'regexp "\n]+>"))
+             (org-agenda-overriding-header "Unscheduled TODO entries: "))))))
+ '(org-columns-default-format "%80ITEM(Task) %10Effort(Effort){:} %10CLOCKSUM")
+ '(org-global-properties
+   (quote (("Effort_ALL" . "0:15 0:30 0:45 1:00 2:00 3:00 4:00 5:00 6:00 8:00")
+           ("SYTLE_ALL" . "habit")))))
 
 (require 'org)
 (require 'org-agenda)
