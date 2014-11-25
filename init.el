@@ -372,8 +372,8 @@ your recently and most frequently used commands."
 
 (global-auto-revert-mode t)
 
-(add-hook 'text-mode-hook 'flyspell-mode 'append)
-(add-hook 'prog-mode-hook 'flyspell-prog-mode 'append)
+(add-hook 'text-mode-hook (lambda () (flyspell-mode 1)) 'append)
+(add-hook 'prog-mode-hook (lambda () (flyspell-prog-mode 1)) 'append)
 
 ;;; Remove trailing whitespace intelligently
 (require 'ws-butler)
