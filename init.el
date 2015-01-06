@@ -343,7 +343,7 @@ your recently and most frequently used commands."
             ((org-agenda-skip-function
               '(org-agenda-skip-entry-if 'scheduled 'deadline 'regexp "\n]+>"))
              (org-agenda-overriding-header "Unscheduled TODO entries: "))))))
- '(org-columns-default-format "%80ITEM(Task) %10Effort(Effort){:} %10CLOCKSUM")
+ '(org-columns-default-format "%60ITEM(Task) %10Effort(Effort){:} %10CLOCKSUM %10CLOCKSUM_T")
  '(org-global-properties
    (quote (("Effort_ALL" . "0:15 0:30 0:45 1:00 2:00 3:00 4:00 5:00 6:00 8:00")
            ("SYTLE_ALL" . "habit")))))
