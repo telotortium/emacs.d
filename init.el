@@ -327,6 +327,16 @@ your recently and most frequently used commands."
            ("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
            ("DONE" ("WAITING") ("CANCELLED") ("HOLD")))))
 
+ ;; Don't show tasks in agenda that are done
+ '(org-agenda-skip-scheduled-if-done t)
+ '(org-agenda-skip-deadline-if-done t)
+
+ ;; Skip tasks in the global TODO list that are done or scheduled, because
+ ;; either of these means the tasks has been considered. Tasks marked with a
+ ;; deadline still need to be scheduled before I've truly considered them, so
+ ;; leave them in.
+ '(org-agenda-todo-ignore-scheduled 'future)
+
  '(org-agenda-custom-commands
    (quote (("n" "Agenda and all TODOs" ((agenda "") (alltodo)))
            ("u" "Unscheduled TODOs" todo ""
