@@ -142,6 +142,11 @@ your recently and most frequently used commands."
 (column-number-mode 1)
 (linum-relative 1)
 (global-linum-mode)
+(defun no-linum () (linum-mode -1))
+;; Hack: prevent slowdown in large org-mode files by disabling linum.
+;;
+;; FIXME: File bug against linum-relative.
+(add-hook 'org-mode-hook 'no-linum)
 ;; Delay updates to line numbering to retain performance in >1000 line files.
 (add-hook 'linum-before-numbering-hook
           (lambda ()
@@ -150,11 +155,9 @@ your recently and most frequently used commands."
             (setq-local linum-num-lines (count-lines (point-min) (point-max)))
             (cond
              ((> linum-num-lines 1000)
-              (setq-local linum-delay t)
-              (setq-local linum-eager t))
+              (setq-local linum-delay t))
              ((<= linum-num-lines 900)
-              (setq-local linum-delay nil)
-              (setq-local linum-eager t)))))
+              (setq-local linum-delay nil)))))
 
 ;; auto-complete
 (custom-set-variables
