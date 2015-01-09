@@ -101,6 +101,9 @@ your recently and most frequently used commands."
 (require 'evil-surround)
 (global-evil-surround-mode 1)
 
+(require 'evil-visualstar)
+(global-evil-visualstar-mode)
+
 ;; Make default encoding UTF-8 everywhere
 (custom-set-variables
  '(current-language-environment "UTF-8"))
