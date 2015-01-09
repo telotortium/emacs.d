@@ -104,6 +104,12 @@ your recently and most frequently used commands."
 (require 'evil-visualstar)
 (global-evil-visualstar-mode)
 
+(require 'evil-numbers)
+(global-set-key (kbd "C-c =") 'evil-numbers/inc-at-pt)
+(global-set-key (kbd "C-c +") 'evil-numbers/inc-at-pt)
+(global-set-key (kbd "C-c -") 'evil-numbers/dec-at-pt)
+(global-set-key (kbd "C-c _") 'evil-numbers/dec-at-pt)
+
 ;; Make default encoding UTF-8 everywhere
 (custom-set-variables
  '(current-language-environment "UTF-8"))
