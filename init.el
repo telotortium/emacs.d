@@ -233,6 +233,10 @@ your recently and most frequently used commands."
 (message "turn off tool bar")
 (tool-bar-mode -1)
 
+;; Rust mode
+(autoload 'rust-mode "rust-mode" nil t)
+(add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode))
+
 ;; Lua mode
 (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
 (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
