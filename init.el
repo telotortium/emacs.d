@@ -317,6 +317,7 @@ your recently and most frequently used commands."
             "* TODO %?\n  %u")
            ("n" "Notes" entry (file+headline org-default-notes-file "Notes")
             "* %u %?"))))
+ '(org-refile-use-outline-path t)
  '(org-alphabetical-lists t)
  '(org-src-fontify-natively t)
  '(org-pretty-entities t)
