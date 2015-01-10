@@ -309,6 +309,7 @@ your recently and most frequently used commands."
 (global-set-key "\C-cc" 'org-capture)
 (global-set-key "\C-cl" 'org-store-link)
 (custom-set-variables
+ '(org-agenda-files (expand-file-name "agenda_files" user-emacs-directory))
  '(org-agenda-span 7)
  '(org-agenda-start-on-weekday nil)
  '(org-capture-templates
