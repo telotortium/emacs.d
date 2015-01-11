@@ -12,23 +12,43 @@
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") 'append)
 
-;; Smex
-(autoload 'smex "smex"
-  "Smex is a M-x enhancement for Emacs, it provides a convenient interface to
-your recently and most frequently used commands."
-  t)
+;;; ---------------------------------------------------------------------------
+;;;  Helm configuration
+;;; ---------------------------------------------------------------------------
+(require 'helm)
+(require 'helm-config)
 
-(global-set-key (kbd "M-x") 'smex)
+;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
+;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
+;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
+(global-set-key (kbd "C-c h") 'helm-command-prefix)
+(global-unset-key (kbd "C-x c"))
 
-(custom-set-variables
- '(evil-search-module (quote evil-search))
- '(smex-save-file
-   (expand-file-name (concat (file-name-as-directory "cache") "smex-items")
-                     user-emacs-directory)))
+(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
+(define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
+(define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
 
+(when (executable-find "curl")
+  (setq helm-google-suggest-use-curl-p t))
 
-;; Evil keybindings
-; Space as leader
+(setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
+      helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
+      helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
+      helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
+      helm-ff-file-name-history-use-recentf t)
+
+(helm-mode 1)
+
+(helm-autoresize-mode t)
+
+(global-set-key (kbd "M-x") 'helm-M-x)
+(global-set-key (kbd "M-y") 'helm-show-kill-ring)
+(global-set-key (kbd "C-x b") 'helm-mini)
+
+;;; ---------------------------------------------------------------------------
+;;;  Helm configuration
+;;; ---------------------------------------------------------------------------
+;; Space as leader
 (require 'evil-leader)
 (global-evil-leader-mode)
 (evil-leader/set-leader "<SPC>")
@@ -58,8 +78,8 @@ your recently and most frequently used commands."
   ":" 'evil-ex)
 
 ;; Shortcut to M-x
-(evil-ex-define-cmd     "mx" 'smex)
-(define-key evil-ex-map "mx" 'smex)
+(evil-ex-define-cmd     "mx" 'helm-M-x)
+(define-key evil-ex-map "mx" 'helm-M-x)
 
 ; C-c as general purpose escape key sequence (from EmacsWiki Evil page).
 (defun my-esc (prompt)
@@ -408,6 +428,7 @@ your recently and most frequently used commands."
 (require 'ws-butler)
 (add-hook 'text-mode-hook (lambda () (ws-butler-mode 1)))
 (add-hook 'prog-mode-hook (lambda () (ws-butler-mode 1)))
+
 
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
