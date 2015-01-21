@@ -406,6 +406,20 @@
   (when (and (eq system-type 'gnu/linux) xprintidle)
     (custom-set-variables `(org-clock-x11idle-program-name ,xprintidle))))
 
+;;; Ask for effort estimate when clocking in.
+;;; http://orgmode.org/worg/org-hacks.html#sec-1-9-10
+(add-hook 'org-clock-in-prepare-hook
+          'my-org-mode-ask-effort)
+(defun my-org-mode-ask-effort ()
+  "Ask for an effort estimate when clocking in."
+  (unless (org-entry-get (point) "Effort")
+    (let ((effort
+           (completing-read
+            "Effort: "
+            (org-entry-get-multivalued-property (point) "Effort"))))
+      (unless (equal effort "")
+        (org-set-property "Effort" effort)))))
+
 
 (global-auto-revert-mode t)
 
