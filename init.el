@@ -12,6 +12,37 @@
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") 'append)
 
+(require 'cl-lib)
+(defun packages-install (packages)
+  "Given a list of packages, this will install them from the standard locations."
+  (let ((to-install (cl-remove-if 'package-installed-p packages)))
+    (when to-install
+      (package-refresh-contents)
+      (dolist (it to-install)
+          (package-install it)
+      (delete-other-windows)))))
+
+(packages-install '(
+                    ac-helm
+                    ac-slime
+                    ack-and-a-half
+                    auto-complete
+                    evil
+                    evil-leader
+                    evil-numbers
+                    evil-surround
+                    evil-visualstar
+                    helm
+                    linum-off
+                    linum-relative
+                    lua-mode
+                    org-plus-contrib
+                    rainbow-delimiters
+                    rust-mode
+                    vimrc-mode
+                    ws-butler
+                    ))
+
 ;;; ---------------------------------------------------------------------------
 ;;;  Helm configuration
 ;;; ---------------------------------------------------------------------------
