@@ -119,13 +119,8 @@
    ;; If we're in one of the Evil states that defines [escape] key, return
    ;; [escape] so as Key Lookup will use it.
    ((or (evil-insert-state-p) (evil-normal-state-p) (evil-replace-state-p) (evil-visual-state-p)) [escape])
-   ;; Don't override C-c for Emacs Evil state.
-   ((evil-emacs-state-p) (kbd "C-c"))
-   ;; This is the best way I could infer for now to have C-c work during
-   ;; evil-read-key.  Note: As long as I return [escape] in normal-state, I
-   ;; don't need this.  ((eq overriding-terminal-local-map evil-read-key-map)
-   ;; (keyboard-quit) (kbd ""))
-   (t (kbd "C-g"))))
+   ;; Otherwise keep at default.
+   (t (kbd "C-c"))))
 (define-key key-translation-map (kbd "C-c") 'my-esc)
 ; Works around the fact that Evil uses read-event directly when in operator
 ; state, which doesn't use the key-translation-map.
