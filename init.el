@@ -352,6 +352,7 @@
        "* TODO %?\n  %u")
       ("n" "Notes" entry (file+headline org-default-notes-file "Notes")
        "* %u %?")))
+ '(org-refile-targets '((nil . (:maxlevel . 3))))
  '(org-refile-use-outline-path t)
  '(org-alphabetical-lists t)
  '(org-src-fontify-natively t)
@@ -446,6 +447,8 @@
       (unless (equal effort "")
         (org-set-property "Effort" effort)))))
 
+;;; Fix the very slow tangling of large Org files
+(setq org-babel-use-quick-and-dirty-noweb-expansion t)
 
 (global-auto-revert-mode t)
 
