@@ -1,0 +1,70 @@
+
+;; ----- smex-history -----
+(
+ org-clock-in
+ org-set-effort
+ org-narrow-to-subtree
+ widen
+ org-agenda-columns
+ package-list-packages
+ org-babel-tangle
+)
+
+;; ----- smex-data -----
+(
+ (dired . 5)
+ (eval-expression . 27)
+ (eval-buffer . 40)
+ (package-install . 8)
+ (remember . 15)
+ (org-agenda . 72)
+ (eval-defun . 5)
+ (package-list-packages . 33)
+ (eval-last-sexp . 8)
+ (org-todo . 50)
+ (top-level . 2)
+ (org-capture-import-remember-templates . 2)
+ (org-capture . 42)
+ (org-schedule . 50)
+ (universal-argument . 2)
+ (customize . 12)
+ (recover-this-file . 3)
+ (org-archive-subtree . 5)
+ (org-agenda-schedule . 1)
+ (ack-and-a-half . 1)
+ (help . 3)
+ (org-tags-view . 2)
+ (psychoanalyze-pinhead . 3)
+ (orgtbl-mode . 2)
+ (org-toggle-link-display . 26)
+ (org-customize . 2)
+ (org-store-link . 1)
+ (eval-region . 6)
+ (org-iswitchb . 2)
+ (chicken-slime . 17)
+ (slime-eval-region . 44)
+ (evil-paredit-mode . 6)
+ (paredit-mode . 69)
+ (slime-call-defun . 1)
+ (slime-eval-defun . 16)
+ (slime-repl . 1)
+ (slime-abort-connection . 3)
+ (slime-restart-inferior-lisp . 1)
+ (slime-quit-lisp . 1)
+ (slime-list-connections . 1)
+ (run-scheme . 13)
+ (scheme-send-region . 11)
+ (org-babel-tangle . 101)
+ (org-reload . 2)
+ (org-ido-switchb . 1)
+ (global-rainbow-delimiters-mode . 1)
+ (org-table-export . 1)
+ (org-clock-in . 16)
+ (org-clock-out . 22)
+ (org-set-effort . 11)
+ (widen . 3)
+ (org-narrow-to-subtree . 5)
+ (toggle-debug-on-quit . 2)
+ (toggle-debug-on-error . 1)
+ (org-agenda-columns . 2)
+)

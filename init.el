@@ -12,6 +12,37 @@
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") 'append)
 
+(require 'cl-lib)
+(defun packages-install (packages)
+  "Given a list of packages, this will install them from the standard locations."
+  (let ((to-install (cl-remove-if 'package-installed-p packages)))
+    (when to-install
+      (package-refresh-contents)
+      (dolist (it to-install)
+          (package-install it)
+      (delete-other-windows)))))
+
+(packages-install '(
+                    ac-helm
+                    ac-slime
+                    ack-and-a-half
+                    auto-complete
+                    evil
+                    evil-leader
+                    evil-numbers
+                    evil-surround
+                    evil-visualstar
+                    helm
+                    linum-off
+                    linum-relative
+                    lua-mode
+                    org-plus-contrib
+                    rainbow-delimiters
+                    rust-mode
+                    vimrc-mode
+                    ws-butler
+                    ))
+
 ;;; ---------------------------------------------------------------------------
 ;;;  Helm configuration
 ;;; ---------------------------------------------------------------------------
@@ -88,13 +119,8 @@
    ;; If we're in one of the Evil states that defines [escape] key, return
    ;; [escape] so as Key Lookup will use it.
    ((or (evil-insert-state-p) (evil-normal-state-p) (evil-replace-state-p) (evil-visual-state-p)) [escape])
-   ;; Don't override C-c for Emacs Evil state.
-   ((evil-emacs-state-p) (kbd "C-c"))
-   ;; This is the best way I could infer for now to have C-c work during
-   ;; evil-read-key.  Note: As long as I return [escape] in normal-state, I
-   ;; don't need this.  ((eq overriding-terminal-local-map evil-read-key-map)
-   ;; (keyboard-quit) (kbd ""))
-   (t (kbd "C-g"))))
+   ;; Otherwise keep at default.
+   (t (kbd "C-c"))))
 (define-key key-translation-map (kbd "C-c") 'my-esc)
 ; Works around the fact that Evil uses read-event directly when in operator
 ; state, which doesn't use the key-translation-map.
@@ -172,21 +198,9 @@
 (linum-relative 1)
 (global-linum-mode)
 (defun no-linum () (linum-mode -1))
-;; Hack: prevent slowdown in large org-mode files by disabling linum.
-;;
-;; FIXME: File bug against linum-relative.
-(add-hook 'org-mode-hook 'no-linum)
-;; Delay updates to line numbering to retain performance in >1000 line files.
-(add-hook 'linum-before-numbering-hook
-          (lambda ()
-            ;; Hysteresis, in  case setting these variables causes expensive
-            ;; processing to happen.
-            (setq-local linum-num-lines (count-lines (point-min) (point-max)))
-            (cond
-             ((> linum-num-lines 1000)
-              (setq-local linum-delay t))
-             ((<= linum-num-lines 900)
-              (setq-local linum-delay nil)))))
+
+;; Disable linum-mode for large files
+(require 'linum-off)
 
 ;; auto-complete
 (custom-set-variables
@@ -338,6 +352,7 @@
        "* TODO %?\n  %u")
       ("n" "Notes" entry (file+headline org-default-notes-file "Notes")
        "* %u %?")))
+ '(org-refile-targets '((nil . (:maxlevel . 3))))
  '(org-refile-use-outline-path t)
  '(org-alphabetical-lists t)
  '(org-src-fontify-natively t)
@@ -433,6 +448,23 @@
 (when tn
   (setq org-show-notification-handler
         (lambda (message) (terminal-notifier-notify "Org Mode" message))))
+
+;;; Ask for effort estimate when clocking in.
+;;; http://orgmode.org/worg/org-hacks.html#sec-1-9-10
+(add-hook 'org-clock-in-prepare-hook
+          'my-org-mode-ask-effort)
+(defun my-org-mode-ask-effort ()
+  "Ask for an effort estimate when clocking in."
+  (unless (org-entry-get (point) "Effort")
+    (let ((effort
+           (completing-read
+            "Effort: "
+            (org-entry-get-multivalued-property (point) "Effort"))))
+      (unless (equal effort "")
+        (org-set-property "Effort" effort)))))
+
+;;; Fix the very slow tangling of large Org files
+(setq org-babel-use-quick-and-dirty-noweb-expansion t)
 
 (global-auto-revert-mode t)
 
