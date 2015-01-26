@@ -418,6 +418,21 @@
   (when (and (eq system-type 'gnu/linux) xprintidle)
     (custom-set-variables `(org-clock-x11idle-program-name ,xprintidle))))
 
+;;; Enable notifications on OS X using the terminal-notifier program.
+(defvar terminal-notifier-command
+  (executable-find "terminal-notifier")
+  "The path to terminal-notifier.")
+(defun terminal-notifier-notify (title message)
+  "Show a message with `terminal-notifier-command`."
+  (start-process "terminal-notifier"
+                 "*terminal-notifier*"
+                 terminal-notifier-command
+                 "-title" title
+                 "-message" message
+                 "-activate" "org.gnu.Emacs"))
+(when tn
+  (setq org-show-notification-handler
+        (lambda (message) (terminal-notifier-notify "Org Mode" message))))
 
 (global-auto-revert-mode t)
 
