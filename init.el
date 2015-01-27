@@ -445,7 +445,7 @@
                  "-title" title
                  "-message" message
                  "-activate" "org.gnu.Emacs"))
-(when tn
+(when terminal-notifier-command
   (setq org-show-notification-handler
         (lambda (message) (terminal-notifier-notify "Org Mode" message))))
 
