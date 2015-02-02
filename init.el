@@ -212,7 +212,10 @@
 ;
 (custom-set-variables
  '(ac-auto-show-menu 0.4)
- '(ac-use-menu-map t))
+ '(ac-use-menu-map t)
+ '(ac-comphist-file
+   (expand-file-name (concat (file-name-as-directory "cache") "ac-comphist.dat")
+                        user-emacs-directory)))
 (define-key ac-menu-map "\C-n" 'ac-next)
 (define-key ac-menu-map "\C-p" 'ac-previous)
 
@@ -476,6 +479,11 @@
 (add-hook 'text-mode-hook (lambda () (ws-butler-mode 1)))
 (add-hook 'prog-mode-hook (lambda () (ws-butler-mode 1)))
 
+;;; Miscellaneous
+(custom-set-variables
+ '(bookmark-default-file
+   (expand-file-name (concat (file-name-as-directory "cache") "bookmarks")
+                     user-emacs-directory)))
 
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
