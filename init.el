@@ -466,6 +466,9 @@
 (add-hook 'weechat-mode-hook (lambda () (visual-line-mode 1)))
 (add-hook 'weechat-mode-hook (lambda () (linum-mode -1)))
 
+;;; Enable commands disabled by default
+(put 'narrow-to-region 'disabled nil)
+
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
 ;;----------------------------------------------------------------------------
