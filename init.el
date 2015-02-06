@@ -348,7 +348,7 @@
  '(org-agenda-start-on-weekday nil)
  '(org-capture-templates
     '(("t" "Tasks" entry (file+headline (concat org-directory "/todo.org")
-                                          "Tasks")
+                                          "Refile")
        "* TODO %?\n  %u")
       ("n" "Notes" entry (file+headline org-default-notes-file "Notes")
        "* %u %?")))
