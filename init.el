@@ -488,7 +488,7 @@
 
 ;;; Weechat
 (require 'weechat)
-(require 'weechat-notifications)
+(when (featurep 'dbusbind) (require 'weechat-notifications))
 ;; Enable visual-line-mode and disable linum-mode.
 (add-hook 'weechat-mode-hook (lambda () (visual-line-mode 1)))
 (add-hook 'weechat-mode-hook (lambda () (linum-mode -1)))
