@@ -20,15 +20,9 @@
         ("\t" (0 'my-tab-face t))
         ))))))
 
-;;; make characters after column 80 purple
+;;; Enable whitespace for all files.
 (setq whitespace-style '(face trailing tab-mark))
-(add-hook 'prog-mode-hook
-          (lambda ()
-            (interactive)
-            (setq-local whitespace-style
-                        (append whitespace-style '(lines-tail)))
-            (whitespace-mode 1)))
-(add-hook 'find-file-hook 'whitespace-mode)
+(add-hook 'find-file-hook (lambda () (whitespace-mode 1)))
 
 ;;; transform literal tabs into an rightwards arrow (⇥, U+21E5, decimal 8677).
 (setq whitespace-display-mappings
