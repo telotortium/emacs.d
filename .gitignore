@@ -1,7 +1,12 @@
 /agenda_files
 /auto-save-list
+/bookmarks
+/cache
+/custom.el
 /elpa
+/recentf
 /tmp
+/url
 
 # Ignore local changes
 init-local.el

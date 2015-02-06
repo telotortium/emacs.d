@@ -213,7 +213,10 @@
 ;
 (custom-set-variables
  '(ac-auto-show-menu 0.4)
- '(ac-use-menu-map t))
+ '(ac-use-menu-map t)
+ '(ac-comphist-file
+   (expand-file-name (concat (file-name-as-directory "cache") "ac-comphist.dat")
+                        user-emacs-directory)))
 (define-key ac-menu-map "\C-n" 'ac-next)
 (define-key ac-menu-map "\C-p" 'ac-previous)
 
@@ -353,6 +356,7 @@
        "* TODO %?\n  %u")
       ("n" "Notes" entry (file+headline org-default-notes-file "Notes")
        "* %u %?")))
+ '(org-refile-targets '((nil . (:maxlevel . 3))))
  '(org-refile-use-outline-path t)
  '(org-alphabetical-lists t)
  '(org-src-fontify-natively t)
@@ -433,6 +437,22 @@
   (when (and (eq system-type 'gnu/linux) xprintidle)
     (custom-set-variables `(org-clock-x11idle-program-name ,xprintidle))))
 
+;;; Enable notifications on OS X using the terminal-notifier program.
+(defvar terminal-notifier-command
+  (executable-find "terminal-notifier")
+  "The path to terminal-notifier.")
+(defun terminal-notifier-notify (title message)
+  "Show a message with `terminal-notifier-command`."
+  (start-process "terminal-notifier"
+                 "*terminal-notifier*"
+                 terminal-notifier-command
+                 "-title" title
+                 "-message" message
+                 "-activate" "org.gnu.Emacs"))
+(when terminal-notifier-command
+  (setq org-show-notification-handler
+        (lambda (message) (terminal-notifier-notify "Org Mode" message))))
+
 ;;; Ask for effort estimate when clocking in.
 ;;; http://orgmode.org/worg/org-hacks.html#sec-1-9-10
 (add-hook 'org-clock-in-prepare-hook
@@ -447,6 +467,8 @@
       (unless (equal effort "")
         (org-set-property "Effort" effort)))))
 
+;;; Fix the very slow tangling of large Org files
+(setq org-babel-use-quick-and-dirty-noweb-expansion t)
 
 (global-auto-revert-mode t)
 
@@ -458,6 +480,11 @@
 (add-hook 'text-mode-hook (lambda () (ws-butler-mode 1)))
 (add-hook 'prog-mode-hook (lambda () (ws-butler-mode 1)))
 
+;;; Miscellaneous
+(custom-set-variables
+ '(bookmark-default-file
+   (expand-file-name (concat (file-name-as-directory "cache") "bookmarks")
+                     user-emacs-directory)))
 
 ;;; Weechat
 (require 'weechat)
