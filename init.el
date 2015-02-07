@@ -496,6 +496,12 @@
 ;;; Enable commands disabled by default
 (put 'narrow-to-region 'disabled nil)
 
+;;; Python
+;; Fix Evil shiftwidth for Python indent
+(add-hook 'python-mode-hook
+  (function (lambda ()
+          (setq evil-shift-width python-indent-offset))))
+
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
 ;;----------------------------------------------------------------------------
