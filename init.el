@@ -356,7 +356,7 @@
        "* TODO %?\n  %u")
       ("n" "Notes" entry (file+headline org-default-notes-file "Notes")
        "* %u %?")))
- '(org-refile-targets '((nil . (:maxlevel . 3))))
+ '(org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
  '(org-refile-use-outline-path t)
  '(org-alphabetical-lists t)
  '(org-src-fontify-natively t)
