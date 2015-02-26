@@ -502,6 +502,14 @@
   (function (lambda ()
           (setq evil-shift-width python-indent-offset))))
 
+
+;;; Fix newline behavior to use M-j by default.
+;;; See http://stackoverflow.com/a/9060267.
+(defun my-coding-config ()
+  (local-set-key (kbd "RET") (key-binding (kbd "M-j")))
+  (local-set-key (kbd "<S-return>") 'newline))
+(add-hook 'prog-mode-hook 'my-coding-config)
+
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
 ;;----------------------------------------------------------------------------
