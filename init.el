@@ -204,6 +204,7 @@
 
 ;; Disable linum-mode for large files
 (require 'linum-off)
+(add-to-list 'linum-disabled-modes-list 'markdown-mode)
 
 ;; auto-complete
 (custom-set-variables
