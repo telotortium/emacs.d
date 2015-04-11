@@ -23,6 +23,7 @@
       (delete-other-windows)))))
 
 (packages-install '(
+                    ac-geiser
                     ac-helm
                     ac-slime
                     ack-and-a-half
@@ -32,6 +33,7 @@
                     evil-numbers
                     evil-surround
                     evil-visualstar
+                    geiser
                     helm
                     linum-off
                     linum-relative
