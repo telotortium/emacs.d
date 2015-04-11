@@ -513,6 +513,10 @@
   (local-set-key (kbd "<S-return>") 'newline))
 (add-hook 'prog-mode-hook 'my-coding-config)
 
+
+;; Don't use Evil for image-mode.
+(add-to-list 'evil-emacs-state-modes 'image-mode)
+
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
 ;;----------------------------------------------------------------------------
