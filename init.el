@@ -38,6 +38,7 @@
                     linum-off
                     linum-relative
                     lua-mode
+                    magit
                     org-plus-contrib
                     rainbow-delimiters
                     rust-mode
@@ -516,6 +517,9 @@
 
 ;; Don't use Evil for image-mode.
 (add-to-list 'evil-emacs-state-modes 'image-mode)
+
+;;; Magit
+(setq magit-last-seen-setup-instructions "1.4.0")
 
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
