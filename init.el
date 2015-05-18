@@ -35,6 +35,7 @@
                     evil-visualstar
                     geiser
                     helm
+                    htmlize
                     linum-off
                     linum-relative
                     lua-mode
