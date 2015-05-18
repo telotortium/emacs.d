@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 ;;;; Configuration for whitespace-mode
 ;;;; Based on https://gist.github.com/ymasory/3794723
 

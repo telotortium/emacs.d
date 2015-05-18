@@ -1,4 +1,4 @@
-; -*- lexical-binding: t -*-
+; -*- lexical-binding: t; -*-
 ;;; This file bootstraps the configuration, which is divided into
 ;;; a number of other files.
 
