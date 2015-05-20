@@ -405,7 +405,25 @@
            ("u" "Unscheduled TODOs" todo ""
             ((org-agenda-skip-function
               '(org-agenda-skip-entry-if 'scheduled 'deadline 'regexp "\n]+>"))
-             (org-agenda-overriding-header "Unscheduled TODO entries: "))))))
+             (org-agenda-overriding-header "Unscheduled TODO entries: ")))
+           ("Q" . "Custom queries")
+           ("Q/" "Archive occur"
+            ;; Dynamically bind `org-agenda-text-search-extra-files' with the
+            ;; symbol `agenda-archive' prepended to search archive files when
+            ;; calling `org-occur-in-agenda-files'.
+            ;;
+            ;; TODO: Override both this and "/" to use `helm-multi-occur'
+            ;; instead of the Emacs built-in multi-occur, which provides
+            ;; incremental search.
+            (lambda (unused)
+              (let* ((tmp (if (boundp org-agenda-text-search-extra-files)
+                              org-agenda-text-search-extra-files
+                            '()))
+                     (org-agenda-text-search-extra-files
+                      (cons 'agenda-archives tmp)))
+                (call-interactively 'org-occur-in-agenda-files)))
+            ""))))
+
  '(org-columns-default-format "%60ITEM(Task) %10Effort(Effort){:} %10CLOCKSUM %10CLOCKSUM_T")
  '(org-global-properties
    (quote (("Effort_ALL" . "0:15 0:30 0:45 1:00 2:00 3:00 4:00 5:00 6:00 8:00")
