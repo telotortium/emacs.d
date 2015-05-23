@@ -315,6 +315,9 @@
 ;; Go mode - enable go-autocomplete
 (require 'go-autocomplete)
 
+;;; Enable escaping from yasnippet snippets
+(yas-minor-mode 1)
+
 ;;; Don't put yanks into X clipboard buffer by default
 (setq x-select-enable-clipboard nil)
 (setq x-select-enable-primary t)
