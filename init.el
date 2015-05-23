@@ -34,6 +34,7 @@
                     evil-surround
                     evil-visualstar
                     geiser
+                    go-autocomplete
                     helm
                     htmlize
                     linum-off
@@ -310,6 +311,9 @@
             (setq-local whitespace-line-column 99)
             (setq-local tab-width 4)
             (setq-local tab-stop-list (number-sequence 4 200 4))))
+
+;; Go mode - enable go-autocomplete
+(require 'go-autocomplete)
 
 ;;; Don't put yanks into X clipboard buffer by default
 (setq x-select-enable-clipboard nil)
