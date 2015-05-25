@@ -118,22 +118,6 @@
 (evil-ex-define-cmd     "mx" 'helm-M-x)
 (define-key evil-ex-map "mx" 'helm-M-x)
 
-; C-c as general purpose escape key sequence (from EmacsWiki Evil page).
-(defun my-esc (prompt)
-  "Functionality for escaping generally.  Includes exiting Evil insert state and C-g binding. "
-  (cond
-   ;; If we're in one of the Evil states that defines [escape] key, return
-   ;; [escape] so as Key Lookup will use it.
-   ((or (evil-insert-state-p) (evil-normal-state-p) (evil-replace-state-p) (evil-visual-state-p)) [escape])
-   ;; Otherwise keep at default.
-   (t (kbd "C-c"))))
-(define-key key-translation-map (kbd "C-c") 'my-esc)
-; Works around the fact that Evil uses read-event directly when in operator
-; state, which doesn't use the key-translation-map.
-(define-key evil-operator-state-map (kbd "C-c") 'keyboard-quit)
-; Only changes anything in terminal Emacs. Rebind it to the ASCII value of C-c.
-(set-quit-char ?\C-c)
-
 ;; change mode-line color by evil state
 (let ((default-color (cons (face-background 'mode-line)
                            (face-foreground 'mode-line))))
