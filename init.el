@@ -431,6 +431,9 @@
               (interactive)
               (info "(org) Agenda Commands")))
 
+; Pop up org-agenda-list a few times a day
+(run-at-time "08:00" 21600 'org-agenda-list)
+
 (run-at-time "00:59" 3600 'org-save-all-org-buffers)
 
 ;; Fix org-column fonts
