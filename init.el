@@ -23,19 +23,17 @@
       (delete-other-windows)))))
 
 (packages-install '(
-                    ac-geiser
-                    ac-helm
-                    ac-slime
                     ack-and-a-half
-                    auto-complete
+                    company
+                    company-go
                     evil
                     evil-leader
                     evil-numbers
                     evil-surround
                     evil-visualstar
                     geiser
-                    go-autocomplete
                     helm
+                    helm-company
                     htmlize
                     linum-off
                     linum-relative
@@ -198,23 +196,6 @@
 (require 'linum-off)
 (add-to-list 'linum-disabled-modes-list 'markdown-mode)
 
-;; auto-complete
-(custom-set-variables
- '(dabbrev-case-fold-search t))
-(require 'auto-complete-config)
-(ac-config-default)
-(require 'ac-dabbrev)
-(add-to-list 'ac-sources 'ac-source-dabbrev)
-;
-(custom-set-variables
- '(ac-auto-show-menu 0.4)
- '(ac-use-menu-map t)
- '(ac-comphist-file
-   (expand-file-name (concat (file-name-as-directory "cache") "ac-comphist.dat")
-                        user-emacs-directory)))
-(define-key ac-menu-map "\C-n" 'ac-next)
-(define-key ac-menu-map "\C-p" 'ac-previous)
-
 (require 'ack-and-a-half)
 (defalias 'ack 'ack-and-a-half)
 (defalias 'ack-same 'ack-and-a-half-same)
@@ -222,6 +203,9 @@
 (defalias 'ack-find-file-same 'ack-and-a-half-find-file-same)
 (custom-set-variables
  '(ack-and-a-half-arguments (quote ("--nopager"))))
+
+;;; Company
+(add-hook 'after-init-hook 'global-company-mode)
 
 ;; Syntax highlighting for Vimscript files
 (require 'vimrc-mode)
@@ -235,10 +219,6 @@
 ;; Make `<tab>` only call `indent-relative` in Evil insert mode, not cycle.
 (add-hook 'markdown-mode-hook
           (lambda ()
-            (if (and
-                 (featurep 'auto-complete-config)
-                 global-auto-complete-mode)
-                (auto-complete-mode t))
             (define-key markdown-mode-map (kbd "<tab>")
               (lambda (&rest args)
                 (interactive "P")
@@ -301,9 +281,6 @@
             (setq-local tab-width 4)
             (setq-local tab-stop-list (number-sequence 4 200 4))))
 
-;; Go mode - enable go-autocomplete
-(require 'go-autocomplete)
-
 ;;; Enable escaping from yasnippet snippets
 (require 'yasnippet)
 (yas-global-mode 1)
@@ -329,9 +306,6 @@
 (add-hook 'scheme-mode-hook           #'activate-paredit-mode)
 
 ;; Slime
-(require 'ac-slime)
-(add-hook 'slime-mode-hook 'set-up-slime-ac)
-(add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
 (add-hook 'slime-repl-mode-hook #'activate-paredit-mode)
 ;; Stop SLIME's REPL from grabbing DEL,
 ;; which is annoying when backspacing over a '('
@@ -339,8 +313,6 @@
   (define-key slime-repl-mode-map
     (read-kbd-macro paredit-backward-delete-key) nil))
 (add-hook 'slime-repl-mode-hook 'override-slime-repl-bindings-with-paredit)
-(eval-after-load "auto-complete"
-  '(add-to-list 'ac-modes 'slime-repl-mode))
 (slime-setup '(slime-fancy slime-banner))
 
 ;; Org mode
