@@ -540,6 +540,9 @@
 ;;; Magit
 (setq magit-last-seen-setup-instructions "1.4.0")
 
+;;; Disable startup screen
+(setq inhibit-startup-message t)
+
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
 ;;----------------------------------------------------------------------------
