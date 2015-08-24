@@ -42,6 +42,7 @@
                     lua-mode
                     magit
                     org-plus-contrib
+                    package-utils
                     rainbow-delimiters
                     rust-mode
                     vimrc-mode
@@ -49,6 +50,9 @@
                     ws-butler
                     yasnippet
                     ))
+
+;;; Convenience commands to upgrade packages.
+(require 'package-utils)
 
 ;;; ---------------------------------------------------------------------------
 ;;;  Helm configuration
