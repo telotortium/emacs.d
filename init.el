@@ -188,8 +188,8 @@
 (require 'linum-relative)
 (line-number-mode 1)
 (column-number-mode 1)
-(linum-relative 1)
-(global-linum-mode)
+(linum-on)
+(linum-relative-on)
 (defun no-linum () (linum-mode -1))
 
 ;; Disable linum-mode for large files
