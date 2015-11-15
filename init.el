@@ -110,6 +110,13 @@
                        "C-7" "C-8" "C-9" "C-0")))
   (define-key evil-normal-state-map key (lambda () (interactive))))
 
+
+;; Make C-w C-{h,j,k,l} equivalent to C-w {h,j,k,l}
+(define-key evil-window-map "\C-h" 'evil-window-left)
+(define-key evil-window-map "\C-j" 'evil-window-down)
+(define-key evil-window-map "\C-k" 'evil-window-up)
+(define-key evil-window-map "\C-l" 'evil-window-right)
+
 ; Kill current buffer but keep its frame around
 (define-key evil-normal-state-map "Q" 'kill-this-buffer)
 
