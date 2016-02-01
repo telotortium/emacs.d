@@ -42,6 +42,7 @@
                     org-plus-contrib
                     package-utils
                     rainbow-delimiters
+                    restart-emacs
                     rust-mode
                     vimrc-mode
                     weechat
@@ -521,6 +522,9 @@
 
 ;;; Disable startup screen
 (setq inhibit-startup-message t)
+
+;;; Command to restart emacs from within emacs
+(require 'restart-emacs)
 
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
