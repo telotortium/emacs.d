@@ -29,6 +29,7 @@
                     evil
                     evil-leader
                     evil-numbers
+                    evil-paredit
                     evil-surround
                     evil-visualstar
                     geiser
@@ -39,11 +40,14 @@
                     linum-relative
                     lua-mode
                     magit
+                    multi-web-mode
                     org-plus-contrib
                     package-utils
+                    paredit
                     rainbow-delimiters
                     restart-emacs
                     rust-mode
+                    slime
                     vimrc-mode
                     weechat
                     ws-butler
