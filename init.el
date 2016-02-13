@@ -40,6 +40,7 @@
                     linum-relative
                     lua-mode
                     magit
+                    markdown-mode
                     multi-web-mode
                     org-plus-contrib
                     package-utils
