@@ -99,8 +99,11 @@
 (global-evil-leader-mode)
 (evil-leader/set-leader "<SPC>")
 
+;; Scroll with C-u and access universal-argument with <Leader>-u.
 (custom-set-variables
  '(evil-want-C-u-scroll t))
+(evil-leader/set-key "u" 'universal-argument)
+
 (require 'evil)
 (evil-mode 1)
 
