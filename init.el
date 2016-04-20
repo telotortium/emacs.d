@@ -343,9 +343,9 @@
  '(org-capture-templates
     '(("t" "Tasks" entry (file+headline (concat org-directory "/todo.org")
                                           "Refile")
-       "* TODO %?\n  %u")
+       "* TODO %?\n  %u" :clock-in t :clock-resume t)
       ("n" "Notes" entry (file+headline org-default-notes-file "Notes")
-       "* %u %?")))
+       "* %u %?" :clock-in t :clock-resume t)))
  '(org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
  '(org-refile-use-outline-path t)
  '(org-alphabetical-lists t)
@@ -470,7 +470,8 @@
           'my-org-mode-ask-effort)
 (defun my-org-mode-ask-effort ()
   "Ask for an effort estimate when clocking in."
-  (unless (org-entry-get (point) "Effort")
+  (unless (or (memq 'org-capture-mode minor-mode-list)
+              (org-entry-get (point) "Effort"))
     (let ((effort
            (completing-read
             "Effort: "
