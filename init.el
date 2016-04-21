@@ -227,7 +227,10 @@
 (require 'vimrc-mode)
 (add-to-list 'auto-mode-alist '(".vim\\(rc\\)?$" . vimrc-mode))
 
-(require 'markdown-mode)
+;; Autoload markdown-mode, as recommended in the
+;; [documentation](http://jblevins.org/projects/markdown-mode/).
+(autoload 'markdown-mode "markdown-mode"
+   "Major mode for editing Markdown files" t)
 (custom-set-variables
  '(markdown-command "pandoc -f markdown -t html --toc -s --mathjax"))
 (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
