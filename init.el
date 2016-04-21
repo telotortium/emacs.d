@@ -26,6 +26,7 @@
                     ack-and-a-half
                     company
                     company-go
+                    epl
                     evil
                     evil-leader
                     evil-numbers
