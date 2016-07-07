@@ -4,6 +4,10 @@
 
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 
+; Fix TLS certificate "could not be verified" errors
+; (http://emacs.stackexchange.com/a/18070).
+(setq gnutls-verify-error t)
+
 ; Load all the packages that are REQUIRE'd below
 (require 'package)
 (package-initialize)
