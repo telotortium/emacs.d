@@ -531,6 +531,11 @@
 ;;; Org-drill
 (require 'org-drill)
 (setq org-drill-scope 'directory)
+(setq org-drill-left-cloze-delimiter "!|")
+(setq org-drill-right-cloze-delimiter "|!")
+(setq org-drill-add-random-noise-to-intervals-p t)
+(setq org-drill-adjust-intervals-for-early-and-late-repetitions-p t)
+(setq org-drill-learn-fraction 0.3)
 
 ;;;; Stolen from http://doc.norang.ca/org-mode.html#Clocking
 ;;;; bh/organization-task-id changed.
