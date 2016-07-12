@@ -765,6 +765,7 @@ as the default task."
 ;; Subfiles
 ;;----------------------------------------------------------------------------
 (require 'whitespace-conf nil t)
+(require 'org-drill-cloze-enhancement nil t)
 
 ;;----------------------------------------------------------------------------
 ;; Allow users to provide an optional "init-local" containing personal settings
