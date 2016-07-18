@@ -721,10 +721,11 @@ as the default task."
 (put 'narrow-to-region 'disabled nil)
 
 ;;; Python
-;; Fix Evil shiftwidth for Python indent
-(add-hook 'python-mode-hook
-  (function (lambda ()
-          (setq evil-shift-width python-indent-offset))))
+(defun evil-shift-width-from-guessed-python-indent-offset ()
+  "Fix Evil shiftwidth based on Python indent"
+  (python-indent-guess-indent-offset)
+  (setq-local evil-shift-width python-indent-offset))
+(add-hook 'python-mode-hook 'evil-shift-width-from-guessed-python-indent-offset)
 
 
 ;;; Fix newline behavior to use M-j by default.
