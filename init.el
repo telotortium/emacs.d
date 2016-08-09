@@ -529,6 +529,7 @@
 ;;;
 
 ;;; Org-drill
+(require 'cl)                           ; org-drill uses old CL func names
 (require 'org-drill)
 (setq org-drill-scope 'directory)
 (setq org-drill-left-cloze-delimiter "!|")
