@@ -28,6 +28,7 @@
 (packages-install '(
                     ack-and-a-half
                     bind-key
+                    company
                     company-go
                     epl
                     evil
