@@ -54,11 +54,15 @@
                     restart-emacs
                     rust-mode
                     slime
+                    use-package
                     vimrc-mode
                     weechat
                     ws-butler
                     yasnippet
                     ))
+
+(eval-when-compile
+  (require 'use-package))
 
 ;;; Convenience commands to upgrade packages.
 (require 'package-utils)
