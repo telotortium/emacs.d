@@ -38,6 +38,10 @@
                     org-plus-contrib
                     slime
                     use-package
+                    vimrc-mode
+                    weechat
+                    ws-butler
+                    yasnippet
                     ))
 
 (eval-when-compile
