@@ -162,8 +162,10 @@
                 (set-face-background 'mode-line (car color))
                 (set-face-foreground 'mode-line (cdr color))))))
 
-(require 'evil-surround)
-(global-evil-surround-mode 1)
+(use-package evil-surround
+  :config
+  (global-evil-surround-mode 1))
+
 
 (require 'evil-visualstar)
 (global-evil-visualstar-mode)
