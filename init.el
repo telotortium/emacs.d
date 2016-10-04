@@ -28,6 +28,7 @@
 
 (packages-install '(
                     ack-and-a-half
+                    bind-key
                     company
                     company-go
                     epl
@@ -63,6 +64,7 @@
 
 (eval-when-compile
   (require 'use-package))
+(require 'bind-key)                     ; To make :bind work
 
 ;;; Convenience commands to upgrade packages.
 (require 'package-utils)
