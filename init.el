@@ -32,6 +32,7 @@
                     company-go
                     epl
                     evil
+                    evil-paredit
                     geiser
                     helm
                     helm-company
