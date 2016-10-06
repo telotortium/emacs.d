@@ -38,6 +38,10 @@
                     helm-company
                     htmlize
                     org-plus-contrib
+                    paredit
+                    rainbow-delimiters
+                    restart-emacs
+                    rust-mode
                     slime
                     use-package
                     vimrc-mode
