@@ -28,7 +28,6 @@
 (packages-install '(
                     ack-and-a-half
                     bind-key
-                    company
                     company-go
                     epl
                     evil
@@ -39,6 +38,7 @@
                     htmlize
                     leuven-theme
                     org-plus-contrib
+                    paredit
                     slime
                     use-package
                     ))
