@@ -298,7 +298,8 @@
   :commands rainbow-delimiters-mode
   :init (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
-(show-paren-mode 1)
+(use-package paren
+  :config (show-paren-mode 1))
 
 ;; Go mode - use 4-space tabs since gofmt formats with tabs by default
 (add-hook 'go-mode-hook
