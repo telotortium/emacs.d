@@ -37,18 +37,13 @@
                     helm
                     helm-company
                     htmlize
-                    lua-mode
                     magit
-                    markdown-mode
-                    multi-web-mode
                     org-plus-contrib
                     paredit
                     rainbow-delimiters
                     restart-emacs
-                    rust-mode
                     slime
                     use-package
-                    vimrc-mode
                     weechat
                     ws-butler
                     yasnippet
