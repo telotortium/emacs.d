@@ -31,14 +31,12 @@
                     company-go
                     epl
                     evil
-                    evil-paredit
                     geiser
                     helm
                     helm-company
                     htmlize
                     leuven-theme
                     org-plus-contrib
-                    paredit
                     slime
                     use-package
                     ))
