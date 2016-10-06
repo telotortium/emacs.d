@@ -28,7 +28,6 @@
 
 (packages-install '(
                     bind-key
-                    company
                     company-go
                     epl
                     evil
@@ -37,16 +36,10 @@
                     helm
                     helm-company
                     htmlize
-                    magit
                     org-plus-contrib
                     paredit
-                    rainbow-delimiters
-                    restart-emacs
                     slime
                     use-package
-                    weechat
-                    ws-butler
-                    yasnippet
                     ))
 
 (eval-when-compile
