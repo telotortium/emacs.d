@@ -44,7 +44,6 @@
                     markdown-mode
                     multi-web-mode
                     org-plus-contrib
-                    package-utils
                     paredit
                     rainbow-delimiters
                     restart-emacs
@@ -62,7 +61,7 @@
 (require 'bind-key)                     ; To make :bind work
 
 ;;; Convenience commands to upgrade packages.
-(require 'package-utils)
+(use-package package-utils)
 
 ;;; ---------------------------------------------------------------------------
 ;;;  Helm configuration
