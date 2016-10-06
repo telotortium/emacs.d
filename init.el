@@ -189,7 +189,7 @@
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 (add-hook 'prog-mode-hook 'prog-mode-wrap-hook)
 
-;; Disable scrollbars
+;;; Disable scrollbars
 (scroll-bar-mode -1)
 
 ;;; Line and column numbers
