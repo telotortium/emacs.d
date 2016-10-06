@@ -301,12 +301,16 @@
 (use-package paren
   :config (show-paren-mode 1))
 
-;; Go mode - use 4-space tabs since gofmt formats with tabs by default
-(add-hook 'go-mode-hook
-          (lambda ()
-            (setq-local whitespace-line-column 99)
-            (setq-local tab-width 4)
-            (setq-local tab-stop-list (number-sequence 4 200 4))))
+;;; Go
+(use-package go-mode
+  :config
+  (defun my-go-mode-settings ()
+    (setq-local whitespace-line-column 99)
+    ;; Use 4-space tabs since gofmt formats with tabs by default
+    (setq-local tab-width 4)
+    (setq-local tab-stop-list (number-sequence 4 200 4)))
+  (add-hook 'go-mode-hook 'my-go-mode-settings)
+  (use-package company-go))
 
 ;;; Enable escaping from yasnippet snippets
 (use-package yasnippet
