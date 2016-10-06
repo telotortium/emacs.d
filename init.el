@@ -37,8 +37,6 @@
                     helm
                     helm-company
                     htmlize
-                    linum-off
-                    linum-relative
                     lua-mode
                     magit
                     markdown-mode
@@ -208,18 +206,21 @@
 ;; Disable scrollbars
 (scroll-bar-mode -1)
 
-;; Line and column numbers
-(require 'linum)
-(require 'linum-relative)
+;;; Line and column numbers
+(use-package linum
+  :config
+  (linum-on))
+(use-package linum-relative
+  :config
+  (linum-relative-on))
+(defun no-linum () (linum-mode -1))
 (line-number-mode 1)
 (column-number-mode 1)
-(linum-on)
-(linum-relative-on)
-(defun no-linum () (linum-mode -1))
 
-;; Disable linum-mode for large files
-(require 'linum-off)
-(add-to-list 'linum-disabled-modes-list 'markdown-mode)
+;;; Disable linum-mode for large files
+(use-package linum-off
+  :config
+  (add-to-list 'linum-disabled-modes-list 'markdown-mode))
 
 (use-package ack-and-a-half
   :commands (ack-and-a-half
