@@ -31,13 +31,11 @@
                     company-go
                     epl
                     evil
-                    evil-paredit
                     geiser
                     helm
                     helm-company
                     htmlize
                     org-plus-contrib
-                    paredit
                     slime
                     use-package
                     ))
@@ -320,19 +318,22 @@
 (setq mouse-drag-copy-region t)
 
 ;; Paredit mode
-(autoload 'enable-paredit-mode "paredit"
-  "Turn on pseudo-structural editing of Lisp code."
-  t)
-(defun activate-paredit-mode ()
-  (interactive)
-  (enable-paredit-mode)
-  (evil-paredit-mode 1))
-(add-hook 'emacs-lisp-mode-hook       #'activate-paredit-mode)
-(add-hook 'eval-expression-minibuffer-setup-hook #'activate-paredit-mode)
-(add-hook 'ielm-mode-hook             #'activate-paredit-mode)
-(add-hook 'lisp-mode-hook             #'activate-paredit-mode)
-(add-hook 'lisp-interaction-mode-hook #'activate-paredit-mode)
-(add-hook 'scheme-mode-hook           #'activate-paredit-mode)
+(use-package paredit
+  :commands enable-paredit-mode
+  :init
+  (use-package evil-paredit
+    :commands evil-paredit-mode)
+  (defun activate-paredit-mode ()
+    (interactive)
+    (enable-paredit-mode)
+    (evil-paredit-mode 1))
+  (add-hook 'emacs-lisp-mode-hook       #'activate-paredit-mode)
+  (add-hook 'eval-expression-minibuffer-setup-hook #'activate-paredit-mode)
+  (add-hook 'ielm-mode-hook             #'activate-paredit-mode)
+  (add-hook 'inferior-scheme-mode-hook  #'activate-paredit-mode)
+  (add-hook 'lisp-mode-hook             #'activate-paredit-mode)
+  (add-hook 'lisp-interaction-mode-hook #'activate-paredit-mode)
+  (add-hook 'scheme-mode-hook           #'activate-paredit-mode))
 
 ;; Slime
 (add-hook 'slime-repl-mode-hook #'activate-paredit-mode)
