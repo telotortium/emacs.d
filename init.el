@@ -28,7 +28,6 @@
 
 (packages-install '(
                     bind-key
-                    company
                     company-go
                     epl
                     evil
@@ -37,16 +36,10 @@
                     helm
                     helm-company
                     htmlize
-                    magit
                     org-plus-contrib
                     paredit
-                    rainbow-delimiters
-                    restart-emacs
                     slime
                     use-package
-                    weechat
-                    ws-butler
-                    yasnippet
                     ))
 
 (eval-when-compile
@@ -231,7 +224,9 @@
   (defalias 'ack-find-file-same 'ack-and-a-half-find-file-same))
 
 ;;; Company
-(add-hook 'after-init-hook 'global-company-mode)
+(use-package company
+  :config
+  (add-hook 'after-init-hook 'global-company-mode))
 
 ;;; Syntax highlighting for Vimscript files
 (use-package vimrc-mode
@@ -258,19 +253,20 @@
 
 ;; Give buffers editing files with the same basename more distinctive names
 ;; based on directory.
-(require 'uniquify)
-(custom-set-variables
- '(uniquify-buffer-name-style 'post-forward-angle-brackets))
+(use-package uniquify
+  :init (setq uniquify-buffer-name-style 'post-forward-angle-brackets))
 
 ;; Save mini-buffer history
-(custom-set-variables
- '(savehist-additional-variables
-      (quote (kill-ring search-ring regexp-search-ring compile-history)))
- '(savehist-file
-      (expand-file-name (concat (file-name-as-directory "cache") "savehist")
-                        user-emacs-directory))
- '(history-length 5000))
-(savehist-mode 1)
+(use-package savehist
+  :init
+  (setq savehist-additional-variables
+        '(kill-ring search-ring regexp-search-ring compile-history))
+  (setq savehist-file
+        (expand-file-name (concat (file-name-as-directory "cache") "savehist")
+                          user-emacs-directory))
+  (setq history-length 5000)
+  :config
+  (savehist-mode 1))
 
 ;; Disable tool bar
 (message "turn off tool bar")
@@ -300,8 +296,9 @@
   :config
   (multi-web-global-mode 1))
 
-(require 'rainbow-delimiters)
-(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+(use-package rainbow-delimiters
+  :commands rainbow-delimiters-mode
+  :init (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
 (show-paren-mode 1)
 
@@ -313,8 +310,9 @@
             (setq-local tab-stop-list (number-sequence 4 200 4))))
 
 ;;; Enable escaping from yasnippet snippets
-(require 'yasnippet)
-(yas-global-mode 1)
+(use-package yasnippet
+  :config
+  (yas-global-mode 1))
 
 ;;; Don't put yanks into X clipboard buffer by default
 (setq x-select-enable-clipboard nil)
@@ -702,15 +700,18 @@ as the default task."
       (and is-a-task (not has-subtask)))))
 ;;;;
 
-(global-auto-revert-mode t)
+(use-package autorevert
+  :config (global-auto-revert-mode t))
 
 (add-hook 'text-mode-hook 'flyspell-mode 'append)
 (add-hook 'prog-mode-hook 'flyspell-prog-mode 'append)
 
 ;;; Remove trailing whitespace intelligently
-(require 'ws-butler)
-(add-hook 'text-mode-hook (lambda () (ws-butler-mode 1)))
-(add-hook 'prog-mode-hook (lambda () (ws-butler-mode 1)))
+(use-package ws-butler
+  :commands ws-butler-mode
+  :init
+  (add-hook 'text-mode-hook (lambda () (ws-butler-mode 1)))
+  (add-hook 'prog-mode-hook (lambda () (ws-butler-mode 1))))
 
 ;;; Miscellaneous
 (custom-set-variables
@@ -719,11 +720,13 @@ as the default task."
                      user-emacs-directory)))
 
 ;;; Weechat
-(require 'weechat)
-(when (featurep 'dbusbind) (require 'weechat-notifications))
-;; Enable visual-line-mode and disable linum-mode.
-(add-hook 'weechat-mode-hook (lambda () (visual-line-mode 1)))
-(add-hook 'weechat-mode-hook (lambda () (linum-mode -1)))
+(use-package weechat
+  :config
+  (add-hook 'weechat-mode-hook (lambda () (visual-line-mode 1)))
+  (add-hook 'weechat-mode-hook (lambda () (linum-mode -1)))
+  (use-package weechat-notifications
+    :ensure weechat
+    :if (featurep 'dbusbind)))
 
 ;;; Enable commands disabled by default
 (put 'narrow-to-region 'disabled nil)
@@ -748,20 +751,22 @@ as the default task."
 (add-to-list 'evil-emacs-state-modes 'image-mode)
 
 ;;; Magit
-(setq magit-last-seen-setup-instructions "1.4.0")
+(use-package magit
+  :init (setq magit-last-seen-setup-instructions "1.4.0"))
 
 ;;; Disable startup screen
 (setq inhibit-startup-message t)
 
 ;;; Command to restart emacs from within emacs
-(require 'restart-emacs)
+(use-package restart-emacs)
 
-;;----------------------------------------------------------------------------
-;; Allow access from emacsclient
-;;----------------------------------------------------------------------------
-(require 'server)
-(unless (server-running-p)
-  (server-start))
+;;;----------------------------------------------------------------------------
+;;; Allow access from emacsclient
+;;;----------------------------------------------------------------------------
+(use-package server
+  :config
+  (unless (server-running-p)
+    (server-start)))
 
 ;;----------------------------------------------------------------------------
 ;; Variables configured via the interactive 'customize' interface
