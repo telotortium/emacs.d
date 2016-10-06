@@ -32,11 +32,7 @@
                     company-go
                     epl
                     evil
-                    evil-leader
-                    evil-numbers
                     evil-paredit
-                    evil-surround
-                    evil-visualstar
                     geiser
                     helm
                     helm-company
@@ -105,9 +101,10 @@
 ;;;  Helm configuration
 ;;; ---------------------------------------------------------------------------
 ;; Space as leader
-(require 'evil-leader)
-(global-evil-leader-mode)
-(evil-leader/set-leader "<SPC>")
+(use-package evil-leader
+  :config
+  (global-evil-leader-mode)
+  (evil-leader/set-leader "<SPC>"))
 
 ;; Scroll with C-u and access universal-argument with <Leader>-u.
 (custom-set-variables
@@ -168,8 +165,9 @@
   (global-evil-surround-mode 1))
 
 
-(require 'evil-visualstar)
-(global-evil-visualstar-mode)
+(use-package evil-visualstar
+  :config
+  (global-evil-visualstar-mode))
 
 (use-package evil-numbers
   :bind (("C-c =" . evil-numbers/inc-at-pt)
