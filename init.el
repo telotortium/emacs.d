@@ -27,7 +27,6 @@
       (delete-other-windows)))))
 
 (packages-install '(
-                    ack-and-a-half
                     bind-key
                     company
                     company-go
@@ -225,13 +224,18 @@
 (require 'linum-off)
 (add-to-list 'linum-disabled-modes-list 'markdown-mode)
 
-(require 'ack-and-a-half)
-(defalias 'ack 'ack-and-a-half)
-(defalias 'ack-same 'ack-and-a-half-same)
-(defalias 'ack-find-file 'ack-and-a-half-find-file)
-(defalias 'ack-find-file-same 'ack-and-a-half-find-file-same)
-(custom-set-variables
- '(ack-and-a-half-arguments (quote ("--nopager"))))
+(use-package ack-and-a-half
+  :commands (ack-and-a-half
+             ack-and-a-half-same
+             ack-and-a-half-find-file
+             ack-and-a-half-find-file-same)
+  :init
+  (setq ack-and-a-half-arguments '("--nopager"))
+  ;; Aliases must be set in :init to work for some reason.
+  (defalias 'ack 'ack-and-a-half)
+  (defalias 'ack-same 'ack-and-a-half-same)
+  (defalias 'ack-find-file 'ack-and-a-half-find-file)
+  (defalias 'ack-find-file-same 'ack-and-a-half-find-file-same))
 
 ;;; Company
 (add-hook 'after-init-hook 'global-company-mode)
