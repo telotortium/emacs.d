@@ -37,18 +37,13 @@
                     helm
                     helm-company
                     htmlize
-                    lua-mode
                     magit
-                    markdown-mode
-                    multi-web-mode
                     org-plus-contrib
                     paredit
                     rainbow-delimiters
                     restart-emacs
-                    rust-mode
                     slime
                     use-package
-                    vimrc-mode
                     weechat
                     ws-butler
                     yasnippet
@@ -238,27 +233,28 @@
 ;;; Company
 (add-hook 'after-init-hook 'global-company-mode)
 
-;; Syntax highlighting for Vimscript files
-(require 'vimrc-mode)
-(add-to-list 'auto-mode-alist '(".vim\\(rc\\)?$" . vimrc-mode))
+;;; Syntax highlighting for Vimscript files
+(use-package vimrc-mode
+  :mode ".vim\\(rc\\)?$")
 
-;; Autoload markdown-mode, as recommended in the
-;; [documentation](http://jblevins.org/projects/markdown-mode/).
-(autoload 'markdown-mode "markdown-mode"
-   "Major mode for editing Markdown files" t)
-(custom-set-variables
- '(markdown-command "pandoc -f markdown -t html --toc -s --mathjax"))
-(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
-;; Make `<tab>` only call `indent-relative` in Evil insert mode, not cycle.
-(add-hook 'markdown-mode-hook
-          (lambda ()
-            (define-key markdown-mode-map (kbd "<tab>")
-              (lambda (&rest args)
-                (interactive "P")
-                (cond ((and (featurep 'evil) (evil-insert-state-p))
-                       (apply 'indent-relative args))
-                      (t (apply 'markdown-cycle args)))))))
+;;; Markdown
+(use-package markdown-mode
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :init (setq markdown-command
+              "pandoc -f markdown -t html --toc -s --mathjax")
+  :config
+  ;; Make `<tab>` only call `indent-relative` in Evil insert mode, not cycle.
+  (add-hook 'markdown-mode-hook
+            (lambda ()
+              (define-key markdown-mode-map (kbd "<tab>")
+                (lambda (&rest args)
+                  (interactive "P")
+                  (cond ((and (featurep 'evil) (evil-insert-state-p))
+                         (apply 'indent-relative args))
+                        (t (apply 'markdown-cycle args))))))))
 
 ;; Give buffers editing files with the same basename more distinctive names
 ;; based on directory.
@@ -281,27 +277,28 @@
 (tool-bar-mode -1)
 
 ;; Rust mode
-(autoload 'rust-mode "rust-mode" nil t)
-(add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode))
+(use-package rust-mode
+  :mode "\\.rs\\'")
 
 ;; Lua mode
-(autoload 'lua-mode "lua-mode" "Lua editing mode." t)
-(add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
-(add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
+(use-package lua-mode
+  :mode "\\.lua$"
+  :interpreter "lua")
 
 ;; Javascript
-(add-to-list 'auto-mode-alist '("\\.js\\'" . js-mode))
-(add-to-list 'auto-mode-alist '("\\.javascript\\'" . js-mode))
+(use-package js-mode
+  :mode ("\\.js\\'" "\\.javascript\\'"))
 
 ;; Multi Web Mode - automatically switch to right major mode in HTML files
-(require 'multi-web-mode)
-(custom-set-variables
- '(mweb--major-mode 'html-mode)
- '(mweb-tags (quote ((php-mode "<\\?php\\|<\\? \\|<\\?=" "\\?>")
-                     (js-mode "<script +\\(type=\"text/javascript\"\\|language=\"javascript\"\\)[^>]*>" "</script>")
-                     (css-mode "<style +type=\"text/css\"[^>]*>" "</style>"))))
- '(mweb-filename-extensions '("php" "htm" "html" "ctp" "phtml" "php4" "php5")))
-(multi-web-global-mode 1)
+(use-package multi-web-mode
+  :init
+  (setq mweb--major-mode 'html-mode)
+  (setq mweb-tags '((php-mode "<\\?php\\|<\\? \\|<\\?=" "\\?>")
+                    (js-mode "<script +\\(type=\"text/javascript\"\\|language=\"javascript\"\\)[^>]*>" "</script>")
+                    (css-mode "<style +type=\"text/css\"[^>]*>" "</style>")))
+  (setq mweb-filename-extensions '("php" "htm" "html" "ctp" "phtml" "php4" "php5"))
+  :config
+  (multi-web-global-mode 1))
 
 (require 'rainbow-delimiters)
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
