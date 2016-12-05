@@ -366,8 +366,10 @@
       ("n" "Notes" entry (file+headline org-default-notes-file "Notes")
        "* %u %?" :clock-in t :clock-resume t)
       ("d" "Drill" entry (file+headline org-default-notes-file "Drill")
-       "* Drill entry        :drill:\n :PROPERTIES:\n :DRILL_CARD_TYPE: hide1cloze\n :END:\n   %?[Drill item text]"
-       :clock-in t :clock-resume t)))
+       "* Drill entry        :drill:\n :PROPERTIES:\n :DRILL_CARD_TYPE: hide1cloze\n :END:\n   %?!|2 + 2|! equals !|4|!."
+       :clock-in t :clock-resume t)
+      ("L" "Link" entry (file+headline org-default-notes-file "Links")
+       "* [[%:link][%:description]]\n%:initial")))
  '(org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
  '(org-refile-use-outline-path t)
  '(org-alphabetical-lists t)
