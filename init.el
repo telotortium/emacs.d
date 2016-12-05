@@ -8,11 +8,12 @@
 ; (http://emacs.stackexchange.com/a/18070).
 (setq gnutls-verify-error t)
 
+(setq tls-checktrust 'ask)
+
 ; Load all the packages that are REQUIRE'd below
 (require 'package)
 (package-initialize)
 (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
-(add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") 'append)
 
