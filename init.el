@@ -551,6 +551,13 @@
 (setq org-drill-adjust-intervals-for-early-and-late-repetitions-p t)
 (setq org-drill-learn-fraction 0.3)
 
+
+;;; Org-gcal
+(require 'org-gcal)
+(setq org-gcal-config-file (expand-file-name "org-gcal-config.el" user-emacs-directory))
+(when (file-exists-p org-gcal-config-file)
+  (load org-gcal-config-file))
+
 ;;;; Stolen from http://doc.norang.ca/org-mode.html#Clocking
 ;;;; bh/organization-task-id changed.
 ;;
