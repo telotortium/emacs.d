@@ -494,8 +494,7 @@
           'my-org-mode-ask-effort)
 (defun my-org-mode-ask-effort ()
   "Ask for an effort estimate when clocking in."
-  (unless (or (memq 'org-capture-mode minor-mode-list)
-              (org-entry-get (point) "Effort"))
+  (unless (memq 'org-capture-mode minor-mode-list)
     (let ((effort
            (completing-read
             "Effort: "
