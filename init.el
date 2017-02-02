@@ -318,8 +318,8 @@
   (yas-global-mode 1))
 
 ;;; Don't put yanks into X clipboard buffer by default
-(setq x-select-enable-clipboard nil)
-(setq x-select-enable-primary t)
+(setq select-enable-primary nil)
+(setq select-enable-clipboard t)
 (setq mouse-drag-copy-region t)
 
 ;; Paredit mode
