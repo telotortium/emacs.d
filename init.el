@@ -322,6 +322,29 @@
 (setq select-enable-clipboard t)
 (setq mouse-drag-copy-region t)
 
+
+;;; Copy and paste from macOS pasteboard (from
+;;; http://apple.stackexchange.com/a/127082).
+(when (eq system-type 'darwin)
+  (defun pbcopy ()
+    (interactive)
+    (call-process-region (point) (mark) "pbcopy")
+    (setq deactivate-mark t))
+
+  (defun pbpaste ()
+    (interactive)
+    (call-process-region (point) (if mark-active (mark) (point)) "pbpaste" t t))
+
+  (defun pbcut ()
+    (interactive)
+    (pbcopy)
+    (delete-region (region-beginning) (region-end)))
+
+  (global-set-key (kbd "s-c") 'pbcopy)
+  (global-set-key (kbd "s-v") 'pbpaste)
+  (global-set-key (kbd "s-x") 'pbcut))
+
+
 ;; Paredit mode
 (use-package paredit
   :commands enable-paredit-mode
