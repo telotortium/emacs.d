@@ -193,20 +193,12 @@
 (scroll-bar-mode -1)
 
 ;;; Line and column numbers
-(use-package linum
+(use-package nlinum-relative
   :config
-  (linum-on))
-(use-package linum-relative
-  :config
-  (linum-relative-on))
-(defun no-linum () (linum-mode -1))
+  (nlinum-relative-setup-evil)
+  (add-hook 'prog-mode-hook 'nlinum-relative-mode))
 (line-number-mode 1)
 (column-number-mode 1)
-
-;;; Disable linum-mode for large files
-(use-package linum-off
-  :config
-  (add-to-list 'linum-disabled-modes-list 'markdown-mode))
 
 (use-package ack-and-a-half
   :commands (ack-and-a-half
