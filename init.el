@@ -475,6 +475,58 @@
 
 (run-at-time "00:59" 3600 'org-save-all-org-buffers)
 
+
+;;; Add option to merge current buffer and file on disk using emerge if both
+;;; buffer and disk have changed.
+(defadvice ask-user-about-supersession-threat (around ediff-supersession-threat)
+  "Wrap `ask-user-about-supersession-threat' to provide the option to run
+`ediff-current-buffer' instead."
+  (save-window-excursion
+    (let ((prompt
+           (format "%s changed on disk; \
+really edit the buffer? (y, n, r, d or C-h) "
+                   (file-name-nondirectory fn)))
+          (choices '(?y ?n ?r ?d ?? ?\C-h))
+          answer)
+      (while (null answer)
+        (setq answer (read-char-choice prompt choices))
+        (cond ((memq answer '(?? ?\C-h))
+               (ask-user-about-supersession-help)
+               (setq answer nil))
+              ((eq answer ?r)
+               ;; Ask for confirmation if buffer modified
+               (revert-buffer nil (not (buffer-modified-p)))
+               (signal 'file-supersession
+                       (list "File reverted" fn)))
+              ((eq answer ?d)                     ;;- added
+               (ediff-current-file))              ;;- added
+              ((eq answer ?n)
+               (signal 'file-supersession
+                       (list "File changed on disk" fn)))))
+      (message
+       "File on disk now will become a backup file if you save these changes.")
+      (setq buffer-backed-up nil))))
+
+(defadvice ask-user-about-supersession-help (around ediff-supersession-help)
+  "Add help for wrapped version of `ask-user-about-supersession-threat'."
+  (with-output-to-temp-buffer "*Help*"
+    (princ "You want to modify a buffer whose disk file has changed
+since you last read it in or saved it with this buffer.
+
+If you say `y' to go ahead and modify this buffer,
+you risk ruining the work of whoever rewrote the file.
+If you say `r' to revert, the contents of the buffer are refreshed
+from the file on disk.
+If you say `d' to diff, the contents of the buffer are diffed with the contents
+of the on-disk file using `ediff-current-file'.
+If you say `n', the change you started to make will be aborted.
+
+Usually, you should type `n' and then `\\[revert-buffer]',
+to get the latest version of the file, then make the change again.")
+    (with-current-buffer standard-output
+      (help-mode))))
+
+
 ;; Fix org-column fonts
 (defun org-column-view-uses-fixed-width-face ()
   ;; copy from org-faces.el
