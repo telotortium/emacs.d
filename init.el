@@ -834,7 +834,10 @@ as the default task."
 
 ;;; Magit
 (use-package magit
-  :init (setq magit-last-seen-setup-instructions "1.4.0"))
+  :init
+  (setq magit-last-seen-setup-instructions "1.4.0")
+  :config
+  (setq vc-handled-backends (delq 'Git vc-handled-backends)))
 
 ;;; Disable startup screen
 (setq inhibit-startup-message t)
