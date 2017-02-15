@@ -620,6 +620,7 @@ to get the latest version of the file, then make the change again.")
 
 ;;; Org-gcal
 (use-package org-gcal
+  :load-path "~/.emacs.d/org-gcal.git"
   :config
   (setq org-gcal-config-file (expand-file-name "org-gcal-config.el" user-emacs-directory))
   (when (file-exists-p org-gcal-config-file)

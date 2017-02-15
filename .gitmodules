@@ -1,0 +1,3 @@
+[submodule "org-gcal.git"]
+	path = org-gcal.git
+	url = git@github.com:telotortium/org-gcal.el
