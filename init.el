@@ -399,88 +399,88 @@
 (global-set-key "\C-cb" 'org-iswitchb)
 (global-set-key "\C-cc" 'org-capture)
 (global-set-key "\C-cl" 'org-store-link)
-(custom-set-variables
- '(org-agenda-files (expand-file-name "agenda_files" user-emacs-directory))
- '(org-agenda-span 7)
- '(org-agenda-start-on-weekday nil)
- '(org-capture-templates
-    '(("t" "Tasks" entry (file+headline (concat org-directory "/todo.org")
+(setq org-agenda-files (expand-file-name "agenda_files" user-emacs-directory))
+(setq org-agenda-span 7)
+(setq org-agenda-start-on-weekday nil)
+(setq org-capture-templates
+      '(("t" "Tasks" entry (file+headline (concat org-directory "/todo.org")
                                           "Refile")
-       "* TODO %?\n  %u" :clock-in t :clock-resume t)
-      ("n" "Notes" entry (file+headline org-default-notes-file "Notes")
-       "* %u %?" :clock-in t :clock-resume t)
-      ("d" "Drill" entry (file+headline org-default-notes-file "Drill")
-       "* Drill entry        :drill:\n :PROPERTIES:\n :DRILL_CARD_TYPE: hide1cloze\n :END:\n   %?!|2 + 2|! equals !|4|!."
-       :clock-in t :clock-resume t)
-      ("L" "Link" entry (file+headline org-default-notes-file "Links")
-       "* [[%:link][%:description]]\n%:initial")))
- '(org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
- '(org-refile-use-outline-path t)
- '(org-alphabetical-lists t)
- '(org-src-fontify-natively t)
- '(org-pretty-entities t)
- '(org-use-sub-superscripts '{})
+         "* TODO %?\n  %u" :clock-in t :clock-resume t)
+        ("n" "Notes" entry (file+headline org-default-notes-file "Notes")
+         "* %u %?" :clock-in t :clock-resume t)
+        ("d" "Drill" entry (file+headline org-default-notes-file "Drill")
+         "* Drill entry        :drill:\n :PROPERTIES:\n :DRILL_CARD_TYPE: hide1cloze\n :END:\n   %?!|2 + 2|! equals !|4|!."
+         :clock-in t :clock-resume t)
+        ("L" "Link" entry (file+headline org-default-notes-file "Links")
+         "* [[%:link][%:description]]\n%:initial")))
+(setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
+(setq org-refile-use-outline-path t)
+(setq org-alphabetical-lists t)
+(setq org-src-fontify-natively t)
+(setq org-pretty-entities t)
+(setq org-use-sub-superscripts '{})
 
- ;; Todo settings
- '(org-todo-keywords
-   (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
-           (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING"))))
- '(org-todo-keyword-faces
-   (quote (("TODO" :foreground "red" :weight bold)
-           ("NEXT" :foreground "blue" :weight bold)
-           ("DONE" :foreground "forest green" :weight bold)
-           ("WAITING" :foreground "orange" :weight bold)
-           ("HOLD" :foreground "magenta" :weight bold)
-           ("CANCELLED" :foreground "forest green" :weight bold)
-           ("MEETING" :foreground "forest green" :weight bold)
-           ("PHONE" :foreground "forest green" :weight bold))))
- '(org-todo-state-tags-triggers
-   (quote (("CANCELLED" ("CANCELLED" . t))
-           ("WAITING" ("WAITING" . t))
-           ("HOLD" ("WAITING") ("HOLD" . t))
-           (done ("WAITING") ("HOLD"))
-           ("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
-           ("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
-           ("DONE" ("WAITING") ("CANCELLED") ("HOLD")))))
 
- ;; Don't show tasks in agenda that are done
- '(org-agenda-skip-scheduled-if-done t)
- '(org-agenda-skip-deadline-if-done t)
+;; Todo settings
+(setq org-todo-keywords
+      (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+              (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING"))))
+(setq org-todo-keyword-faces
+      (quote (("TODO" :foreground "red" :weight bold)
+              ("NEXT" :foreground "blue" :weight bold)
+              ("DONE" :foreground "forest green" :weight bold)
+              ("WAITING" :foreground "orange" :weight bold)
+              ("HOLD" :foreground "magenta" :weight bold)
+              ("CANCELLED" :foreground "forest green" :weight bold)
+              ("MEETING" :foreground "forest green" :weight bold)
+              ("PHONE" :foreground "forest green" :weight bold))))
+(setq org-todo-state-tags-triggers
+      (quote (("CANCELLED" ("CANCELLED" . t))
+              ("WAITING" ("WAITING" . t))
+              ("HOLD" ("WAITING") ("HOLD" . t))
+              (done ("WAITING") ("HOLD"))
+              ("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
+              ("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
+              ("DONE" ("WAITING") ("CANCELLED") ("HOLD")))))
 
- ;; Skip tasks in the global TODO list that are done or scheduled, because
- ;; either of these means the tasks has been considered. Tasks marked with a
- ;; deadline still need to be scheduled before I've truly considered them, so
- ;; leave them in.
- '(org-agenda-todo-ignore-scheduled 'future)
+;; Don't show tasks in agenda that are done
+(setq org-agenda-skip-scheduled-if-done t)
+(setq org-agenda-skip-deadline-if-done t)
 
- '(org-agenda-custom-commands
-   (quote (("n" "Agenda and all TODOs" ((agenda "") (alltodo)))
-           ("u" "Unscheduled TODOs" todo ""
-            ((org-agenda-skip-function
-              '(org-agenda-skip-entry-if 'scheduled 'deadline 'regexp "\n]+>"))
-             (org-agenda-overriding-header "Unscheduled TODO entries: ")))
-           ("Q" . "Custom queries")
-           ("Q/" "Archive occur"
-            ;; Dynamically bind `org-agenda-text-search-extra-files' with the
-            ;; symbol `agenda-archive' prepended to search archive files when
-            ;; calling `org-occur-in-agenda-files'.
-            ;;
-            ;; TODO: Override both this and "/" to use `helm-multi-occur'
-            ;; instead of the Emacs built-in multi-occur, which provides
-            ;; incremental search.
-            (lambda (unused)
-              (let* ((tmp (if (boundp org-agenda-text-search-extra-files)
-                              org-agenda-text-search-extra-files
-                            '()))
-                     (org-agenda-text-search-extra-files
-                      (cons 'agenda-archives tmp)))
-                (call-interactively 'org-occur-in-agenda-files)))
-            ""))))
+;; Skip tasks in the global TODO list that are done or scheduled, because
+;; either of these means the tasks has been considered. Tasks marked with a
+;; deadline still need to be scheduled before I've truly considered them, so
+;; leave them in.
+(setq org-agenda-todo-ignore-scheduled 'future)
 
- '(org-columns-default-format "%60ITEM(Task) %10Effort(Effort){:} %10CLOCKSUM %10CLOCKSUM_T")
- '(org-global-properties
-   (quote (("Effort_ALL" . "0:15 0:30 0:45 1:00 2:00 3:00 4:00 5:00 6:00 8:00")
-           ("SYTLE_ALL" . "habit")))))
+(setq org-agenda-custom-commands
+      (quote (("n" "Agenda and all TODOs" ((agenda "") (alltodo)))
+              ("u" "Unscheduled TODOs" todo ""
+               ((org-agenda-skip-function
+                 '(org-agenda-skip-entry-if 'scheduled 'deadline 'regexp "\n]+>"))
+                (org-agenda-overriding-header "Unscheduled TODO entries: ")))
+              ("Q" . "Custom queries")
+              ("Q/" "Archive occur"
+               ;; Dynamically bind `org-agenda-text-search-extra-files' with the
+               ;; symbol `agenda-archive' prepended to search archive files when
+               ;; calling `org-occur-in-agenda-files'.
+               ;;
+               ;; TODO: Override both this and "/" to use `helm-multi-occur'
+               ;; instead of the Emacs built-in multi-occur, which provides
+               ;; incremental search.
+               (lambda (unused)
+                 (let* ((tmp (if (boundp org-agenda-text-search-extra-files)
+                                 org-agenda-text-search-extra-files
+                               '()))
+                        (org-agenda-text-search-extra-files
+                         (cons 'agenda-archives tmp)))
+                   (call-interactively 'org-occur-in-agenda-files)))
+               ""))))
+
+(setq org-columns-default-format "%60ITEM(Task) %10Effort(Effort){:} %10CLOCKSUM %10CLOCKSUM_T")
+(setq org-global-properties
+      (quote (("Effort_ALL" . "0:15 0:30 0:45 1:00 2:00 3:00 4:00 5:00 6:00 8:00")
+              ("SYTLE_ALL" . "habit"))))
 
 (require 'org)
 (require 'org-agenda)
@@ -563,10 +563,10 @@ to get the latest version of the file, then make the change again.")
 
 ;;; Make idle time more accurate on Linux (X idle time rather than just Emacs
 ;;; idle time)
-(custom-set-variables '(org-clock-idle-time 15))
+(setq org-clock-idle-time 15)
 (let ((xprintidle (executable-find "xprintidle")))
   (when (and (eq system-type 'gnu/linux) xprintidle)
-    (custom-set-variables `(org-clock-x11idle-program-name ,xprintidle))))
+    (setq org-clock-x11idle-program-name xprintidle)))
 
 ;;; Enable notifications on OS X using the terminal-notifier program.
 (defvar terminal-notifier-command
