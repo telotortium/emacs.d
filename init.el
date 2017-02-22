@@ -44,6 +44,7 @@
 
 (eval-when-compile
   (require 'use-package))
+(setq use-package-always-ensure t)
 (require 'bind-key)                     ; To make :bind work
 
 ;;; Convenience commands to upgrade packages.
@@ -251,6 +252,7 @@
 ;; Give buffers editing files with the same basename more distinctive names
 ;; based on directory.
 (use-package uniquify
+  :ensure nil
   :init (setq uniquify-buffer-name-style 'post-forward-angle-brackets))
 
 ;; Save mini-buffer history
@@ -280,6 +282,7 @@
 
 ;; Javascript
 (use-package js-mode
+  :ensure nil
   :mode ("\\.js\\'" "\\.javascript\\'"))
 
 ;; Multi Web Mode - automatically switch to right major mode in HTML files
@@ -627,6 +630,7 @@ to get the latest version of the file, then make the change again.")
 
 ;;; Org-gcal
 (use-package org-gcal
+  :ensure nil
   :load-path "~/.emacs.d/org-gcal.git"
   :config
   (setq org-gcal-config-file (expand-file-name "org-gcal-config.el" user-emacs-directory))
