@@ -2,8 +2,6 @@
 ;;; This file bootstraps the configuration, which is divided into
 ;;; a number of other files.
 
-(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
-
 ; Fix TLS certificate "could not be verified" errors
 ; (http://emacs.stackexchange.com/a/18070).
 (setq gnutls-verify-error t)
@@ -895,9 +893,7 @@ as the default task."
   :ensure nil
   :load-path "~/.emacs.d/lisp")
 
-;;----------------------------------------------------------------------------
-;; Allow users to provide an optional "init-local" containing personal settings
-;;----------------------------------------------------------------------------
-(when (file-exists-p (expand-file-name "init-local.el" user-emacs-directory))
-  (error "Please move init-local.el to ~/.emacs.d/lisp"))
-(require 'init-local nil t)
+;;; Allow users to provide an optional "init-local" containing personal settings
+(use-package init-local
+  :ensure nil
+  :load-path "~/.emacs.d/lisp")
