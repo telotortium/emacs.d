@@ -314,6 +314,7 @@
 ;;; Go
 (use-package go-mode
   :config
+  (use-package company-go)
   (defun my-go-mode-settings ()
     (setq-local whitespace-line-column 99)
     ;; Use 4-space tabs since gofmt formats with tabs by default
@@ -326,7 +327,9 @@
     (setq-local adaptive-fill-regexp
                 "[   ]*\\(//+\\|\\**\\)[     ]*\\([  ]*\\([-–!|#%;>*·•‣⁃◦]+[  ]*\\)*\\)"))
   (add-hook 'go-mode-hook 'my-go-mode-settings)
-  (use-package company-go))
+  (defun my-go-guru-xref ()
+    (evil-local-set-key 'normal (kbd "C-]") #'go-guru-definition))
+  (add-hook 'go-mode-hook #'my-go-guru-xref 'append))
 
 ;;; Enable escaping from yasnippet snippets
 (use-package yasnippet
