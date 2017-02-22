@@ -36,6 +36,7 @@
                     helm
                     helm-company
                     htmlize
+                    leuven-theme
                     org-plus-contrib
                     slime
                     use-package
@@ -47,6 +48,12 @@
 
 ;;; Convenience commands to upgrade packages.
 (use-package package-utils)
+
+
+;;; Theme configuration
+(setq leuven-scale-outline-headlines nil)
+(load-theme 'leuven t)
+(load-theme 'leuven-customization t)
 
 ;;; ---------------------------------------------------------------------------
 ;;;  Helm configuration
