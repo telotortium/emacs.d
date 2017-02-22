@@ -318,7 +318,13 @@
     (setq-local whitespace-line-column 99)
     ;; Use 4-space tabs since gofmt formats with tabs by default
     (setq-local tab-width 4)
-    (setq-local tab-stop-list (number-sequence 4 200 4)))
+    (setq-local tab-stop-list (number-sequence 4 200 4))
+    ;; See https://github.com/dominikh/go-mode.el/issues/119. This regexp isn't
+    ;; completely reliable, since it leaves comment markers in the middle of
+    ;; the line and fails to handle other cases, but at least it comments the
+    ;; beginning of each paragraph.
+    (setq-local adaptive-fill-regexp
+                "[   ]*\\(//+\\|\\**\\)[     ]*\\([  ]*\\([-–!|#%;>*·•‣⁃◦]+[  ]*\\)*\\)"))
   (add-hook 'go-mode-hook 'my-go-mode-settings)
   (use-package company-go))
 
