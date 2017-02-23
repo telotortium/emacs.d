@@ -597,7 +597,7 @@ TO.  Instead an empty string is returned."
 (defun org-gcal--rstrip (s)
   "Delete trailing whitespace from string `s'."
   (if s
-      (replace-regexp-in-string "[ \t]+\\'" "" s)
+      (replace-regexp-in-string "[ \t]+$" "" s)
     nil))
 
 (defun org-gcal--format-date (str format &optional tz)
