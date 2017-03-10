@@ -46,6 +46,7 @@
   (require 'use-package))
 (setq use-package-always-ensure t)
 (require 'bind-key)                     ; To make :bind work
+(use-package diminish)
 
 ;;; Convenience commands to upgrade packages.
 (use-package package-utils)
@@ -82,6 +83,7 @@
       helm-ff-file-name-history-use-recentf t)
 
 (helm-mode 1)
+(diminish 'helm-mode)
 
 (helm-autoresize-mode t)
 
@@ -105,6 +107,9 @@
 
 (require 'evil)
 (evil-mode 1)
+
+(use-package undo-tree
+  :diminish undo-tree-mode)
 
 ;; Disable all the C-<number> keys, and give C-^ and C-6 the same behavior as
 ;; they have in Vim.
@@ -193,7 +198,8 @@
 (setq-default fill-column 79)
 (defun prog-mode-wrap-hook ()
   (setq-local comment-auto-fill-only-comments t)
-  (auto-fill-mode t))
+  (auto-fill-mode t)
+  (diminish 'auto-fill-function))
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 (add-hook 'prog-mode-hook 'prog-mode-wrap-hook)
 
@@ -223,6 +229,7 @@
 
 ;;; Company
 (use-package company
+  :diminish company-mode
   :config
   (add-hook 'after-init-hook 'global-company-mode))
 
@@ -349,6 +356,7 @@
 
 ;; Paredit mode
 (use-package paredit
+  :diminish paredit-mode
   :commands enable-paredit-mode
   :init
   (use-package evil-paredit
@@ -795,6 +803,7 @@ as the default task."
 ;;;;
 
 (use-package autorevert
+  :diminish auto-revert-mode
   :config (global-auto-revert-mode t))
 
 (add-hook 'text-mode-hook 'flyspell-mode 'append)
@@ -802,6 +811,7 @@ as the default task."
 
 ;;; Remove trailing whitespace intelligently
 (use-package ws-butler
+  :diminish ws-butler-mode
   :commands ws-butler-mode
   :init
   (add-hook 'text-mode-hook (lambda () (ws-butler-mode 1)))
@@ -875,8 +885,13 @@ as the default task."
 ;;----------------------------------------------------------------------------
 ;; Subfiles
 ;;----------------------------------------------------------------------------
-(require 'whitespace-conf nil t)
-(require 'org-drill-cloze-enhancement nil t)
+(use-package whitespace-conf
+  :diminish whitespace-mode
+  :ensure nil
+  :load-path "~/.emacs.d/lisp")
+(use-package org-drill-cloze-enhancement
+  :ensure nil
+  :load-path "~/.emacs.d/lisp")
 
 ;;----------------------------------------------------------------------------
 ;; Allow users to provide an optional "init-local" containing personal settings
