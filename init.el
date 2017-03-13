@@ -595,6 +595,10 @@ to get the latest version of the file, then make the change again.")
   (when (null (org-entry-get-multivalued-property (point) "Effort"))
     (org-set-effort)))
 
+;;; Show current task in frame title
+(setq org-clock-clocked-in-display 'frame-title)
+(setq org-clock-frame-title-format '("" "%b - " org-mode-line-string))
+
 ;;; Fix the very slow tangling of large Org files
 (setq org-babel-use-quick-and-dirty-noweb-expansion t)
 
