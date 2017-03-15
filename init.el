@@ -405,12 +405,12 @@
 (setq org-capture-templates
       '(("t" "Tasks" entry (file+headline (concat org-directory "/todo.org")
                                           "Refile")
-         "* TODO %?\n  %u" :clock-in t :clock-resume t)
+         "* TODO %?\n  %u" :clock-in t :clock-resume t :jump-to-captured t)
         ("n" "Notes" entry (file+headline org-default-notes-file "Notes")
-         "* %u %?" :clock-in t :clock-resume t)
+         "* %u %?" :clock-in t :clock-resume t :jump-to-captured t)
         ("d" "Drill" entry (file+headline org-default-notes-file "Drill")
          "* Drill entry        :drill:\n :PROPERTIES:\n :DRILL_CARD_TYPE: hide1cloze\n :END:\n   %?!|2 + 2|! equals !|4|!."
-         :clock-in t :clock-resume t)
+         :clock-in t :clock-resume t :jump-to-captured t)
         ("L" "Link" entry (file+headline org-default-notes-file "Links")
          "* [[%:link][%:description]]\n%:initial")))
 (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
