@@ -654,6 +654,12 @@ to get the latest version of the file, then make the change again.")
   (add-hook 'org-mode-hook #'org-bullets-mode-enable))
 
 
+(use-package evil-org
+  :config
+  (setq org-special-ctrl-a/e t)
+  (require 'evil-org))
+
+
 ;;; Org-gcal
 (use-package org-gcal
   :ensure nil
