@@ -584,19 +584,16 @@ to get the latest version of the file, then make the change again.")
   (setq org-show-notification-handler
         (lambda (message) (terminal-notifier-notify "Org Mode" message))))
 
-;;; Ask for effort estimate when clocking in.
-;;; http://orgmode.org/worg/org-hacks.html#sec-1-9-10
+;;; Ask for effort estimate when clocking in, but only when an effort estimate
+;;; is not present. Based on http://orgmode.org/worg/org-hacks.html#sec-1-9-10
+;;; but simplified by using the org-set-effort function, which is called
+;;; interactively here and so provides a prompt with autocompletion.
 (add-hook 'org-clock-in-prepare-hook
           'my-org-mode-ask-effort)
 (defun my-org-mode-ask-effort ()
   "Ask for an effort estimate when clocking in."
-  (unless (memq 'org-capture-mode minor-mode-list)
-    (let ((effort
-           (completing-read
-            "Effort: "
-            (org-entry-get-multivalued-property (point) "Effort"))))
-      (unless (equal effort "")
-        (org-set-property "Effort" effort)))))
+  (when (null (org-entry-get-multivalued-property (point) "Effort"))
+    (org-set-effort)))
 
 ;;; Fix the very slow tangling of large Org files
 (setq org-babel-use-quick-and-dirty-noweb-expansion t)
