@@ -458,7 +458,8 @@
               ("u" "Unscheduled TODOs" todo ""
                ((org-agenda-skip-function
                  '(org-agenda-skip-entry-if 'scheduled 'deadline 'regexp "\n]+>"))
-                (org-agenda-overriding-header "Unscheduled TODO entries: ")))
+                (org-agenda-overriding-header "Unscheduled TODO entries: ")
+                (org-agenda-sorting-strategy '(time-down))))
               ("Q" . "Custom queries")
               ("Q/" "Archive occur"
                ;; Dynamically bind `org-agenda-text-search-extra-files' with the
