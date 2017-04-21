@@ -213,6 +213,15 @@
 (line-number-mode 1)
 (column-number-mode 1)
 
+(use-package elfeed
+  :init
+  (setq elfeed-feeds
+        '("http://nullprogram.com/feed/"
+          "http://www.terminally-incoherent.com/blog/feed/"
+          "https://news.ycombinator.com/rss"))
+  (add-to-list 'evil-emacs-state-modes 'elfeed-search-mode)
+  (add-to-list 'evil-emacs-state-modes 'elfeed-show-mode))
+
 (use-package ack-and-a-half
   :commands (ack-and-a-half
              ack-and-a-half-same
