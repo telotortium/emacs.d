@@ -417,6 +417,8 @@
          "* TODO %?%^{Title}\n  %^{Effort}p%u" :clock-in t :clock-resume t :jump-to-captured t)
         ("n" "Notes" entry (file+headline org-default-notes-file "Notes")
          "* %u %?" :clock-in t :clock-resume t :jump-to-captured t)
+        ("j" "Journal" plain (file+weektree (concat org-directory "/journal.org"))
+         "%U %?")
         ("d" "Drill" entry (file+headline org-default-notes-file "Drill")
          "* Drill entry        :drill:\n :PROPERTIES:\n :DRILL_CARD_TYPE: hide1cloze\n :END:\n   %?!|2 + 2|! equals !|4|!."
          :clock-in t :clock-resume t :jump-to-captured t)
