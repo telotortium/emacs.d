@@ -678,6 +678,9 @@ to get the latest version of the file, then make the change again.")
 (use-package org-gcal
   :ensure nil
   :load-path "~/.emacs.d/org-gcal.git"
+  :init
+  (use-package alert)
+  (use-package request-deferred)
   :config
   (setq org-gcal-config-file (expand-file-name "org-gcal-config.el" user-emacs-directory))
   (when (file-exists-p org-gcal-config-file)
