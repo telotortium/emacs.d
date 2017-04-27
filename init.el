@@ -408,6 +408,24 @@
 (global-set-key "\C-cb" 'org-iswitchb)
 (global-set-key "\C-cc" 'org-capture)
 (global-set-key "\C-cl" 'org-store-link)
+
+;;; Kill the frame if one was created for the capture (see
+;;; https://github.com/sprig/org-capture-extension#example-closins-the-frame-after-a-capture).
+(defvar kk/delete-frame-after-capture 0 "Whether to delete the last frame after the current capture")
+
+(defun kk/delete-frame-if-neccessary (&rest r)
+  (cond
+   ((= kk/delete-frame-after-capture 0) nil)
+   ((> kk/delete-frame-after-capture 1)
+    (setq kk/delete-frame-after-capture (- kk/delete-frame-after-capture 1)))
+   (t
+    (setq kk/delete-frame-after-capture 0)
+    (delete-frame))))
+
+(advice-add 'org-capture-finalize :after 'kk/delete-frame-if-neccessary)
+(advice-add 'org-capture-kill :after 'kk/delete-frame-if-neccessary)
+(advice-add 'org-capture-refile :after 'kk/delete-frame-if-neccessary)
+
 (setq org-agenda-files (expand-file-name "agenda_files" user-emacs-directory))
 (setq org-agenda-span 7)
 (setq org-agenda-start-on-weekday nil)
@@ -424,10 +442,14 @@
          :clock-in t :clock-resume t :jump-to-captured t)
         ;; org-protocol capture templates for
         ;; https://github.com/sprig/org-capture-extension.
+        ;;
+        ;; The two progn expressions serve these purposes:
+        ;; 1. Bring the frame in which org-capture was launched into focus.
+        ;; 2. Delete the capture frame after capture is complete (or killed).
         ("p" "Link and Text" entry (file+headline org-default-notes-files "Links")
-         "* %^{Title}\nSource: [[%:link][%:description]]\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
+         "%(progn (x-focus-frame nil) \"\")* %^{Title}\nSource: [[%:link][%:description]]%(progn (setq kk/delete-frame-after-capture 1) \"\")\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
         ("L" "Link" entry (file+headline org-default-notes-file "Links")
-         "* [[%:link][%:description]]\n%:initial")))
+         "%(progn (x-focus-frame nil) \"\")* [[%:link][%:description]]%(progn (setq kk/delete-frame-after-capture 1) \"\")\n%:initial")))
 (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
 (setq org-refile-use-outline-path t)
 (setq org-alphabetical-lists t)
