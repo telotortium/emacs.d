@@ -523,6 +523,7 @@
 (require 'org)
 (require 'org-agenda)
 (require 'org-protocol)
+(setq org-protocol-default-template-key "p")
 
 ; No one needs both `h` and `H` for holidays -- online help in org-agenda.
 (org-defkey org-agenda-mode-map "h"
