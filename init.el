@@ -422,6 +422,10 @@
         ("d" "Drill" entry (file+headline org-default-notes-file "Drill")
          "* Drill entry        :drill:\n :PROPERTIES:\n :DRILL_CARD_TYPE: hide1cloze\n :END:\n   %?!|2 + 2|! equals !|4|!."
          :clock-in t :clock-resume t :jump-to-captured t)
+        ;; org-protocol capture templates for
+        ;; https://github.com/sprig/org-capture-extension.
+        ("p" "Link and Text" entry (file+headline org-default-notes-files "Links")
+         "* %^{Title}\nSource: [[%:link][%:description]]\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
         ("L" "Link" entry (file+headline org-default-notes-file "Links")
          "* [[%:link][%:description]]\n%:initial")))
 (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
@@ -496,6 +500,7 @@
 
 (require 'org)
 (require 'org-agenda)
+(require 'org-protocol)
 
 ; No one needs both `h` and `H` for holidays -- online help in org-agenda.
 (org-defkey org-agenda-mode-map "h"
