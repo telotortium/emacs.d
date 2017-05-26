@@ -490,6 +490,7 @@
 ;; leave them in.
 (setq org-agenda-todo-ignore-scheduled 'future)
 
+(setq org-agenda-span 1)
 (setq org-agenda-custom-commands
       (quote (("n" "Agenda and all TODOs" ((agenda "") (alltodo)))
               ("u" "Unscheduled TODOs" todo ""
