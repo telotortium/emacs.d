@@ -873,6 +873,10 @@ as the default task."
       (and is-a-task (not has-subtask)))))
 ;;;;
 
+(setq org-log-done (quote time))
+(setq org-log-redeadline (quote time))
+(setq org-log-reschedule (quote time))
+
 (use-package autorevert
   :diminish auto-revert-mode
   :config (global-auto-revert-mode t))
