@@ -1018,6 +1018,9 @@ of occur. The original buffer is not modified.
 
 (require 'org-inlinetask)
 
+;;; https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html
+(setq org-refile-allow-creating-parent-nodes 'confirm)
+
 (setq org-log-done (quote time))
 (setq org-log-redeadline (quote time))
 (setq org-log-reschedule (quote time))
