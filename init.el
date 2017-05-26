@@ -1016,6 +1016,8 @@ of occur. The original buffer is not modified.
     )
   )
 
+(require 'org-inlinetask)
+
 (setq org-log-done (quote time))
 (setq org-log-redeadline (quote time))
 (setq org-log-reschedule (quote time))
