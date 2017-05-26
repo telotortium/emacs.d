@@ -1022,6 +1022,28 @@ of occur. The original buffer is not modified.
 (setq org-log-redeadline (quote time))
 (setq org-log-reschedule (quote time))
 
+;;; Week in review (https://emacs.stackexchange.com/a/7864)
+(defvar org-timeline-files nil
+  "The files to be included in `org-timeline-all-files'. Follows
+  the same rules as `org-agenda-files'")
+
+(setq org-timeline-files org-agenda-files)
+
+(add-to-list 'org-agenda-custom-commands
+             '("R" "Week in review"
+                agenda ""
+                ;; agenda settings
+                ((org-agenda-span 'week)
+                  (org-agenda-start-on-weekday 0) ;; start on Sunday
+                  (org-agenda-overriding-header "Week in Review")
+                  (org-agenda-files
+                    (let ((org-agenda-files org-timeline-files))
+                          (org-agenda-files nil 'ifmode)))
+                  (org-agenda-start-with-log-mode t)
+                  (org-agenda-log-mode-items '(clock state closed))
+                  (org-agenda-archives-mode t) ; include archive files
+                )))
+
 (use-package autorevert
   :diminish auto-revert-mode
   :config (global-auto-revert-mode t))
