@@ -621,12 +621,13 @@ to get the latest version of the file, then make the change again.")
 ;;; Make idle time more accurate on Linux (X idle time rather than just Emacs
 ;;; idle time)
 (setq org-clock-idle-time 15)
-(let ((xprintidle (executable-find "xprintidle")))
-  (if (and (eq system-type 'gnu/linux) xprintidle)
-      (setq org-clock-x11idle-program-name xprintidle)
-    (display-warning
-     'environment
-     "xprintidle should be installed for accurate idle time on Linux.")))
+(when (eq system-type 'gnu/linux)
+  (let ((xprintidle (executable-find "xprintidle")))
+    (if xprintidle
+        (setq org-clock-x11idle-program-name xprintidle)
+      (display-warning
+       'environment
+       "xprintidle should be installed for accurate idle time on Linux."))))
 
 ;;; Enable notifications on OS X using the terminal-notifier program.
 (defvar terminal-notifier-command
