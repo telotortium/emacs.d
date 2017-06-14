@@ -1,6 +1,13 @@
-; -*- lexical-binding: t; -*-
+; -*- lexical-binding: t; no-byte-compile: t -*-
 ;;; This file bootstraps the configuration, which is divided into
 ;;; a number of other files.
+;;;
+;;; Byte compilation is disabled for this file to avoid ever loading stale
+;;; bytecode. The commands in this file will ensure that stale bytecode is
+;;; never loaded for other files.
+
+;;; Avoid loading .elc files older than their corresponding .el file.
+(setq load-prefer-newer t)
 
 ; Fix TLS certificate "could not be verified" errors
 ; (http://emacs.stackexchange.com/a/18070).
@@ -14,6 +21,12 @@
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") 'append)
 (package-initialize)
+
+;;; Use auto-compile to recompile bytecode whenever files are loaded or saved.
+(use-package auto-compile
+  :config
+  (auto-compile-on-load-mode)
+  (auto-compile-on-save-mode))
 
 (require 'cl-lib)
 (defun packages-install (packages)
