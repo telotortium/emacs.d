@@ -514,14 +514,16 @@
               ("Q" . "Custom queries")
               ("Q/" "Archive occur"
                ;; Dynamically bind `org-agenda-text-search-extra-files' with the
-               ;; symbol `agenda-archive' prepended to search archive files when
+               ;; symbol `agenda-archives' prepended to search archive files when
                ;; calling `org-occur-in-agenda-files'.
                (lambda (unused)
-                 (let* ((tmp (if (boundp org-agenda-text-search-extra-files)
+                 (let* ((tmp (if (boundp 'org-agenda-text-search-extra-files)
                                  org-agenda-text-search-extra-files
                                '()))
                         (org-agenda-text-search-extra-files
-                         (cons 'agenda-archives tmp)))
+                         (cond ((null tmp) '(agenda-archives))
+                               ((equal (car tmp) 'agenda-archives) tmp)
+                               (t (cons 'agenda-archives tmp)))))
                    (call-interactively 'org-occur-in-agenda-files)))
                ""))))
 
