@@ -1060,6 +1060,9 @@ of occur. The original buffer is not modified.
                   (org-agenda-archives-mode t) ; include archive files
                 )))
 
+;; Include agenda archive files when searching for things
+(setq org-agenda-text-search-extra-files (quote (agenda-archives)))
+
 ;; Use sticky agenda's so they persist
 (setq org-agenda-sticky t)
 
