@@ -504,15 +504,20 @@
 (setq org-agenda-todo-ignore-scheduled 'future)
 
 (setq org-agenda-span 1)
-(setq org-agenda-custom-commands
-      (quote (("n" "Agenda and all TODOs" ((agenda "") (alltodo)))
-              ("u" "Unscheduled TODOs" todo ""
+(unless (boundp 'org-agenda-custom-commands)
+  (setq org-agenda-custom-commands '()))
+(add-to-list 'org-agenda-custom-commands
+             '("n" "Agenda and all TODOs" ((agenda "") (alltodo))))
+(add-to-list 'org-agenda-custom-commands
+             '("u" "Unscheduled TODOs" todo ""
                ((org-agenda-skip-function
                  '(org-agenda-skip-entry-if 'scheduled 'deadline 'regexp "\n]+>"))
                 (org-agenda-overriding-header "Unscheduled TODO entries: ")
-                (org-agenda-sorting-strategy '(time-down))))
-              ("Q" . "Custom queries")
-              ("Q/" "Archive occur"
+                (org-agenda-sorting-strategy '(time-down)))))
+(add-to-list 'org-agenda-custom-commands
+             '("Q" . "Custom queries"))
+(add-to-list 'org-agenda-custom-commands
+             '("Q/" "Archive occur"
                ;; Dynamically bind `org-agenda-text-search-extra-files' with the
                ;; symbol `agenda-archives' prepended to search archive files when
                ;; calling `org-occur-in-agenda-files'.
@@ -525,7 +530,7 @@
                                ((equal (car tmp) 'agenda-archives) tmp)
                                (t (cons 'agenda-archives tmp)))))
                    (call-interactively 'org-occur-in-agenda-files)))
-               ""))))
+               ""))
 
 (setq org-columns-default-format "%60ITEM(Task) %10Effort(Effort){:} %10CLOCKSUM %10CLOCKSUM_T")
 (setq org-global-properties
