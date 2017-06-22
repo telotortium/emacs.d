@@ -516,10 +516,6 @@
                ;; Dynamically bind `org-agenda-text-search-extra-files' with the
                ;; symbol `agenda-archive' prepended to search archive files when
                ;; calling `org-occur-in-agenda-files'.
-               ;;
-               ;; TODO: Override both this and "/" to use `helm-multi-occur'
-               ;; instead of the Emacs built-in multi-occur, which provides
-               ;; incremental search.
                (lambda (unused)
                  (let* ((tmp (if (boundp org-agenda-text-search-extra-files)
                                  org-agenda-text-search-extra-files
