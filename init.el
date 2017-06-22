@@ -636,14 +636,16 @@ to get the latest version of the file, then make the change again.")
 (defvar terminal-notifier-command
   (executable-find "terminal-notifier")
   "The path to terminal-notifier.")
-(defun terminal-notifier-notify (title message)
+(defun terminal-notifier-notify (title message &optional timeout)
   "Show a message with `terminal-notifier-command`."
-  (start-process "terminal-notifier"
-                 "*terminal-notifier*"
-                 terminal-notifier-command
-                 "-title" title
-                 "-message" message
-                 "-activate" "org.gnu.Emacs"))
+  (let ((timeout) (number-to-string (if timeout timeout 60)))
+    (start-process "terminal-notifier"
+                   "*terminal-notifier*"
+                   terminal-notifier-command
+                   "-title" title
+                   "-message" message
+                   "-activate" "org.gnu.Emacs"
+                   "-timeout" timeout)))
 (when terminal-notifier-command
   (setq org-show-notification-handler
         (lambda (message) (terminal-notifier-notify "Org Mode" message))))
