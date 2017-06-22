@@ -1060,6 +1060,9 @@ of occur. The original buffer is not modified.
                   (org-agenda-archives-mode t) ; include archive files
                 )))
 
+;; Use sticky agenda's so they persist
+(setq org-agenda-sticky t)
+
 (use-package autorevert
   :diminish auto-revert-mode
   :config (global-auto-revert-mode t))
