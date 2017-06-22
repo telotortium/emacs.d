@@ -709,13 +709,6 @@ to get the latest version of the file, then make the change again.")
 (setq org-drill-learn-fraction 0.3)
 
 
-(use-package org-bullets
-  :config
-  (defun org-bullets-mode-enable ()
-    (org-bullets-mode 1))
-  (add-hook 'org-mode-hook #'org-bullets-mode-enable))
-
-
 (use-package evil-org
   :config
   (setq org-special-ctrl-a/e t)
