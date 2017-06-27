@@ -723,7 +723,7 @@ to get the latest version of the file, then make the change again.")
 ;;; Org-gcal
 (use-package org-gcal
   :ensure nil
-  :load-path "~/.emacs.d/org-gcal.git"
+  :load-path "~/.emacs.d/lisp/org-gcal.git"
   :init
   (use-package alert)
   (use-package request-deferred)
