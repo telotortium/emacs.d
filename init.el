@@ -37,7 +37,13 @@
   (auto-compile-on-load-mode)
   (auto-compile-on-save-mode))
 
-(use-package leuven-theme)
+
+;;; Leuven theme
+(use-package leuven-theme
+  :config
+  (setq leuven-scale-outline-headlines nil)
+  (load-theme 'leuven t)
+  (load-theme 'leuven-customization t))
 
 
 ;;; Convenience commands to upgrade packages.
@@ -45,11 +51,6 @@
   :ensure t
   :ensure epl)
 
-
-;;; Theme configuration
-(setq leuven-scale-outline-headlines nil)
-(load-theme 'leuven t)
-(load-theme 'leuven-customization t)
 
 ;;; ---------------------------------------------------------------------------
 ;;;  Helm configuration
