@@ -48,7 +48,6 @@
       (delete-other-windows)))))
 
 (packages-install '(
-                    emacs-eclim
                     ))
 
 (use-package leuven-theme)
@@ -298,11 +297,15 @@
   :interpreter "lua")
 
 ;; Java
-(require 'eclim)
-(require 'eclimd)
-(global-eclim-mode)
-(require 'company-emacs-eclim)
-(company-emacs-eclim-setup)
+(use-package eclim
+  :ensure t
+  :config
+  (require 'eclimd)
+  (global-eclim-mode))
+(use-package company-emacs-eclim
+  :ensure eclim
+  :config
+  (company-emacs-eclim-setup))
 
 ;; Javascript
 (use-package js-mode
