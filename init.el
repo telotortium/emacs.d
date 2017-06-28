@@ -102,7 +102,7 @@
 (global-set-key (kbd "C-x b") 'helm-mini)
 
 ;;; ---------------------------------------------------------------------------
-;;;  Helm configuration
+;;;  Evil configuration
 ;;; ---------------------------------------------------------------------------
 ;; Space as leader
 (use-package evil-leader
