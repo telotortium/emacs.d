@@ -49,7 +49,6 @@
 
 (packages-install '(
                     emacs-eclim
-                    evil
                     helm
                     helm-company
                     htmlize
@@ -118,8 +117,7 @@
  '(evil-want-C-u-scroll t))
 (evil-leader/set-key "u" 'universal-argument)
 
-(require 'evil)
-(evil-mode 1)
+(use-package evil :config (evil-mode 1))
 
 (use-package undo-tree
   :diminish undo-tree-mode)
