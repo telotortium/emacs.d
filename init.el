@@ -49,8 +49,9 @@
 
 (packages-install '(
                     emacs-eclim
-                    leuven-theme
                     ))
+
+(use-package leuven-theme)
 
 
 ;;; Convenience commands to upgrade packages.
