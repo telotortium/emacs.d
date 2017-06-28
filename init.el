@@ -50,7 +50,6 @@
 (packages-install '(
                     emacs-eclim
                     evil
-                    geiser
                     helm
                     helm-company
                     htmlize
