@@ -702,14 +702,19 @@ to get the latest version of the file, then make the change again.")
 ;;;
 
 ;;; Org-drill
-(require 'cl)                           ; org-drill uses old CL func names
-(require 'org-drill)
-(setq org-drill-scope 'directory)
-(setq org-drill-left-cloze-delimiter "!|")
-(setq org-drill-right-cloze-delimiter "|!")
-(setq org-drill-add-random-noise-to-intervals-p t)
-(setq org-drill-adjust-intervals-for-early-and-late-repetitions-p t)
-(setq org-drill-learn-fraction 0.3)
+(use-package org-drill
+  :ensure org-plus-contrib
+  :ensure nil
+  :init
+  (require 'cl)                         ; org-drill uses old CL func names
+  (require 'org)                        ; org variables need to be in scope
+  :config
+  (setq org-drill-scope 'directory)
+  (setq org-drill-left-cloze-delimiter "!|")
+  (setq org-drill-right-cloze-delimiter "|!")
+  (setq org-drill-add-random-noise-to-intervals-p t)
+  (setq org-drill-adjust-intervals-for-early-and-late-repetitions-p t)
+  (setq org-drill-learn-fraction 0.3))
 
 
 (use-package evil-org
