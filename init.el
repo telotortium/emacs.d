@@ -53,7 +53,6 @@
                     helm-company
                     htmlize
                     leuven-theme
-                    slime
                     ))
 
 
@@ -403,15 +402,17 @@
   (add-hook 'lisp-interaction-mode-hook #'activate-paredit-mode)
   (add-hook 'scheme-mode-hook           #'activate-paredit-mode))
 
-;; Slime
-(add-hook 'slime-repl-mode-hook #'activate-paredit-mode)
-;; Stop SLIME's REPL from grabbing DEL,
-;; which is annoying when backspacing over a '('
-(defun override-slime-repl-bindings-with-paredit ()
-  (define-key slime-repl-mode-map
-    (read-kbd-macro paredit-backward-delete-key) nil))
-(add-hook 'slime-repl-mode-hook 'override-slime-repl-bindings-with-paredit)
-(slime-setup '(slime-fancy slime-banner))
+;;; Slime
+(use-package slime
+  :config
+  (add-hook 'slime-repl-mode-hook #'activate-paredit-mode)
+  ;; Stop SLIME's REPL from grabbing DEL,
+  ;; which is annoying when backspacing over a '('
+  (defun override-slime-repl-bindings-with-paredit ()
+    (define-key slime-repl-mode-map
+      (read-kbd-macro paredit-backward-delete-key) nil))
+  (add-hook 'slime-repl-mode-hook 'override-slime-repl-bindings-with-paredit)
+  (slime-setup '(slime-fancy slime-banner)))
 
 ;; Org mode
 (global-set-key "\C-ca" 'org-agenda)
