@@ -27,6 +27,9 @@
   (package-install 'use-package))
 (eval-when-compile
   (require 'use-package))
+(use-package bind-key)                  ; To make :bind work
+(use-package diminish)                  ; To use :diminish
+(setq use-package-always-ensure t)
 
 ;;; Use auto-compile to recompile bytecode whenever files are loaded or saved.
 (use-package auto-compile
@@ -45,7 +48,6 @@
       (delete-other-windows)))))
 
 (packages-install '(
-                    bind-key
                     emacs-eclim
                     evil
                     geiser
@@ -55,14 +57,8 @@
                     leuven-theme
                     org-plus-contrib
                     slime
-                    use-package
                     ))
 
-(eval-when-compile
-  (require 'use-package))
-(setq use-package-always-ensure t)
-(require 'bind-key)                     ; To make :bind work
-(use-package diminish)
 
 ;;; Convenience commands to upgrade packages.
 (use-package package-utils
