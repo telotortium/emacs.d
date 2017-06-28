@@ -53,7 +53,6 @@
                     helm-company
                     htmlize
                     leuven-theme
-                    org-plus-contrib
                     slime
                     ))
 
