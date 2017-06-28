@@ -1133,10 +1133,11 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 (use-package weechat
   :config
   (add-hook 'weechat-mode-hook (lambda () (visual-line-mode 1)))
-  (add-hook 'weechat-mode-hook (lambda () (linum-mode -1)))
-  (use-package weechat-notifications
-    :ensure weechat
-    :if (featurep 'dbusbind)))
+  (add-hook 'weechat-mode-hook (lambda () (linum-mode -1))))
+(use-package weechat-notifications
+  :ensure weechat
+  :ensure nil
+  :if (featurep 'dbusbind))
 
 ;;; Enable commands disabled by default
 (put 'narrow-to-region 'disabled nil)
