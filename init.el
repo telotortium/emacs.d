@@ -730,9 +730,10 @@ to get the latest version of the file, then make the change again.")
 
 
 (use-package evil-org
-  :config
-  (setq org-special-ctrl-a/e t)
-  (require 'evil-org))
+  :ensure t
+  :ensure org-plus-contrib
+  :init
+  (setq org-special-ctrl-a/e t))
 
 
 ;;; Org-gcal
