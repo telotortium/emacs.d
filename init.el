@@ -39,7 +39,6 @@
       (delete-other-windows)))))
 
 (packages-install '(
-                    ack-and-a-half
                     bind-key
                     company-go
                     epl
@@ -235,18 +234,8 @@
   (add-to-list 'evil-emacs-state-modes 'elfeed-search-mode)
   (add-to-list 'evil-emacs-state-modes 'elfeed-show-mode))
 
-(use-package ack-and-a-half
-  :commands (ack-and-a-half
-             ack-and-a-half-same
-             ack-and-a-half-find-file
-             ack-and-a-half-find-file-same)
-  :init
-  (setq ack-and-a-half-arguments '("--nopager"))
-  ;; Aliases must be set in :init to work for some reason.
-  (defalias 'ack 'ack-and-a-half)
-  (defalias 'ack-same 'ack-and-a-half-same)
-  (defalias 'ack-find-file 'ack-and-a-half-find-file)
-  (defalias 'ack-find-file-same 'ack-and-a-half-find-file-same))
+(use-package rg
+  :commands (rg rg-project rg-dwin))
 
 ;;; Company
 (use-package company
