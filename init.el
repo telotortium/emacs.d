@@ -37,19 +37,6 @@
   (auto-compile-on-load-mode)
   (auto-compile-on-save-mode))
 
-(require 'cl-lib)
-(defun packages-install (packages)
-  "Given a list of packages, this will install them from the standard locations."
-  (let ((to-install (cl-remove-if 'package-installed-p packages)))
-    (when to-install
-      (package-refresh-contents)
-      (dolist (it to-install)
-          (package-install it)
-      (delete-other-windows)))))
-
-(packages-install '(
-                    ))
-
 (use-package leuven-theme)
 
 
