@@ -720,11 +720,11 @@ to get the latest version of the file, then make the change again.")
 
 ;;; Org-gcal
 (use-package org-gcal
+  :ensure org-plus-contrib
+  :ensure alert
+  :ensure request-deferred
   :ensure nil
   :load-path "~/.emacs.d/lisp/org-gcal.git"
-  :init
-  (use-package alert)
-  (use-package request-deferred)
   :config
   (setq org-gcal-config-file (expand-file-name "org-gcal-config.el" user-emacs-directory))
   (when (file-exists-p org-gcal-config-file)
