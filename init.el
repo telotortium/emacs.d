@@ -49,7 +49,6 @@
 
 (packages-install '(
                     emacs-eclim
-                    htmlize
                     leuven-theme
                     ))
 
@@ -411,7 +410,15 @@
   (add-hook 'slime-repl-mode-hook 'override-slime-repl-bindings-with-paredit)
   (slime-setup '(slime-fancy slime-banner)))
 
-;; Org mode
+;;; ---------------------------------------------------------------------------
+;;;  Org configuration
+;;; ---------------------------------------------------------------------------
+(use-package org
+  :ensure org-plus-contrib
+  :ensure htmlize                       ; For org-publish
+  :config
+  (require 'org-agenda)
+  (require 'org-protocol))
 (global-set-key "\C-ca" 'org-agenda)
 (global-set-key "\C-cb" 'org-iswitchb)
 (global-set-key "\C-cc" 'org-capture)
