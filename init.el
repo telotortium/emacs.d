@@ -6,6 +6,9 @@
 ;;; bytecode. The commands in this file will ensure that stale bytecode is
 ;;; never loaded for other files.
 
+;;; ---------------------------------------------------------------------------
+;;;  Package loading
+;;; ---------------------------------------------------------------------------
 ;;; Avoid loading .elc files older than their corresponding .el file.
 (setq load-prefer-newer t)
 
@@ -37,6 +40,25 @@
   (auto-compile-on-load-mode)
   (auto-compile-on-save-mode))
 
+;;; Convenience commands to upgrade packages.
+(use-package package-utils
+  :ensure t
+  :ensure epl)
+
+;;; ---------------------------------------------------------------------------
+;;;  Basic startup configuration
+;;; ---------------------------------------------------------------------------
+;;; Disable startup screen
+(setq inhibit-startup-message t)
+
+;;; Command to restart emacs from within emacs
+(use-package restart-emacs)
+
+;;; Allow access from emacsclient
+(use-package server
+  :config
+  (unless (server-running-p)
+    (server-start)))
 
 ;;; Leuven theme
 (use-package leuven-theme
@@ -44,12 +66,6 @@
   (setq leuven-scale-outline-headlines nil)
   (load-theme 'leuven t)
   (load-theme 'leuven-customization t))
-
-
-;;; Convenience commands to upgrade packages.
-(use-package package-utils
-  :ensure t
-  :ensure epl)
 
 
 ;;; ---------------------------------------------------------------------------
@@ -1168,20 +1184,6 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   (setq magit-last-seen-setup-instructions "1.4.0")
   :config
   (setq vc-handled-backends (delq 'Git vc-handled-backends)))
-
-;;; Disable startup screen
-(setq inhibit-startup-message t)
-
-;;; Command to restart emacs from within emacs
-(use-package restart-emacs)
-
-;;;----------------------------------------------------------------------------
-;;; Allow access from emacsclient
-;;;----------------------------------------------------------------------------
-(use-package server
-  :config
-  (unless (server-running-p)
-    (server-start)))
 
 ;;----------------------------------------------------------------------------
 ;; Variables configured via the interactive 'customize' interface
