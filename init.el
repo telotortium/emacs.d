@@ -22,6 +22,12 @@
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") 'append)
 (package-initialize)
 
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+(eval-when-compile
+  (require 'use-package))
+
 ;;; Use auto-compile to recompile bytecode whenever files are loaded or saved.
 (use-package auto-compile
   :config
@@ -40,8 +46,7 @@
 
 (packages-install '(
                     bind-key
-                    company-go
-                    epl
+                    emacs-eclim
                     evil
                     geiser
                     helm
@@ -60,7 +65,9 @@
 (use-package diminish)
 
 ;;; Convenience commands to upgrade packages.
-(use-package package-utils)
+(use-package package-utils
+  :ensure t
+  :ensure epl)
 
 
 ;;; Theme configuration
@@ -301,6 +308,13 @@
 (use-package lua-mode
   :mode "\\.lua$"
   :interpreter "lua")
+
+;; Java
+(require 'eclim)
+(require 'eclimd)
+(global-eclim-mode)
+(require 'company-emacs-eclim)
+(company-emacs-eclim-setup)
 
 ;; Javascript
 (use-package js-mode
