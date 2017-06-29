@@ -395,24 +395,29 @@
   (global-set-key (kbd "s-x") 'pbcut))
 
 
-;; Paredit mode
-(use-package paredit
-  :diminish paredit-mode
-  :commands enable-paredit-mode
+
+;;; Parinfer
+(use-package parinfer
+  :ensure t
+  :ensure paredit
+  :bind
+  (("C-," . parinfer-toggle-mode))
   :init
-  (use-package evil-paredit
-    :commands evil-paredit-mode)
-  (defun activate-paredit-mode ()
-    (interactive)
-    (enable-paredit-mode)
-    (evil-paredit-mode 1))
-  (add-hook 'emacs-lisp-mode-hook       #'activate-paredit-mode)
-  (add-hook 'eval-expression-minibuffer-setup-hook #'activate-paredit-mode)
-  (add-hook 'ielm-mode-hook             #'activate-paredit-mode)
-  (add-hook 'inferior-scheme-mode-hook  #'activate-paredit-mode)
-  (add-hook 'lisp-mode-hook             #'activate-paredit-mode)
-  (add-hook 'lisp-interaction-mode-hook #'activate-paredit-mode)
-  (add-hook 'scheme-mode-hook           #'activate-paredit-mode))
+  (progn
+    (setq parinfer-extensions
+          '(defaults       ; should be included.
+             pretty-parens  ; different paren styles for different modes.
+             evil           ; If you use Evil.
+             paredit        ; Introduce some paredit commands.
+             smart-tab      ; C-b & C-f jump positions and smart shift with tab & S-tab.
+             smart-yank))   ; Yank behavior depend on mode.
+    (setq parinfer-auto-switch-indent-mode t)
+    (add-hook 'clojure-mode-hook #'parinfer-mode)
+    (add-hook 'emacs-lisp-mode-hook #'parinfer-mode)
+    (add-hook 'common-lisp-mode-hook #'parinfer-mode)
+    (add-hook 'scheme-mode-hook #'parinfer-mode)
+    (add-hook 'lisp-mode-hook #'parinfer-mode)))
+
 
 ;;; Slime
 (use-package slime
