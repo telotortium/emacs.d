@@ -648,7 +648,7 @@ to get the latest version of the file, then make the change again.")
   "The path to terminal-notifier.")
 (defun terminal-notifier-notify (title message &optional timeout)
   "Show a message with `terminal-notifier-command`."
-  (let ((timeout) (number-to-string (if timeout timeout 60)))
+  (let ((timeout (number-to-string (if timeout timeout 60))))
     (start-process "terminal-notifier"
                    "*terminal-notifier*"
                    terminal-notifier-command
