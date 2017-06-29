@@ -988,36 +988,36 @@ of occur. The original buffer is not modified.
           (goto-char position-before-year)
           ;; advance number of days and correct day of week
           (org-timestamp-change days 'day)
-          (setq days (1+ days))
-          )
+          (setq days (1+ days)))
+
         (end-of-buffer)
         ;; transform constructed list of dates into a single, optimized regex
-        (setq date-regex (regexp-opt (split-string (buffer-string) "\n" t)))
-        )
-      )
+        (setq date-regex (regexp-opt (split-string (buffer-string) "\n" t)))))
+
+
     ;; ask user, which buffers to search and how to present results
     (setq collect-method
           (car (split-string (org-icompleting-read "Please choose, which buffers to search and how to present the matches: "
-                                                   '("multi-occur -- all org-buffers, list" "org-occur -- this-buffer, sparse tree") nil t nil nil "occur -- this buffer, list")))
-          )
+                                                   '("multi-occur -- all org-buffers, list" "org-occur -- this-buffer, sparse tree") nil t nil nil "occur -- this buffer, list"))))
+
     ;; Perform the actual search
     (save-window-excursion
       (cond ((string= collect-method "occur")
-             (occur date-regex)
-             )
+             (occur date-regex))
+
             ((string= collect-method "org-occur")
              (if (string= major-mode "org-mode")
                  (org-occur date-regex)
-               (error "Buffer not in org-mode"))
-             )
+               (error "Buffer not in org-mode")))
+
             ((string= collect-method "multi-occur")
              ;; construct list of all org-buffers
              (dolist (buff (buffer-list))
                (set-buffer buff)
                (if (string= major-mode "org-mode")
                    (setq org-buffers (cons buff org-buffers))))
-             (multi-occur org-buffers date-regex)))
-      )
+             (multi-occur org-buffers date-regex))))
+
     ;; Postprocessing: Optionally sort buffer with results
     ;; org-occur operates on the current buffer, so we cannot modify its results afterwards
     (if (string= collect-method "org-occur")
@@ -1045,8 +1045,8 @@ of occur. The original buffer is not modified.
                                'end-of-line
                                ;; search-key for this sort only differentiates between header-lines and matche-lines
                                (lambda () (if (looking-at-p occur-header-regex) 2 1))
-                               nil)
-                    )
+                               nil))
+
                   ;; goto first line of matches
                   (goto-char (point-max))
                   (search-backward-regexp occur-header-regex)
@@ -1058,24 +1058,24 @@ of occur. The original buffer is not modified.
                              ;; search-key for this sort is date
                              (lambda () (search-forward-regexp date-regex) (match-string 0))
                              nil
-                             'string<)
+                             'string<))
                   ;; pretend, that we did not modify the occur-buffer
-                  )
+
                 (insert "Searched " pretty-dates "\n")
                 (goto-char (point-min))
                 (set-buffer-modified-p nil)
-                (message (concat "occur-buffer with matches " pretty-dates "(`C-h m' for help)"))
-                )
-            (setq inhibit-read-only original-inhibit-read-only)
-            )
-          )
-        )
+                (message (concat "occur-buffer with matches " pretty-dates "(`C-h m' for help)")))
+
+            (setq inhibit-read-only original-inhibit-read-only))))
+
+
+
       ;; switch to occur-buffer
       (if (get-buffer occur-buffer-name)
-          (switch-to-buffer occur-buffer-name))
-      )
-    )
-  )
+          (switch-to-buffer occur-buffer-name)))))
+
+
+
 
 (require 'org-inlinetask)
 
@@ -1099,16 +1099,16 @@ of occur. The original buffer is not modified.
              '("R" "Week in review"
                 agenda ""
                 ;; agenda settings
-                ((org-agenda-span 'week)
+                ((org-agenda-span 'week
                   (org-agenda-start-on-weekday 0) ;; start on Sunday
                   (org-agenda-overriding-header "Week in Review")
                   (org-agenda-files
-                    (let ((org-agenda-files org-timeline-files))
-                          (org-agenda-files nil 'ifmode)))
+                    (let ((org-agenda-files org-timeline-files)
+                          (org-agenda-files nil 'ifmode))))
                   (org-agenda-start-with-log-mode t)
                   (org-agenda-log-mode-items '(clock state closed))
-                  (org-agenda-archives-mode t) ; include archive files
-                )))
+                  (org-agenda-archives-mode t))))) ; include archive files
+
 
 ;;; https://blog.aaronbieber.com/2016/09/24/an-agenda-for-life-with-org-mode.html
 (add-to-list 'org-agenda-custom-commands
