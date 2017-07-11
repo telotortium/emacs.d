@@ -1186,6 +1186,26 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   :config
   (setq vc-handled-backends (delq 'Git vc-handled-backends)))
 
+
+;;; https://codearsonist.com/reading-for-programmers
+(use-package pdf-tools)
+(pdf-tools-install)
+(use-package interleave)
+(use-package org-ref
+  :config
+  (setq org-ref-notes-directory "~/Documents/org/home-org"
+      org-ref-bibliography-notes "~/Documents/org/home-org/index.org"
+      org-ref-default-bibliography '("~/Documents/org/home-org/index.bib")
+      org-ref-pdf-directory "~/Documents/org/home-org/lib/"))
+(use-package helm-bibtex
+  :config
+  (setq helm-bibtex-bibliography "~/Documents/org/home-org/index.bib" ;; where your references are stored
+      helm-bibtex-library-path "~/Documents/org/home-org/lib/" ;; where your pdfs etc are stored
+      helm-bibtex-notes-path "~/Documents/org/home-org/index.org" ;; where your notes are stored
+      bibtex-completion-bibliography "~/Documents/org/home-org/index.bib" ;; writing completion
+      bibtex-completion-notes-path "~/Documents/org/home-org/index.org"
+))
+
 ;;----------------------------------------------------------------------------
 ;; Variables configured via the interactive 'customize' interface
 ;;----------------------------------------------------------------------------
