@@ -470,9 +470,9 @@
         ;; 1. Bring the frame in which org-capture was launched into focus.
         ;; 2. Delete the capture frame after capture is complete (or killed).
         ("p" "Link and Text" entry (file+headline org-default-notes-files "Links")
-         "%(progn (x-focus-frame nil) \"\")* %^{Title}\nSource: [[%:link][%:description]]%(progn (setq kk/delete-frame-after-capture 1) \"\")\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
+         "%(progn (x-focus-frame nil) \"\")* %^{Title}\nSource: [[%:link][%:description]]%(progn (setq kk/delete-frame-after-capture 1) \"\")\n#+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n%?%U\n")
         ("L" "Link" entry (file+headline org-default-notes-file "Links")
-         "%(progn (x-focus-frame nil) \"\")* [[%:link][%:description]]%(progn (setq kk/delete-frame-after-capture 1) \"\")\n%:initial")))
+         "%(progn (x-focus-frame nil) \"\")* %?[[%:link][%:description]]%(progn (setq kk/delete-frame-after-capture 1) \"\")\n  %U\n")))
 (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
 (setq org-refile-use-outline-path t)
 (setq org-alphabetical-lists t)
