@@ -101,6 +101,20 @@
 (global-set-key (kbd "M-y") 'helm-show-kill-ring)
 (global-set-key (kbd "C-x b") 'helm-mini)
 
+(use-package smex
+  :init
+  (setq smex-save-file
+        (expand-file-name "smex-items" user-emacs-directory))
+  :config
+  (smex-initialize))
+
+(use-package helm-smex
+  :ensure t
+  :ensure smex
+  :config
+  (global-set-key (kbd "M-x") #'helm-smex)
+  (global-set-key (kbd "M-X") #'helm-smex-major-mode-commands))
+
 ;;; ---------------------------------------------------------------------------
 ;;;  Evil configuration
 ;;; ---------------------------------------------------------------------------
