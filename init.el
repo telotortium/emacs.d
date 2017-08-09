@@ -460,6 +460,7 @@
 (global-set-key "\C-cb" 'org-iswitchb)
 (global-set-key "\C-cc" 'org-capture)
 (global-set-key "\C-cl" 'org-store-link)
+(global-set-key "\C-cq" 'org-occur-in-agenda-files)
 
 ;;; Kill the frame if one was created for the capture (see
 ;;; https://github.com/sprig/org-capture-extension#example-closins-the-frame-after-a-capture).
