@@ -12,6 +12,20 @@
 ;;; Avoid loading .elc files older than their corresponding .el file.
 (setq load-prefer-newer t)
 
+;;; Set gc-cons-threshold to a higher value. This should be done before
+;;; searching for packages because package searches and installation tend to
+;;; generate a lot of garbage.
+;;; http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/
+(setq gc-cons-threshold (* 4 1024 1024))
+(defun my-minibuffer-setup-hook ()
+  (setq gc-cons-threshold most-positive-fixnum))
+
+(defun my-minibuffer-exit-hook ()
+  (setq gc-cons-threshold (* 4 1024 1024)))
+
+(add-hook 'minibuffer-setup-hook #'my-minibuffer-setup-hook)
+(add-hook 'minibuffer-exit-hook #'my-minibuffer-exit-hook)
+
 ; Fix TLS certificate "could not be verified" errors
 ; (http://emacs.stackexchange.com/a/18070).
 (setq gnutls-verify-error t)
