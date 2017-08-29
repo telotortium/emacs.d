@@ -482,6 +482,7 @@
 (setq org-agenda-files (expand-file-name "agenda_files" user-emacs-directory))
 (setq org-agenda-span 7)
 (setq org-agenda-start-on-weekday nil)
+(setq org-agenda-skip-deadline-prewarning-if-scheduled t)
 (setq org-capture-templates
       '(("t" "Tasks" entry (file+headline (concat org-directory "/todo.org")
                                           "Refile")
