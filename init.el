@@ -760,6 +760,10 @@ to get the latest version of the file, then make the change again.")
   (setq org-drill-learn-fraction 0.3))
 
 
+(use-package org-pomodoro
+  :ensure t)
+
+
 (use-package evil-org
   :ensure t
   :ensure org-plus-contrib
