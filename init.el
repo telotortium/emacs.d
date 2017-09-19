@@ -589,6 +589,19 @@
               (interactive)
               (info "(org) Agenda Commands")))
 
+
+;;; Keybindings to jump to org agenda entries and narrow buffer.
+(defun org-agenda-switch-to-and-narrow (&optional delete-other-windows)
+  (interactive)
+  (org-agenda-switch-to delete-other-windows)
+  (org-narrow-to-subtree))
+(defun org-agenda-goto-and-narrow (&optional highlight)
+  (interactive)
+  (org-agenda-goto highlight)
+  (org-narrow-to-subtree))
+(org-defkey org-agenda-mode-map (kbd "<C-tab>") #'org-agenda-goto-and-narrow)
+(org-defkey org-agenda-mode-map (kbd "<C-return>") #'org-agenda-switch-to-and-narrow)
+
 ;; Easier-to-use alias of C-c C-^
 (org-defkey org-mode-map (kbd "C-c C-6") 'org-up-element)
 
