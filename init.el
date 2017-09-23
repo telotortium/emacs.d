@@ -84,51 +84,30 @@
 
 
 ;;; ---------------------------------------------------------------------------
-;;;  Helm configuration
+;;;  Ivy configuration
 ;;; ---------------------------------------------------------------------------
-(use-package helm :config (require 'helm-config))
-
-;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
-;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
-;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
-(global-set-key (kbd "C-c h") 'helm-command-prefix)
-(global-unset-key (kbd "C-x c"))
-
-(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
-(define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
-(define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
-
-(when (executable-find "curl")
-  (setq helm-google-suggest-use-curl-p t))
-
-(setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
-      helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
-      helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
-      helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
-      helm-ff-file-name-history-use-recentf t)
-
-(helm-mode 1)
-(diminish 'helm-mode)
-
-(helm-autoresize-mode t)
-
-(global-set-key (kbd "M-x") 'helm-M-x)
-(global-set-key (kbd "M-y") 'helm-show-kill-ring)
-(global-set-key (kbd "C-x b") 'helm-mini)
-
-(use-package smex
-  :init
-  (setq smex-save-file
-        (expand-file-name "smex-items" user-emacs-directory))
-  :config
-  (smex-initialize))
-
-(use-package helm-smex
-  :ensure t
-  :ensure smex
-  :config
-  (global-set-key (kbd "M-x") #'helm-smex)
-  (global-set-key (kbd "M-X") #'helm-smex-major-mode-commands))
+(use-package counsel
+ :config
+ (setq ivy-use-virtual-buffers t)
+ (setq enable-recursive-minibuffers t)
+ (ivy-mode 1)
+ (global-set-key "\C-s" 'swiper)
+ (global-set-key (kbd "C-c C-r") 'ivy-resume)
+ (global-set-key (kbd "<f6>") 'ivy-resume)
+ (global-set-key (kbd "M-x") 'counsel-M-x)
+ (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+ (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+ (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+ (global-set-key (kbd "<f1> l") 'counsel-find-library)
+ (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+ (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+ (global-set-key (kbd "C-c g") 'counsel-git)
+ (global-set-key (kbd "C-c j") 'counsel-git-grep)
+ (global-set-key (kbd "C-c k") 'counsel-ag)
+ (global-set-key (kbd "C-x l") 'counsel-locate)
+ (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+ (global-set-key (kbd "C-x b") 'ivy-switch-buffer)
+ (define-key read-expression-map (kbd "C-r") 'counsel-expression-history))
 
 ;;; ---------------------------------------------------------------------------
 ;;;  Evil configuration
@@ -737,14 +716,14 @@ to get the latest version of the file, then make the change again.")
 ; Allow refile to create parent tasks with confirmation
 (setq org-refile-allow-creating-parent-nodes (quote confirm))
 
-; Use IDO for both buffer and file completion and ido-everywhere to t
-(setq org-completion-use-ido t)
-(setq ido-everywhere t)
-(setq ido-max-directory-size 100000)
-(ido-mode (quote both))
-; Use the current window when visiting files and buffers with ido
-(setq ido-default-file-method 'selected-window)
-(setq ido-default-buffer-method 'selected-window)
+;; ; Use IDO for both buffer and file completion and ido-everywhere to t
+;; (setq org-completion-use-ido t)
+;; (setq ido-everywhere t)
+;; (setq ido-max-directory-size 100000)
+;; (ido-mode (quote both))
+;; ; Use the current window when visiting files and buffers with ido
+;; (setq ido-default-file-method 'selected-window)
+;; (setq ido-default-buffer-method 'selected-window)
 ; Use the current window for indirect buffer display
 (setq org-indirect-buffer-display 'current-window)
 
@@ -1251,8 +1230,8 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
       helm-bibtex-library-path "~/Documents/org/home-org/lib/" ;; where your pdfs etc are stored
       helm-bibtex-notes-path "~/Documents/org/home-org/index.org" ;; where your notes are stored
       bibtex-completion-bibliography "~/Documents/org/home-org/index.bib" ;; writing completion
-      bibtex-completion-notes-path "~/Documents/org/home-org/index.org"
-))
+      bibtex-completion-notes-path "~/Documents/org/home-org/index.org"))
+
 
 ;;----------------------------------------------------------------------------
 ;; Variables configured via the interactive 'customize' interface
