@@ -579,8 +579,8 @@ TO.  Instead an empty string is returned."
   (org-gcal--iso-next-day str t))
 
 (defun org-gcal--cons-list (plst)
-  (let* ((smry  (plist-get plst :summary))
-         (desc  (plist-get plst :description))
+  (let* ((smry  (org-gcal--rstrip (plist-get plst :summary)))
+         (desc  (org-gcal--rstrip (plist-get plst :description)))
          (loc   (plist-get plst :location))
          (link  (plist-get plst :htmlLink))
          (id    (plist-get plst :id))
@@ -622,8 +622,14 @@ TO.  Instead an empty string is returned."
                       end
                     (org-gcal--iso-previous-day end)))))) "\n"
 		    (when desc "\n")
-		    desc
+                    desc
 		    (when desc (if (string= "\n" (org-gcal--safe-substring desc -1)) "" "\n")))))
+
+(defun org-gcal--rstrip (s)
+  "Delete trailing whitespace from string `s'."
+  (if s
+      (replace-regexp-in-string "[ \t]+$" "" s)
+    nil))
 
 (defun org-gcal--format-date (str format &optional tz)
   (let* ((plst (org-gcal--parse-date str))
