@@ -753,7 +753,12 @@ to get the latest version of the file, then make the change again.")
 
 
 (use-package org-pomodoro
-  :ensure t)
+  :ensure t
+  :config
+  (defun my-org-pomodoro-lock-screen ()
+    (message "Locking screen in 3 seconds")
+    (shell-command "sleep 3; /usr/bin/gnome-screensaver-command --lock"))
+  (add-hook 'org-pomodoro-finished-hook #'my-org-pomodoro-lock-screen))
 
 
 (use-package evil-org
