@@ -753,7 +753,14 @@ to get the latest version of the file, then make the change again.")
   :config
   (defun my-org-pomodoro-lock-screen ()
     (message "Locking screen in 3 seconds")
-    (shell-command "sleep 3; /usr/bin/gnome-screensaver-command --lock"))
+    (shell-command "sleep 3")           ; block until sleep completes
+    (cond
+     ((eq system-type 'darwin)
+      (start-process "lock" nil "pmset" "displaysleepnow"))
+     ((executable-find "gnome-screensaver-command")
+      (start-process "lock" nil "gnome-screensaver-command" "--lock"))
+     (t
+      (warn "Can't lock screen"))))
   (add-hook 'org-pomodoro-finished-hook #'my-org-pomodoro-lock-screen))
 
 
