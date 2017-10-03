@@ -33,7 +33,7 @@
 
 (setq tls-checktrust 'ask)
 
-; Load all the packages that are REQUIRE'd below
+;;; Load all the packages that are REQUIRE'd below
 (require 'package)
 (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
@@ -87,27 +87,27 @@
 ;;;  Ivy configuration
 ;;; ---------------------------------------------------------------------------
 (use-package counsel
- :config
- (setq ivy-use-virtual-buffers t)
- (setq enable-recursive-minibuffers t)
- (ivy-mode 1)
- (global-set-key "\C-s" 'swiper)
- (global-set-key (kbd "C-c C-r") 'ivy-resume)
- (global-set-key (kbd "<f6>") 'ivy-resume)
- (global-set-key (kbd "M-x") 'counsel-M-x)
- (global-set-key (kbd "C-x C-f") 'counsel-find-file)
- (global-set-key (kbd "<f1> f") 'counsel-describe-function)
- (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
- (global-set-key (kbd "<f1> l") 'counsel-find-library)
- (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
- (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
- (global-set-key (kbd "C-c g") 'counsel-git)
- (global-set-key (kbd "C-c j") 'counsel-git-grep)
- (global-set-key (kbd "C-c k") 'counsel-ag)
- (global-set-key (kbd "C-x l") 'counsel-locate)
- (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
- (global-set-key (kbd "C-x b") 'ivy-switch-buffer)
- (define-key read-expression-map (kbd "C-r") 'counsel-expression-history))
+  :config
+  (setq ivy-use-virtual-buffers t)
+  (setq enable-recursive-minibuffers t)
+  (ivy-mode 1)
+  (global-set-key "\C-s" 'swiper)
+  (global-set-key (kbd "C-c C-r") 'ivy-resume)
+  (global-set-key (kbd "<f6>") 'ivy-resume)
+  (global-set-key (kbd "M-x") 'counsel-M-x)
+  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+  (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+  (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+  (global-set-key (kbd "<f1> l") 'counsel-find-library)
+  (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+  (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+  (global-set-key (kbd "C-c g") 'counsel-git)
+  (global-set-key (kbd "C-c j") 'counsel-git-grep)
+  (global-set-key (kbd "C-c k") 'counsel-ag)
+  (global-set-key (kbd "C-x l") 'counsel-locate)
+  (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+  (global-set-key (kbd "C-x b") 'ivy-switch-buffer)
+  (define-key read-expression-map (kbd "C-r") 'counsel-expression-history))
 
 ;;; ---------------------------------------------------------------------------
 ;;;  Evil configuration
@@ -147,7 +147,7 @@
 (define-key evil-window-map "\C-k" 'evil-window-up)
 (define-key evil-window-map "\C-l" 'evil-window-right)
 
-; Kill current buffer but keep its frame around
+;; Kill current buffer but keep its frame around
 (define-key evil-normal-state-map "Q" 'kill-this-buffer)
 
 (evil-leader/set-key
@@ -619,7 +619,7 @@ Source: [[%:link][%:description]]
 (require 'org-protocol)
 (setq org-protocol-default-template-key "p")
 
-; No one needs both `h` and `H` for holidays -- online help in org-agenda.
+;;; No one needs both `h` and `H` for holidays -- online help in org-agenda.
 (org-defkey org-agenda-mode-map "h"
             (lambda ()
               (interactive)
@@ -641,7 +641,7 @@ Source: [[%:link][%:description]]
 ;; Easier-to-use alias of C-c C-^
 (org-defkey org-mode-map (kbd "C-c C-6") 'org-up-element)
 
-; Pop up org-agenda-list a few times a day
+;; Pop up org-agenda-list a few times a day
 (run-at-time "08:00" 21600 'org-agenda-list)
 
 (run-at-time "00:59" 3600 'org-save-all-org-buffers)
@@ -763,23 +763,23 @@ to get the latest version of the file, then make the change again.")
 
 ;;;; Stolen from http://doc.norang.ca/org-mode.html#Refiling
 
-; Targets include this file and any file contributing to the agenda - up to 9 levels deep
+                                        ; Targets include this file and any file contributing to the agenda - up to 9 levels deep
 (setq org-refile-targets (quote ((nil :maxlevel . 9)
                                  (org-agenda-files :maxlevel . 9))))
 
-; Use full outline paths for refile targets - we file directly with Ivy
+                                        ; Use full outline paths for refile targets - we file directly with Ivy
 (setq org-refile-use-outline-path t)
 
-; Targets complete directly with Ivy
+                                        ; Targets complete directly with Ivy
 (setq org-outline-path-complete-in-steps nil)
 
-; Allow refile to create parent tasks with confirmation
+                                        ; Allow refile to create parent tasks with confirmation
 (setq org-refile-allow-creating-parent-nodes (quote confirm))
 
 (setq org-indirect-buffer-display 'current-window)
 
 ;;;; Refile settings
-; Exclude DONE state tasks from refile targets
+;;; Exclude DONE state tasks from refile targets
 (defun bh/verify-refile-target ()
   "Exclude todo keywords with a done state from refile targets"
   (not (member (nth 2 (org-heading-components)) org-done-keywords)))
@@ -915,7 +915,7 @@ as the default task."
     ;;
     (save-restriction
       (widen)
-      ; Find the tags on the current task
+      ;; Find the tags on the current task
       (if (and (equal major-mode 'org-mode) (not (org-before-first-heading-p)) (eq arg 4))
           (org-clock-in '(16))
         (bh/clock-in-organization-task-as-default)))))
@@ -1122,8 +1122,7 @@ of occur. The original buffer is not modified.
                              (lambda () (search-forward-regexp date-regex) (match-string 0))
                              nil
                              'string<))
-                  ;; pretend, that we did not modify the occur-buffer
-
+                ;; pretend, that we did not modify the occur-buffer
                 (insert "Searched " pretty-dates "\n")
                 (goto-char (point-min))
                 (set-buffer-modified-p nil)
@@ -1160,17 +1159,17 @@ of occur. The original buffer is not modified.
 
 (add-to-list 'org-agenda-custom-commands
              '("R" "Week in review"
-                agenda ""
-                ;; agenda settings
-                ((org-agenda-span 'week
-                  (org-agenda-start-on-weekday 0) ;; start on Sunday
-                  (org-agenda-overriding-header "Week in Review")
-                  (org-agenda-files
-                    (let ((org-agenda-files org-timeline-files)
-                          (org-agenda-files nil 'ifmode))))
-                  (org-agenda-start-with-log-mode t)
-                  (org-agenda-log-mode-items '(clock state closed))
-                  (org-agenda-archives-mode t))))) ; include archive files
+               agenda ""
+               ;; agenda settings
+               ((org-agenda-span 'week
+                                 (org-agenda-start-on-weekday 0) ;; start on Sunday
+                                 (org-agenda-overriding-header "Week in Review")
+                                 (org-agenda-files
+                                  (let ((org-agenda-files org-timeline-files)
+                                        (org-agenda-files nil 'ifmode))))
+                                 (org-agenda-start-with-log-mode t)
+                                 (org-agenda-log-mode-items '(clock state closed))
+                                 (org-agenda-archives-mode t))))) ; include archive files
 
 
 ;;; https://blog.aaronbieber.com/2016/09/24/an-agenda-for-life-with-org-mode.html
@@ -1286,16 +1285,16 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 (use-package org-ref
   :config
   (setq org-ref-notes-directory "~/Documents/org/home-org"
-      org-ref-bibliography-notes "~/Documents/org/home-org/index.org"
-      org-ref-default-bibliography '("~/Documents/org/home-org/index.bib")
-      org-ref-pdf-directory "~/Documents/org/home-org/lib/"))
+        org-ref-bibliography-notes "~/Documents/org/home-org/index.org"
+        org-ref-default-bibliography '("~/Documents/org/home-org/index.bib")
+        org-ref-pdf-directory "~/Documents/org/home-org/lib/"))
 (use-package helm-bibtex
   :config
   (setq helm-bibtex-bibliography "~/Documents/org/home-org/index.bib" ;; where your references are stored
-      helm-bibtex-library-path "~/Documents/org/home-org/lib/" ;; where your pdfs etc are stored
-      helm-bibtex-notes-path "~/Documents/org/home-org/index.org" ;; where your notes are stored
-      bibtex-completion-bibliography "~/Documents/org/home-org/index.bib" ;; writing completion
-      bibtex-completion-notes-path "~/Documents/org/home-org/index.org"))
+        helm-bibtex-library-path "~/Documents/org/home-org/lib/" ;; where your pdfs etc are stored
+        helm-bibtex-notes-path "~/Documents/org/home-org/index.org" ;; where your notes are stored
+        bibtex-completion-bibliography "~/Documents/org/home-org/index.bib" ;; writing completion
+        bibtex-completion-notes-path "~/Documents/org/home-org/index.org"))
 
 
 ;;----------------------------------------------------------------------------
