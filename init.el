@@ -811,6 +811,8 @@ to get the latest version of the file, then make the change again.")
 (setq org-clock-auto-clock-resolution (quote when-no-clock-is-running))
 ;; Include current clocking task in clock reports
 (setq org-clock-report-include-clocking-task t)
+;; Create globally unique entry IDs when needed
+(setq org-id-link-to-org-use-id t)
 
 (setq bh/keep-clock-running nil)
 
