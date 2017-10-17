@@ -473,15 +473,38 @@
 (setq org-agenda-skip-deadline-prewarning-if-scheduled t)
 (setq org-capture-templates
       `(("t" "Tasks" entry (file+headline (lambda () (concat org-directory "/todo.org"))
-                                          "Refile")
-         "* TODO %?%^{Title}\n  %^{Effort}p%u" :clock-in t :clock-resume t :jump-to-captured t)
+                                         "Refile")
+         "
+* TODO %?%^{Title}
+  %^{Effort}p%u" :clock-in t :clock-resume t :jump-to-captured t)
         ("n" "Notes" entry (file+headline org-default-notes-file "Notes")
-         "* %u %?" :jump-to-captured t)
+         "
+* %u %?
+" :jump-to-captured t)
         ("j" "Journal" plain (file+weektree (lambda () (concat org-directory "/journal.org")))
-         "%U %?")
+         "
+* %U %?
+" :clock-in t :clock-resume t)
         ("d" "Drill" entry (file+headline org-default-notes-file "Drill")
-         "* Drill entry        :drill:\n :PROPERTIES:\n :DRILL_CARD_TYPE: hide1cloze\n :END:\n   %?!|2 + 2|! equals !|4|!."
-         :clock-in t :clock-resume t :jump-to-captured t)
+         "
+* Drill entry        :drill:
+ :PROPERTIES:
+ :DRILL_CARD_TYPE: hide1cloze
+ :END:
+ %?!|2 + 2|! equals !|4|!.
+" :clock-in t :clock-resume t :jump-to-captured t)
+        ("D" "Daily Log" entry (file (lambda () (concat org-directory "/daily-log.org")))
+         "
+* %u %?
+*Summary*:
+
+*Problem*:
+
+*Insight*:
+
+*Tomorrow*:
+" :clock-in t :clock-resume t)
+
         ;; org-protocol capture templates for
         ;; https://github.com/sprig/org-capture-extension.
         ;;
@@ -489,9 +512,22 @@
         ;; 1. Bring the frame in which org-capture was launched into focus.
         ;; 2. Delete the capture frame after capture is complete (or killed).
         ("p" "Link and Text" entry (file+headline org-default-notes-files "Links")
-         "%(progn (x-focus-frame nil) nil)* %^{Title}\nSource: [[%:link][%:description]]%(progn (setq kk/delete-frame-after-capture 1) nil)\n#+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n%?%U\n")
+         "
+* %^{Title}
+Source: [[%:link][%:description]]
+#+BEGIN_QUOTE
+%i
+#+END_QUOTE
+
+%?%U
+%(progn (x-focus-frame nil) (setq kk/delete-frame-after-capture 1) nil)
+")
         ("L" "Link" entry (file+headline org-default-notes-file "Links")
-         "%(progn (x-focus-frame nil) nil)* %?[[%:link][%:description]]%(progn (setq kk/delete-frame-after-capture 1) nil)\n  %U\n")))
+         "
+* %?[[%:link][%:description]]
+  %U
+%(progn (x-focus-frame nil) (setq kk/delete-frame-after-capture 1) nil)
+")))
 (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
 (setq org-refile-use-outline-path t)
 (setq org-alphabetical-lists t)
