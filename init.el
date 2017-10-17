@@ -244,6 +244,10 @@
   :commands (rg rg-project rg-dwin))
 
 ;;; Company
+(use-package company-flx
+  :config
+  (with-eval-after-load 'company
+    (company-flx-mode +1)))
 (use-package company
   :diminish company-mode
   :config
