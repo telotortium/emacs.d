@@ -487,7 +487,7 @@
         ("i" "Idea" entry (file+headline org-default-notes-file "Ideas")
          "
 * %u %?REPLACE                      :IDEA:
-")
+" :clock-in t :clock-resume t)
         ("j" "Journal" plain (file+weektree (lambda () (concat org-directory "/journal.org")))
          "
 * %U %^{Title}                 :journal:
@@ -519,9 +519,7 @@
 *Insight*:
 
 *Tomorrow*:
-"
-         :time-prompt t :tree-type week :clock-in t :clock-resume t)
-
+" :time-prompt t :tree-type week :clock-in t :clock-resume t)
         ;; org-protocol capture templates for
         ;; https://github.com/sprig/org-capture-extension.
         ;;
