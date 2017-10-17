@@ -481,12 +481,10 @@
         ("n" "Note" entry (file+headline org-default-notes-file "Notes")
          "
 * %u %?
-%(progn (setq-local my-org-inhibit-ask-effort t) nil)
 " :jump-to-captured t)
         ("j" "Journal" plain (file+weektree (lambda () (concat org-directory "/journal.org")))
          "
 * %U %?
-%(progn (setq-local my-org-inhibit-ask-effort t) nil)
 " :clock-in t :clock-resume t)
         ("d" "Drill" entry (file+headline org-default-notes-file "Drill")
          "
@@ -495,7 +493,6 @@
  :DRILL_CARD_TYPE: hide1cloze
  :END:
  %?!|2 + 2|! equals !|4|!.
-%(progn (setq-local my-org-inhibit-ask-effort t) nil)
 " :clock-in t :clock-resume t :jump-to-captured t)
         ("D" "Daily Log" entry (file (lambda () (concat org-directory "/daily-log.org")))
          "
@@ -507,7 +504,6 @@
 *Insight*:
 
 *Tomorrow*:
-%(progn (setq-local my-org-inhibit-ask-effort t) nil)
 " :clock-in t :clock-resume t)
 
         ;; org-protocol capture templates for
@@ -525,21 +521,13 @@ Source: [[%:link][%:description]]
 #+END_QUOTE
 
 %?%U
-%(progn
-   (x-focus-frame nil)
-   (setq kk/delete-frame-after-capture 1)
-   (setq-local my-org-inhibit-ask-effort t)
-   nil)
+%(progn (x-focus-frame nil) (setq kk/delete-frame-after-capture 1) nil)
 ")
         ("L" "Link" entry (file+headline org-default-notes-file "Links")
          "
 * %?[[%:link][%:description]]
   %U
-%(progn
-   (x-focus-frame nil)
-   (setq kk/delete-frame-after-capture 1)
-   (setq-local my-org-inhibit-ask-effort t)
-   nil)
+%(progn (x-focus-frame nil) (setq kk/delete-frame-after-capture 1) nil)
 ")))
 (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
 (setq org-refile-use-outline-path t)
@@ -747,12 +735,9 @@ to get the latest version of the file, then make the change again.")
 ;;; interactively here and so provides a prompt with autocompletion.
 (add-hook 'org-clock-in-prepare-hook
           'my-org-mode-ask-effort)
-(setq-default my-org-inhibit-ask-effort nil)
 (defun my-org-mode-ask-effort ()
   "Ask for an effort estimate when clocking in."
-  (when (and
-         (not my-org-inhibit-ask-effort)
-         (null (org-entry-get-multivalued-property (point) "Effort")))
+  (when (null (org-entry-get-multivalued-property (point) "Effort"))
     (org-set-effort)))
 
 ;;; Show current task in frame title
