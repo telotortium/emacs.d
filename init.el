@@ -516,7 +516,7 @@
         ;; The two progn expressions serve these purposes:
         ;; 1. Bring the frame in which org-capture was launched into focus.
         ;; 2. Delete the capture frame after capture is complete (or killed).
-        ("p" "Link and Text" entry (file+headline org-default-notes-files "Links")
+        ("p" "Link and Text" entry (file+headline org-default-notes-file "Links")
          "
 * %^{Title}
 Source: [[%:link][%:description]]
