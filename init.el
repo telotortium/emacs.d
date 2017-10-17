@@ -796,7 +796,7 @@ to get the latest version of the file, then make the change again.")
   (require 'cl)                         ; org-drill uses old CL func names
   (require 'org)                        ; org variables need to be in scope
   :config
-  (setq org-drill-scope 'directory)
+  (setq org-drill-scope 'agenda-with-archives)
   (setq org-drill-left-cloze-delimiter "!|")
   (setq org-drill-right-cloze-delimiter "|!")
   (setq org-drill-add-random-noise-to-intervals-p t)
