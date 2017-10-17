@@ -472,12 +472,12 @@
 (setq org-agenda-start-on-weekday nil)
 (setq org-agenda-skip-deadline-prewarning-if-scheduled t)
 (setq org-capture-templates
-      `(("t" "Tasks" entry (file+headline (lambda () (concat org-directory "/todo.org"))
+      `(("t" "Task" entry (file+headline (lambda () (concat org-directory "/todo.org"))
                                          "Refile")
          "
 * TODO %?%^{Title}
   %^{Effort}p%u" :clock-in t :clock-resume t :jump-to-captured t)
-        ("n" "Notes" entry (file+headline org-default-notes-file "Notes")
+        ("n" "Note" entry (file+headline org-default-notes-file "Notes")
          "
 * %u %?
 " :jump-to-captured t)
