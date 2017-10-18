@@ -496,8 +496,8 @@
 " :clock-in t :clock-resume t :jump-to-captured t)
         ("D" "Daily Log" entry (file (lambda () (concat org-directory "/daily-log.org")))
          "
-* %u %?
-*Summary*:
+* %u Daily log
+*Summary*: %?
 
 *Problem*:
 
