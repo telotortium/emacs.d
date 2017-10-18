@@ -745,16 +745,12 @@ to get the latest version of the file, then make the change again.")
 (setq org-clock-frame-title-format '("" "%b - " org-mode-line-string))
 
 ;;; Play sound when effort has expired.
-(defun my-org-play-sound-on-effort-expired ()
-  (unless org-clock-notification-was-shown
-    (sound-wav-play
-     (expand-file-name
-      ;; Sound source:
-      ;; http://soundbible.com/1496-Japanese-Temple-Bell-Small.html
-      "Japanese Temple Bell Small-SoundBible.com-113624364.wav"
-      user-emacs-directory))))
-(add-function :before (symbol-function 'org-clock-notify-once-if-expired)
-              #'my-org-play-sound-on-effort-expired)
+(setq org-clock-sound
+ (expand-file-name
+  ;; Sound source:
+  ;; http://soundbible.com/1496-Japanese-Temple-Bell-Small.html
+  "Japanese Temple Bell Small-SoundBible.com-113624364.wav"
+  user-emacs-directory))
 
 ;;; Fix the very slow tangling of large Org files
 (setq org-babel-use-quick-and-dirty-noweb-expansion t)
