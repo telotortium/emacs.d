@@ -484,19 +484,28 @@
 " :jump-to-captured t)
         ("j" "Journal" plain (file+weektree (lambda () (concat org-directory "/journal.org")))
          "
-* %U %?
+* %U %^{Title}                 :journal:
+ :PROPERTIES:
+ :Effort: 9999:00
+ :END:
+
+%?
 " :clock-in t :clock-resume t)
         ("d" "Drill" entry (file+headline org-default-notes-file "Drill")
          "
 * Drill entry        :drill:
  :PROPERTIES:
  :DRILL_CARD_TYPE: hide1cloze
+ :Effort: 0:02
  :END:
  %?!|2 + 2|! equals !|4|!.
 " :clock-in t :clock-resume t :jump-to-captured t)
         ("D" "Daily Log" entry (file (lambda () (concat org-directory "/daily-log.org")))
          "
 * %u Daily log
+ :PROPERTIES:
+ :Effort: 0:05
+ :END:
 *Summary*: %?
 
 *Problem*:
