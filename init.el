@@ -530,7 +530,7 @@ Source: [[%:link][%:description]]
 %(progn (x-focus-frame nil) (setq kk/delete-frame-after-capture 1) nil)
 ")))
 (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
-(setq org-refile-use-outline-path t)
+(setq org-refile-use-outline-path 'buffer-name)
 (setq org-alphabetical-lists t)
 (setq org-src-fontify-natively t)
 (setq org-pretty-entities t)
