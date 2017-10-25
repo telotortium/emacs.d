@@ -1321,6 +1321,12 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
         bibtex-completion-notes-path "~/Documents/org/home-org/index.org"))
 
 
+;;; Preserve scratch file across sessions
+(use-package persistent-scratch
+  :config
+  (persistent-scratch-setup-default))
+
+
 ;;----------------------------------------------------------------------------
 ;; Variables configured via the interactive 'customize' interface
 ;;----------------------------------------------------------------------------
