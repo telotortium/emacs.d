@@ -482,6 +482,10 @@
          "
 * %u %?
 " :jump-to-captured t)
+        ("i" "Idea" entry (file+headline org-default-notes-file "Ideas")
+         "
+* %u %?REPLACE                      :IDEA:
+")
         ("j" "Journal" plain (file+weektree (lambda () (concat org-directory "/journal.org")))
          "
 * %U %^{Title}                 :journal:
