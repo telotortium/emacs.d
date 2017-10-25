@@ -1326,6 +1326,11 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   :config
   (persistent-scratch-setup-default))
 
+(defun my-hs-minor-mode-setup ()
+  (interactive)
+  (hs-minor-mode)
+  (hs-hide-all))
+(add-hook 'prog-mode-hook #'my-hs-minor-mode-setup)
 
 ;;----------------------------------------------------------------------------
 ;; Variables configured via the interactive 'customize' interface
