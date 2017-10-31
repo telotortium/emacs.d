@@ -646,7 +646,7 @@ Source: [[%:link][%:description]]
 ;; Pop up org-agenda-list a few times a day
 (run-at-time "08:00" 21600 'org-agenda-list)
 
-(run-at-time "00:59" 3600 'org-save-all-org-buffers)
+(run-at-time "00:59" 900 'org-save-all-org-buffers)
 
 
 ;;; Add option to merge current buffer and file on disk using emerge if both
