@@ -504,7 +504,7 @@
  :END:
  %?!|2 + 2|! equals !|4|!.
 " :clock-in t :clock-resume t :jump-to-captured t)
-        ("D" "Daily Log" entry (file (lambda () (concat org-directory "/daily-log.org")))
+        ("D" "Daily Log" entry (file+olp+datetree (lambda () (concat org-directory "/daily-log.org")))
          "
 * %u Daily log
  :PROPERTIES:
@@ -517,7 +517,8 @@
 *Insight*:
 
 *Tomorrow*:
-" :clock-in t :clock-resume t)
+"
+         :time-prompt t :tree-type week :clock-in t :clock-resume t)
 
         ;; org-protocol capture templates for
         ;; https://github.com/sprig/org-capture-extension.
