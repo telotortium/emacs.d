@@ -23,7 +23,10 @@
 
 ;;; Enable whitespace for all files.
 (setq whitespace-style '(face trailing tab-mark))
-(add-hook 'find-file-hook (lambda () (whitespace-mode 1)))
+(defun my-whitespace-mode-hook ()
+  (whitespace-mode 1)
+  (diminish 'whitespace-mode))
+(add-hook 'find-file-hook #'my-whitespace-mode-hook)
 
 ;;; transform literal tabs into an rightwards arrow (⇥, U+21E5, decimal 8677).
 (setq whitespace-display-mappings
