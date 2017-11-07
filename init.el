@@ -1331,7 +1331,8 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 (defun my-hs-minor-mode-setup ()
   (interactive)
   (hs-minor-mode)
-  (hs-hide-all))
+  (hs-hide-all)
+  (diminish 'hs-minor-mode))
 (add-hook 'prog-mode-hook #'my-hs-minor-mode-setup)
 
 ;;----------------------------------------------------------------------------
