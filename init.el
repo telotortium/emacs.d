@@ -421,7 +421,9 @@
     (add-hook 'emacs-lisp-mode-hook #'parinfer-mode)
     (add-hook 'common-lisp-mode-hook #'parinfer-mode)
     (add-hook 'scheme-mode-hook #'parinfer-mode)
-    (add-hook 'lisp-mode-hook #'parinfer-mode)))
+    (add-hook 'lisp-mode-hook #'parinfer-mode))
+  :config
+  (setq parinfer-lighters '(" pi:I" " pi:P")))
 
 
 ;;; Slime
