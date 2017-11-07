@@ -812,7 +812,8 @@ to get the latest version of the file, then make the change again.")
 
 
 (use-package org-pomodoro
-  :ensure t
+  :ensure nil
+  :load-path "~/.emacs.d/lisp/org-pomodoro/"
   :config
   (defun my-org-pomodoro-lock-screen ()
     "Lock screen at the end of each Pomodoro work session."

@@ -1,3 +1,6 @@
 [submodule "org-gcal.git"]
 	path = lisp/org-gcal.git
 	url = git@github.com:telotortium/org-gcal.el
+[submodule "lisp/org-pomodoro"]
+	path = lisp/org-pomodoro
+	url = git@github.com:telotortium/org-pomodoro.git
