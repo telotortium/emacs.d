@@ -978,6 +978,9 @@ as the default task."
 (defvar bh/organization-task-id nil
   "Task ID of default Organization task (for use with bh/clock-in-organization-task-as-default. Must specify manually.")
 
+;; Reset day at 4 AM, just like Anki.
+(setq org-extend-today-until 4)
+
 (defun bh/clock-in-organization-task-as-default ()
   (interactive)
   (org-with-point-at (org-id-find bh/organization-task-id 'marker)
