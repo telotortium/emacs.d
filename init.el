@@ -843,6 +843,16 @@ to get the latest version of the file, then make the change again.")
                                "-t" (number-to-string countdown)))
          (t
           (warn "Can't prevent system from sleeping"))))))
+  (defun my-org-pomodoro-finished-notify-hook ()
+    (org-notify "Pomodoro phase finished"))
+  (defun my-org-pomodoro-break-finished-notify-hook ()
+    (let ((msg "Pomodoro break finished -- get back to work!"))
+      (if (fboundp 'terminal-notifier-notify)
+          ;; Try to ensure timeout is very high by skipping org-notify.
+          (terminal-notifier-notify "Org Pomodoro" msg 84000)
+        (org-notify msg))))
+  (add-hook 'org-pomodoro-break-finished-hook #'my-org-pomodoro-break-finished-notify-hook)
+  (add-hook 'org-pomodoro-finished-hook #'my-org-pomodoro-finished-notify-hook)
   (add-hook 'org-pomodoro-finished-hook #'my-org-pomodoro-lock-screen)
   (add-hook 'org-pomodoro-started-hook #'my-org-pomodoro-caffeinate))
 
