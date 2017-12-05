@@ -545,8 +545,6 @@ Source: [[%:link][%:description]]
   %U
 %(progn (x-focus-frame nil) (setq kk/delete-frame-after-capture 1) nil)
 ")))
-(setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
-(setq org-refile-use-outline-path 'buffer-name)
 (setq org-alphabetical-lists t)
 (setq org-src-fontify-natively t)
 (setq org-pretty-entities t)
@@ -771,31 +769,23 @@ to get the latest version of the file, then make the change again.")
 ;;; Fix the very slow tangling of large Org files
 (setq org-babel-use-quick-and-dirty-noweb-expansion t)
 
-;;;; Stolen from http://doc.norang.ca/org-mode.html#Refiling
-
-                                        ; Targets include this file and any file contributing to the agenda - up to 9 levels deep
+;;;; org-refile settings:
+;;;;
+;;;; Based on http://doc.norang.ca/org-mode.html#Refiling and
+;;;; https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html
 (setq org-refile-targets (quote ((nil :maxlevel . 9)
                                  (org-agenda-files :maxlevel . 9))))
-
-                                        ; Use full outline paths for refile targets - we file directly with Ivy
-(setq org-refile-use-outline-path t)
-
-                                        ; Targets complete directly with Ivy
+(setq org-refile-use-outline-path 'buffer-name)
+;;; Targets complete directly with Ivy, so no need to complete in steps.
 (setq org-outline-path-complete-in-steps nil)
-
-                                        ; Allow refile to create parent tasks with confirmation
-(setq org-refile-allow-creating-parent-nodes (quote confirm))
-
-(setq org-indirect-buffer-display 'current-window)
-
-;;;; Refile settings
-;;; Exclude DONE state tasks from refile targets
+;;; Allow refile to create parent tasks with confirmation
+(setq org-refile-allow-creating-parent-nodes 'confirm)
 (defun bh/verify-refile-target ()
   "Exclude todo keywords with a done state from refile targets"
   (not (member (nth 2 (org-heading-components)) org-done-keywords)))
-
 (setq org-refile-target-verify-function 'bh/verify-refile-target)
-;;;
+
+(setq org-indirect-buffer-display 'current-window)
 
 ;;; Org-drill
 (use-package org-drill
@@ -1182,9 +1172,6 @@ of occur. The original buffer is not modified.
 
 
 (require 'org-inlinetask)
-
-;;; https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html
-(setq org-refile-allow-creating-parent-nodes 'confirm)
 
 (setq org-enforce-todo-dependencies t)
 
