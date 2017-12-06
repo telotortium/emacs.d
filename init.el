@@ -612,6 +612,9 @@ Source: [[%:link][%:description]]
                    (call-interactively 'org-occur-in-agenda-files)))
                ""))
 
+(setq org-stuck-projects
+      '("TODO=\"TODO\"-HOLD-CANCELLED-REFILE" ("NEXT" "HOLD") nil ""))
+
 (setq org-columns-default-format "%60ITEM(Task) %10Effort(Effort){:} %10CLOCKSUM %10CLOCKSUM_T")
 (setq org-global-properties
       (quote (("Effort_ALL" . "0:05 0:10 0:15 0:30 0:45 1:00 2:00 3:00 4:00 5:00 6:00 8:00")
