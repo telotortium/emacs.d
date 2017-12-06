@@ -613,7 +613,7 @@ Source: [[%:link][%:description]]
                ""))
 
 (setq org-stuck-projects
-      '("TODO=\"TODO\"-HOLD-CANCELLED-REFILE" ("NEXT" "HOLD") nil ""))
+      '("TODO={TODO\\|NEXT}-HOLD-CANCELLED-REFILE" ("NEXT" "HOLD") nil ""))
 
 (setq org-columns-default-format "%60ITEM(Task) %10Effort(Effort){:} %10CLOCKSUM %10CLOCKSUM_T")
 (setq org-global-properties
