@@ -660,6 +660,9 @@ Source: [[%:link][%:description]]
 ;; Easier-to-use alias of C-c C-^
 (org-defkey org-mode-map (kbd "C-c C-6") 'org-up-element)
 
+;; Not present on macOS for some reason
+(org-defkey org-mode-map (kbd "C-c !") 'org-time-stamp-inactive)
+
 ;; Pop up org-agenda-list a few times a day
 (run-at-time "08:00" 21600 'org-agenda-list)
 
