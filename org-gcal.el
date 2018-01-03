@@ -327,13 +327,13 @@
                          (plist-get (cadr elem) :contents-end)))) "")))
       (org-gcal--post-event start end smry loc desc calendar-id id nil skip-import)))))
 
-(defun org-gcal-delete-at-point (&optional skip-import calendar-url)
+(defun org-gcal-delete-at-point (calendar-id &optional skip-import calendar-url)
   (interactive)
   (let ((calendar-url (if calendar-url
 			  calendar-url
 			(car (rassoc (buffer-file-name) org-gcal-file-alist))
 			)))
-  (org-gcal--ensure-token)
+  (org-gcal--ensure-token calendar-url)
   (save-excursion
     (end-of-line)
     (org-back-to-heading)
@@ -343,7 +343,7 @@
            (id (org-element-property :ID elem)))
       (when (and id
                  (y-or-n-p (format "Do you really want to delete event?\n\n%s\n\n" smry)))
-        (org-gcal--delete-event address-url id nil skip-import))))))
+        (org-gcal--delete-event address-url calendar-id id nil skip-import))))))
 
 (defun org-gcal-request-authorization (calendar-url)
   "Request OAuth authorization at AUTH-URL by launching `browse-url'.
