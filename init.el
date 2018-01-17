@@ -1384,6 +1384,11 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 ;; Don't use Evil for image-mode.
 (add-to-list 'evil-emacs-state-modes 'image-mode)
 
+
+;;; Split window vertically if possible -- this will split vertically if the
+;;; window is wide enough for the contents of both buffers.
+(setq split-height-threshold nil)
+
 ;;; Magit
 (use-package magit
   :init
