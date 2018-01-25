@@ -474,6 +474,15 @@
 (setq org-agenda-span 7)
 (setq org-agenda-start-on-weekday nil)
 (setq org-agenda-skip-deadline-prewarning-if-scheduled t)
+
+(defun transform-square-brackets-to-curly-ones (string-to-transform)
+  "Transforms [ into ( and ] into ), other chars left unchanged."
+  (concat
+   (mapcar #'(lambda (c)
+               (cond ((equal c ?\[) ?\{)
+                     ((equal c ?\]) ?\})
+                     (t c)))
+           string-to-transform)))
 (setq org-capture-templates
       `(("t" "Task" entry (file+headline (lambda () (concat org-directory "/todo.org"))
                                          "Refile")
@@ -539,8 +548,8 @@ Source: [[%:link][%:description]]
 ")
         ("L" "Link" entry (file+headline org-default-notes-file "Links")
          "
-* %?[[%:link][%:description]]
-%U
+* %?[[%:link][%(transform-square-brackets-to-curly-ones \"%:description\")]]
+  %U
 %(progn (x-focus-frame nil) (setq kk/delete-frame-after-capture 1) nil)
 ")))
 
