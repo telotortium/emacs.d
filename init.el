@@ -810,6 +810,8 @@ to get the latest version of the file, then make the change again.")
   :ensure nil
   :load-path "~/.emacs.d/lisp/org-pomodoro/"
   :config
+  (defvar my-org-pomodoro-break-id nil
+    "Task ID of task to clock into during Pomodoro breaks. Must specify manually.")
   (defun my-org-pomodoro-finished-lock-screen ()
     "Lock screen at the end of each Pomodoro work session."
     (message "Locking screen in 3 seconds")
@@ -838,16 +840,33 @@ to get the latest version of the file, then make the change again.")
           (warn "Can't prevent system from sleeping"))))))
   (defun my-org-pomodoro-finished-notify-hook ()
     (org-notify "Pomodoro phase finished"))
+  (defun my-org-pomodoro-finished-clock-in-break-hook ()
+    "Clock into task with ID my-org-pomodoro-break-id during breaks if set."
+    (message "%s %s" my-org-pomodoro-break-id org-pomodoro-state)
+    (when (and my-org-pomodoro-break-id)
+      (message "About to start clock")
+      (save-excursion
+        (org-id-goto my-org-pomodoro-break-id)
+        (org-clock-in))))
   (defun my-org-pomodoro-break-finished-notify-hook ()
     (let ((msg "Pomodoro break finished -- get back to work!"))
       (if (fboundp 'terminal-notifier-notify)
           ;; Try to ensure timeout is very high by skipping org-notify.
           (terminal-notifier-notify "Org Pomodoro" msg 84000)
         (org-notify msg))))
-  (add-hook 'org-pomodoro-break-finished-hook #'my-org-pomodoro-break-finished-notify-hook)
+  (defun my-org-pomodoro-short-break-finished-punch-in ()
+    "Run bh/punch-in when Pomodoro short breaks end."
+    (bh/punch-in nil))
+  (defun my-org-pomodoro-long-break-finished-punch-out ()
+    "Run bh/punch-out when Pomodoro long breaks end."
+    (bh/punch-out))
   (add-hook 'org-pomodoro-finished-hook #'my-org-pomodoro-finished-notify-hook)
   (add-hook 'org-pomodoro-finished-hook #'my-org-pomodoro-finished-lock-screen)
   (add-hook 'org-pomodoro-finished-hook #'my-org-pomodoro-finished-caffeinate)
+  (add-hook 'org-pomodoro-finished-hook #'my-org-pomodoro-finished-clock-in-break-hook)
+  (add-hook 'org-pomodoro-break-finished-hook #'my-org-pomodoro-break-finished-notify-hook)
+  (add-hook 'org-pomodoro-short-break-finished-hook #'my-org-pomodoro-short-break-finished-punch-in)
+  (add-hook 'org-pomodoro-long-break-finished-hook #'my-org-pomodoro-long-break-finished-punch-out))
 
 
 (use-package evil-org
