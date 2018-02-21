@@ -821,7 +821,7 @@ to get the latest version of the file, then make the change again.")
       (start-process "lock" nil "gnome-screensaver-command" "--lock"))
      (t
       (warn "Can't lock screen"))))
-  (defun my-org-pomodoro-caffeinate ()
+  (defun my-org-pomodoro-finished-caffeinate ()
     "Prevent system from idle sleeping during Pomodoro breaks."
     (let ((countdown
            (cl-case org-pomodoro-state
@@ -831,7 +831,7 @@ to get the latest version of the file, then make the change again.")
       (when (> countdown 0)
         (cond
          ((eq system-type 'darwin)
-          (async-start-process "my-org-pomodoro-caffeinate"
+          (async-start-process "my-org-pomodoro-finished-caffeinate"
                                "caffeinate" 'ignore
                                "-t" (number-to-string countdown)))
          (t
@@ -847,7 +847,7 @@ to get the latest version of the file, then make the change again.")
   (add-hook 'org-pomodoro-break-finished-hook #'my-org-pomodoro-break-finished-notify-hook)
   (add-hook 'org-pomodoro-finished-hook #'my-org-pomodoro-finished-notify-hook)
   (add-hook 'org-pomodoro-finished-hook #'my-org-pomodoro-lock-screen)
-  (add-hook 'org-pomodoro-started-hook #'my-org-pomodoro-caffeinate))
+  (add-hook 'org-pomodoro-finished-hook #'my-org-pomodoro-finished-caffeinate)
 
 
 (use-package evil-org
