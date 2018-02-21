@@ -2,6 +2,7 @@
 
 ;; Author: myuhe <yuhei.maeda_at_gmail.com>
 ;; URL: https://github.com/myuhe/org-gcal.el
+;; Package-Version: 20180103.1831
 ;; Version: 0.2
 ;; Maintainer: myuhe
 ;; Copyright (C) :2014 myuhe all rights reserved.
@@ -215,7 +216,7 @@
                                                                                         (plist-get (read (buffer-string)) (intern (concat ":" (car x))))))))))
                                       do
                                       (goto-char pos)
-                                      (org-gcal-post-at-point t calendar-url)
+                                      (org-gcal-post-at-point (car x) t calendar-url)
                                       finally
                                       (kill-buffer buf))
                            (sit-for 2)
@@ -279,7 +280,7 @@
                                 (car (org-element-map (org-element-at-point) 'headline
                                   (lambda (hl) (org-element-property :end hl)))))))))))
 
-(defun org-gcal-post-at-point (&optional skip-import calendar-url)
+(defun org-gcal-post-at-point (calendar-id &optional skip-import calendar-url)
   (interactive)
   (message (buffer-file-name))
   (let ((calendar-url (if calendar-url
@@ -324,15 +325,15 @@
                         (buffer-substring-no-properties
                          (plist-get (cadr elem) :contents-begin)
                          (plist-get (cadr elem) :contents-end)))) "")))
-      (org-gcal--post-event start end smry loc desc id nil skip-import)))))
+      (org-gcal--post-event start end smry loc desc calendar-id id nil skip-import)))))
 
-(defun org-gcal-delete-at-point (&optional skip-import calendar-url)
+(defun org-gcal-delete-at-point (calendar-id &optional skip-import calendar-url)
   (interactive)
   (let ((calendar-url (if calendar-url
 			  calendar-url
 			(car (rassoc (buffer-file-name) org-gcal-file-alist))
 			)))
-  (org-gcal--ensure-token)
+  (org-gcal--ensure-token calendar-url)
   (save-excursion
     (end-of-line)
     (org-back-to-heading)
@@ -342,7 +343,7 @@
            (id (org-element-property :ID elem)))
       (when (and id
                  (y-or-n-p (format "Do you really want to delete event?\n\n%s\n\n" smry)))
-        (org-gcal--delete-event address-url id nil skip-import))))))
+        (org-gcal--delete-event address-url calendar-id id nil skip-import))))))
 
 (defun org-gcal-request-authorization (calendar-url)
   "Request OAuth authorization at AUTH-URL by launching `browse-url'.
@@ -375,7 +376,7 @@ It returns the code provided by the service."
    (cl-function (lambda (&key error-thrown &allow-other-keys)
                 (message "Got error: %S" error-thrown)))))
 
-(defun org-gcal-refresh-token (&optional fun skip-export start end smry loc desc id)
+(defun org-gcal-refresh-token (&optional fun skip-export start end smry loc desc calendar-id id)
   "Refresh OAuth access at TOKEN-URL."
   (interactive)
   (cl-loop for x in org-gcal-file-alist
@@ -408,7 +409,7 @@ It returns the code provided by the service."
           (cond ((eq fun 'org-gcal-sync)
                  (org-gcal-sync (plist-get token :access_token) skip-export))
                 ((eq fun 'org-gcal--post-event)
-                 (org-gcal--post-event start end smry loc desc calendar-url id (plist-get token :access_token)))
+                 (org-gcal--post-event start end smry loc desc calendar-url calendar-id id (plist-get token :access_token)))
                 ((eq fun 'org-gcal--delete-event)
                  (org-gcal--delete-event calendar-url id (plist-get token :access_token))))))))))
 
@@ -646,7 +647,7 @@ TO.  Instead an empty string is returned."
 (defun org-gcal--param-date-alt (str)
   (if (< 11 (length str)) "date" "dateTime"))
 
-(defun org-gcal--post-event (start end smry loc desc calendar-url &optional id a-token skip-import skip-export)
+(defun org-gcal--post-event (start end smry loc desc calendar-url calendar-id &optional id a-token skip-import skip-export)
   (let ((stime (org-gcal--param-date start))
         (etime (org-gcal--param-date end))
         (stime-alt (org-gcal--param-date-alt start))
@@ -656,7 +657,7 @@ TO.  Instead an empty string is returned."
                    (org-gcal--get-access-token calendar-url))))
     (request
      (concat
-      (format org-gcal-events-url (car (car org-gcal-file-alist)))
+      (format org-gcal-events-url calendar-id)
       (when id
         (concat "/" id)))
      :type (if id "PATCH" "POST")
@@ -683,7 +684,7 @@ TO.  Instead an empty string is returned."
                      (org-gcal--notify
                       "Received HTTP 401"
                       "OAuth token expired. Now trying to refresh-token")
-                     (org-gcal-refresh-token 'org-gcal--post-event skip-export start end smry loc desc id)))
+                     (org-gcal-refresh-token 'org-gcal--post-event skip-export start end smry loc desc calendar-id id)))
                   (t
                    (org-gcal--notify
                     (concat "Status code: " (pp-to-string status))
@@ -695,12 +696,11 @@ TO.  Instead an empty string is returned."
                                      (concat "Org-gcal post event\n  " (plist-get data :summary)))
                      (unless skip-import (org-gcal-fetch))))))))
 
-(defun org-gcal--delete-event (calendar-url event-id &optional a-token skip-import skip-export)
+(defun org-gcal--delete-event (calendar-url event-id calendar-id &optional a-token skip-import skip-export)
   (let ((skip-import skip-import)
         (a-token (if a-token
                      a-token
-                   (org-gcal--get-access-token calendar-url)))
-        (calendar-id (caar org-gcal-file-alist)))
+                   (org-gcal--get-access-token calendar-url))))
     (request
      (concat
       (format org-gcal-events-url calendar-id)
@@ -720,7 +720,7 @@ TO.  Instead an empty string is returned."
                      (org-gcal--notify
                       "Received HTTP 401"
                       "OAuth token expired. Now trying to refresh-token")
-                     (org-gcal-refresh-token 'org-gcal--delete-event skip-export nil nil nil nil nil event-id)))
+                     (org-gcal-refresh-token 'org-gcal--delete-event skip-export nil nil nil nil nil calendar-id event-id)))
                   (t
                    (org-gcal--notify
                     (concat "Status code: " (pp-to-string status))
@@ -735,7 +735,7 @@ TO.  Instead an empty string is returned."
   (dolist (i org-gcal-file-alist)
     (when (string=  (file-name-nondirectory (cdr i))
                     (substring (buffer-name) 8))
-      (org-gcal-post-at-point))))
+      (org-gcal-post-at-point (car i)))))
 
 (add-hook 'org-capture-before-finalize-hook 'org-gcal--capture-post)
 
