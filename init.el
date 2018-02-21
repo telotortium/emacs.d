@@ -860,10 +860,41 @@ to get the latest version of the file, then make the change again.")
   (defun my-org-pomodoro-long-break-finished-punch-out ()
     "Run bh/punch-out when Pomodoro long breaks end."
     (bh/punch-out))
+
+  (defvar my-org-pomodoro-alarm-gcal-calendar-url nil
+    "The Google Calendar URL on which to create alarms.")
+  (defvar my-org-pomodoro-alarm-gcal-client-id nil
+    "The Google Calendar API Client ID to use to create alarms.")
+  (defvar my-org-pomodoro-alarm-gcal-client-secret nil
+    "The Google Calendar API Client Secret to use to create alarms.")
+  (defun my-org-pomodoro-finished-create-break-end-alarm ()
+    (let ((offset
+           (cl-case org-pomodoro-state
+             (:short-break (* 60 org-pomodoro-short-break-length))
+             (:long-break (* 60 org-pomodoro-long-break-length))
+             (t 0))))
+      (when (and (> offset 0)
+                 my-org-pomodoro-alarm-gcal-calendar-url
+                 my-org-pomodoro-alarm-gcal-client-id
+                 my-org-pomodoro-alarm-gcal-client-secret)
+        (my-org-pomodoro--create-alarm-event
+         my-org-pomodoro-alarm-gcal-calendar-url
+         my-org-pomodoro-alarm-gcal-client-id
+         my-org-pomodoro-alarm-gcal-client-secret
+         (time-add (current-time) offset)))))
+  (defun my-org-pomodoro--create-alarm-event (calendar-url client-id client-secret time)
+    (let* ((time-iso (format-time-string "%FT%T%z" time)))
+      (setq org-gcal-client-id client-id)
+      (setq org-gcal-client-secret client-secret)
+      (org-gcal--ensure-token calendar-url)
+      (org-gcal--post-event time-iso time-iso "org-pomodoro break end -- get back to work!"
+                            nil nil calendar-url calendar-url)))
+
   (add-hook 'org-pomodoro-finished-hook #'my-org-pomodoro-finished-notify-hook)
   (add-hook 'org-pomodoro-finished-hook #'my-org-pomodoro-finished-lock-screen)
   (add-hook 'org-pomodoro-finished-hook #'my-org-pomodoro-finished-caffeinate)
   (add-hook 'org-pomodoro-finished-hook #'my-org-pomodoro-finished-clock-in-break-hook)
+  (add-hook 'org-pomodoro-finished-hook #'my-org-pomodoro-finished-create-break-end-alarm)
   (add-hook 'org-pomodoro-break-finished-hook #'my-org-pomodoro-break-finished-notify-hook)
   (add-hook 'org-pomodoro-short-break-finished-hook #'my-org-pomodoro-short-break-finished-punch-in)
   (add-hook 'org-pomodoro-long-break-finished-hook #'my-org-pomodoro-long-break-finished-punch-out))
