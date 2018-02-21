@@ -810,7 +810,7 @@ to get the latest version of the file, then make the change again.")
   :ensure nil
   :load-path "~/.emacs.d/lisp/org-pomodoro/"
   :config
-  (defun my-org-pomodoro-lock-screen ()
+  (defun my-org-pomodoro-finished-lock-screen ()
     "Lock screen at the end of each Pomodoro work session."
     (message "Locking screen in 3 seconds")
     (shell-command "sleep 3")           ; block until sleep completes
@@ -846,7 +846,7 @@ to get the latest version of the file, then make the change again.")
         (org-notify msg))))
   (add-hook 'org-pomodoro-break-finished-hook #'my-org-pomodoro-break-finished-notify-hook)
   (add-hook 'org-pomodoro-finished-hook #'my-org-pomodoro-finished-notify-hook)
-  (add-hook 'org-pomodoro-finished-hook #'my-org-pomodoro-lock-screen)
+  (add-hook 'org-pomodoro-finished-hook #'my-org-pomodoro-finished-lock-screen)
   (add-hook 'org-pomodoro-finished-hook #'my-org-pomodoro-finished-caffeinate)
 
 
