@@ -868,20 +868,19 @@ to get the latest version of the file, then make the change again.")
   (defvar my-org-pomodoro-alarm-gcal-client-secret nil
     "The Google Calendar API Client Secret to use to create alarms.")
   (defun my-org-pomodoro-finished-create-break-end-alarm ()
-    (let ((offset
-           (cl-case org-pomodoro-state
-             (:short-break (* 60 org-pomodoro-short-break-length))
-             (:long-break (* 60 org-pomodoro-long-break-length))
-             (t 0))))
-      (when (and (> offset 0)
-                 my-org-pomodoro-alarm-gcal-calendar-url
-                 my-org-pomodoro-alarm-gcal-client-id
-                 my-org-pomodoro-alarm-gcal-client-secret)
-        (my-org-pomodoro--create-alarm-event
-         my-org-pomodoro-alarm-gcal-calendar-url
-         my-org-pomodoro-alarm-gcal-client-id
-         my-org-pomodoro-alarm-gcal-client-secret
-         (time-add (current-time) offset)))))
+    (when (and (or (eq org-pomodoro-state :short-break)
+                   (eq org-pomodoro-state :long-break))
+               ;; Current break has not ended yet.
+               (> (float-time (time-subtract org-pomodoro-end-time (current-time)))
+                  0)
+               my-org-pomodoro-alarm-gcal-calendar-url
+               my-org-pomodoro-alarm-gcal-client-id
+               my-org-pomodoro-alarm-gcal-client-secret)
+      (my-org-pomodoro--create-alarm-event
+       my-org-pomodoro-alarm-gcal-calendar-url
+       my-org-pomodoro-alarm-gcal-client-id
+       my-org-pomodoro-alarm-gcal-client-secret
+       org-pomodoro-end-time)))
   (defun my-org-pomodoro--create-alarm-event (calendar-url client-id client-secret time)
     (let* ((time-iso (format-time-string "%FT%T%z" time))
            (org-gcal-client-id client-id)
