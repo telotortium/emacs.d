@@ -674,27 +674,44 @@ TO.  Instead an empty string is returned."
                ("grant_type" . "authorization_code"))
 
      :parser 'org-gcal--json-read
-     :error (cl-function
-             (lambda (&key response &allow-other-keys)
-               (let ((status (request-response-status-code response))
-                     (error-msg (request-response-error-thrown response)))
-                 (cond
-                  ((eq status 401)
-                   (progn
+     :error (let ((client-id org-gcal-client-id)
+                  (client-secret org-gcal-client-secret)
+                  (file-alist org-gcal-file-alist)
+                  (tokens-plist org-gcal-tokens-plist))
+              (cl-function
+               (lambda (&key response &allow-other-keys)
+                 (let ((status (request-response-status-code response))
+                       (error-msg (request-response-error-thrown response))
+                       (org-gcal-client-id client-id)
+                       (org-gcal-client-secret client-secret)
+                       (org-gcal-file-alist file-alist)
+                       (org-gcal-tokens-plist tokens-plist))
+                   (cond
+                    ((eq status 401)
+                     (progn
+                       (org-gcal--notify
+                        "Received HTTP 401"
+                        "OAuth token expired. Now trying to refresh-token")
+                       (org-gcal-refresh-token 'org-gcal--post-event skip-export start end smry loc desc calendar-id id)))
+                    (t
                      (org-gcal--notify
-                      "Received HTTP 401"
-                      "OAuth token expired. Now trying to refresh-token")
-                     (org-gcal-refresh-token 'org-gcal--post-event skip-export start end smry loc desc calendar-id id)))
-                  (t
-                   (org-gcal--notify
-                    (concat "Status code: " (pp-to-string status))
-                    (pp-to-string error-msg)))))))
-     :success (cl-function
-               (lambda (&key data &allow-other-keys)
-                 (progn
-                   (org-gcal--notify "Event Posted"
-                                     (concat "Org-gcal post event\n  " (plist-get data :summary)))
-                     (unless skip-import (org-gcal-fetch))))))))
+                      (concat "Status code: " (pp-to-string status))
+                      (pp-to-string error-msg))))))))
+
+     :success (let ((client-id org-gcal-client-id)
+                    (client-secret org-gcal-client-secret)
+                    (file-alist org-gcal-file-alist)
+                    (tokens-plist org-gcal-tokens-plist))
+                (cl-function
+                 (lambda (&key data &allow-other-keys)
+                   (let ((org-gcal-client-id client-id)
+                         (org-gcal-client-secret client-secret)
+                         (org-gcal-file-alist file-alist)
+                         (org-gcal-tokens-plist tokens-plist))
+                     (progn
+                       (org-gcal--notify "Event Posted"
+                                         (concat "Org-gcal post event\n  " (plist-get data :summary)))
+                       (unless skip-import (org-gcal-fetch))))))))))
 
 (defun org-gcal--delete-event (calendar-url event-id calendar-id &optional a-token skip-import skip-export)
   (let ((skip-import skip-import)
