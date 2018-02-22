@@ -883,12 +883,18 @@ to get the latest version of the file, then make the change again.")
          my-org-pomodoro-alarm-gcal-client-secret
          (time-add (current-time) offset)))))
   (defun my-org-pomodoro--create-alarm-event (calendar-url client-id client-secret time)
-    (let* ((time-iso (format-time-string "%FT%T%z" time)))
-      (setq org-gcal-client-id client-id)
-      (setq org-gcal-client-secret client-secret)
+    (let* ((time-iso (format-time-string "%FT%T%z" time))
+           (org-gcal-client-id client-id)
+           (org-gcal-client-secret client-secret)
+           (org-gcal-file-alist `((,calendar-url . nil)))
+           (org-gcal-tokens-plist nil))
       (org-gcal--ensure-token calendar-url)
       (org-gcal--post-event time-iso time-iso "org-pomodoro break end -- get back to work!"
-                            nil nil calendar-url calendar-url)))
+                            nil nil calendar-url calendar-url
+                            ;; skip import and export to avoid attempting to
+                            ;; perform I/O using the NIL file in
+                            ;; ORG-GCAL-FILE-ALIST.
+                            nil nil 'skip-import 'skip-export)))
 
   (add-hook 'org-pomodoro-finished-hook #'my-org-pomodoro-finished-notify-hook)
   (add-hook 'org-pomodoro-finished-hook #'my-org-pomodoro-finished-lock-screen)
