@@ -807,9 +807,10 @@ to get the latest version of the file, then make the change again.")
 (load-file (expand-file-name "lisp/org-clock-fix.el" user-emacs-directory))
 
 (use-package org-pomodoro
-  :ensure nil
+  :ensure s
   :load-path "~/.emacs.d/lisp/org-pomodoro/"
   :config
+  (require 's)
   (defvar my-org-pomodoro-break-id nil
     "Task ID of task to clock into during Pomodoro breaks. Must specify manually.")
   (defun my-org-pomodoro-finished-lock-screen ()
@@ -819,8 +820,10 @@ to get the latest version of the file, then make the change again.")
     (cond
      ((eq system-type 'darwin)
       (start-process "lock" nil "pmset" "displaysleepnow"))
-     ((executable-find "gnome-screensaver-command")
-      (start-process "lock" nil "gnome-screensaver-command" "--lock"))
+     ((and (executable-find "xset")
+           (not (s-blank-str? (getenv "DISPLAY"))))
+      (shell-command "xdotool search 'Chrome' key --window '%@' XF86AudioPlay")
+      (start-process "lock" nil "xset" "s" "activate"))
      (t
       (warn "Can't lock screen"))))
   (defun my-org-pomodoro-finished-caffeinate ()
