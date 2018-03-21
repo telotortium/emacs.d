@@ -479,7 +479,7 @@
                                          "Refile")
          "
 * TODO %?%^{Title}
-  %^{Effort}p%u" :clock-in t :clock-resume t :jump-to-captured t)
+%^{Effort}p%u" :clock-in t :clock-resume t :jump-to-captured t)
         ("n" "Note" entry (file+headline org-default-notes-file "Notes")
          "
 * %u %?
@@ -491,28 +491,28 @@
         ("j" "Journal" plain (file+weektree (lambda () (concat org-directory "/journal.org")))
          "
 * %U %^{Title}                 :journal:
- :PROPERTIES:
- :Effort: 9999:00
- :END:
+:PROPERTIES:
+:Effort: 9999:00
+:END:
 
 %?
 " :clock-in t :clock-resume t)
         ("d" "Drill" entry (file+headline org-default-notes-file "Drill")
          "
 * Drill entry        :drill:
- :PROPERTIES:
- :DRILL_CARD_TYPE: hide1cloze
- :Effort: 0:02
- :END:
- %?!|2 + 2|! equals !|4|!.
+:PROPERTIES:
+:DRILL_CARD_TYPE: hide1cloze
+:Effort: 0:02
+:END:
+%?!|2 + 2|! equals !|4|!.
 " :clock-in t :clock-resume t :jump-to-captured t)
         ("D" "Daily Log" entry (file+olp+datetree (lambda () (concat org-directory "/daily-log.org")))
          "
 * %u Daily log
- :PROPERTIES:
- :Effort: 0:05
- :END:
-*Summary*: %?
+:PROPERTIES:
+:Effort: 0:05
+:END:
+*Summary*:%?
 
 *Problem*:
 
@@ -540,7 +540,7 @@ Source: [[%:link][%:description]]
         ("L" "Link" entry (file+headline org-default-notes-file "Links")
          "
 * %?[[%:link][%:description]]
-  %U
+%U
 %(progn (x-focus-frame nil) (setq kk/delete-frame-after-capture 1) nil)
 ")))
 
@@ -1282,8 +1282,9 @@ of occur. The original buffer is not modified.
       (if (get-buffer occur-buffer-name)
           (switch-to-buffer occur-buffer-name)))))
 
-
-
+;; Don't insert hard spaces to indent text with heading in Org mode
+(setq org-adapt-indentation nil)
+(setq org-startup-indented t)
 
 (require 'org-inlinetask)
 
