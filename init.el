@@ -528,6 +528,9 @@
 *Insight*:
 
 *Tomorrow*:
+
+#+BEGIN: clocktable :maxlevel 9 :emphasize nil :scope agenda :stepskip0 :fileskip0 :block %<%F> :link t
+#+END: clocktable
 " :time-prompt t :tree-type week :clock-in t :clock-resume t)
         ;; org-protocol capture templates for
         ;; https://github.com/sprig/org-capture-extension.
