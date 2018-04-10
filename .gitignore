@@ -4,7 +4,12 @@
 /cache
 /custom.el
 /elpa
+/ido.last
+/network-security.data
+/org-clock-save.el
+/.persistent-scratch
 /recentf
+/smex-items
 /tmp
 /tramp
 /url
