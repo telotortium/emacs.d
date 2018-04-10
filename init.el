@@ -530,7 +530,7 @@
 
 *Tomorrow*:
 
-#+BEGIN: clocktable :maxlevel 9 :emphasize nil :scope agenda :stepskip0 :fileskip0 :block %<%F> :link t
+#+BEGIN: clocktable :maxlevel 9 :emphasize nil :scope agenda :stepskip0 t :fileskip0 t :block %<%F> :link t
 #+END: clocktable
 " :time-prompt t :tree-type week :clock-in t :clock-resume t)
         ;; org-protocol capture templates for
