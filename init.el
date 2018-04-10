@@ -184,7 +184,8 @@
   (global-evil-visualstar-mode))
 
 (use-package evil-numbers
-  :bind (("C-c =" . evil-numbers/inc-at-pt)
+  :bind (:map evil-normal-state-map
+         ("C-c =" . evil-numbers/inc-at-pt)
          ("C-c +" . evil-numbers/inc-at-pt)
          ("C-c -" . evil-numbers/dec-at-pt)
          ("C-c _" . evil-numbers/dec-at-pt)))
