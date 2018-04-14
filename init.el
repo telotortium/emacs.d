@@ -828,6 +828,13 @@ to get the latest version of the file, then make the change again.")
   :load-path "~/.emacs.d/lisp/org-pomodoro/"
   :config
   (require 's)
+
+  (defun org-pomodoro-end-in (minutes)
+    "Force the current Pomodoro to end in MINUTES minutes."
+    (interactive "nMinutes: ")
+    (setq org-pomodoro-end-time
+          (time-add (current-time) (* minutes 60))))
+
   (defvar my-org-pomodoro-break-id nil
     "Task ID of task to clock into during Pomodoro breaks. Must specify manually.")
   (defun my-org-pomodoro-finished-lock-screen ()
