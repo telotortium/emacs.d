@@ -834,8 +834,8 @@ to get the latest version of the file, then make the change again.")
 (load-file (expand-file-name "lisp/org-clock-fix.el" user-emacs-directory))
 
 (use-package org-pomodoro
+  :ensure t
   :ensure s
-  :load-path "~/.emacs.d/lisp/org-pomodoro/"
   :config
   (require 's)
 
