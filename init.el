@@ -484,6 +484,16 @@
                      ((equal c ?\]) ?\})
                      (t c)))
            string-to-transform)))
+(defun org-clock-report-buffer ()
+  "Evaluate all the clocktables in the buffer."
+  (interactive)
+  (save-excursion
+    (save-restriction
+        (goto-char (point-min))
+        (while (re-search-forward "#\\\+BEGIN: clocktable" nil t)
+            (org-clock-report)
+            (forward-line 1)))))
+
 (setq org-capture-templates
       `(("t" "Task" entry (file+headline (lambda () (concat org-directory "/todo.org"))
                                          "Refile")
