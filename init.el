@@ -1424,6 +1424,8 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 ;; Use sticky agenda's so they persist
 (setq org-agenda-sticky t)
 
+(setq org-list-allow-alphabetical t)
+
 (use-package autorevert
   :diminish auto-revert-mode
   :config (global-auto-revert-mode t))
