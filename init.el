@@ -877,14 +877,18 @@ to get the latest version of the file, then make the change again.")
           (warn "Can't prevent system from sleeping"))))))
   (defun my-org-pomodoro-finished-notify-hook ()
     (org-notify "Pomodoro phase finished"))
+  (defun my-org-pomodoro-start-break ()
+    (interactive)
+    "Start break - clock into task with ID my-org-pomodoro-break-id."
+    (save-excursion
+      (org-id-goto my-org-pomodoro-break-id)
+      (org-clock-in)))
   (defun my-org-pomodoro-finished-clock-in-break-hook ()
     "Clock into task with ID my-org-pomodoro-break-id during breaks if set."
     (message "%s %s" my-org-pomodoro-break-id org-pomodoro-state)
-    (when (and my-org-pomodoro-break-id)
+    (when my-org-pomodoro-break-id
       (message "About to start clock")
-      (save-excursion
-        (org-id-goto my-org-pomodoro-break-id)
-        (org-clock-in))))
+      (my-org-pomodoro-start-break)))
   (defun my-org-pomodoro-break-finished-notify-hook ()
     (let ((msg "Pomodoro break finished -- get back to work!"))
       (if (fboundp 'terminal-notifier-notify)
