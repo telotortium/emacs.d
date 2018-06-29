@@ -945,6 +945,14 @@ to get the latest version of the file, then make the change again.")
   (add-hook 'org-pomodoro-short-break-finished-hook #'my-org-pomodoro-short-break-finished-punch-in)
   (add-hook 'org-pomodoro-long-break-finished-hook #'my-org-pomodoro-long-break-finished-punch-out))
 
+(defvar distraction-id nil
+  "Task ID of task to clock into for distracting tasks (Hacker News, Reddit, etc.). Must specify manually.")
+(defun distraction-clock-in ()
+  "Start distracted time."
+  (interactive)
+  (save-excursion
+      (org-id-goto distraction-id)
+      (org-clock-in)))
 
 (use-package evil-org
   :ensure t
