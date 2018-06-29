@@ -878,8 +878,8 @@ to get the latest version of the file, then make the change again.")
   (defun my-org-pomodoro-finished-notify-hook ()
     (org-notify "Pomodoro phase finished"))
   (defun my-org-pomodoro-start-break ()
-    (interactive)
     "Start break - clock into task with ID my-org-pomodoro-break-id."
+    (interactive)
     (save-excursion
       (org-id-goto my-org-pomodoro-break-id)
       (org-clock-in)))
