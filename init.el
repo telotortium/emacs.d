@@ -88,6 +88,8 @@
 ;;; ---------------------------------------------------------------------------
 (use-package counsel
   :diminish ivy-mode
+  :ensure t
+  :ensure amx
   :config
   (setq ivy-use-virtual-buffers t)
   (setq enable-recursive-minibuffers t)
