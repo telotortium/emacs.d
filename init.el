@@ -123,6 +123,8 @@
 (custom-set-variables
  '(evil-want-C-u-scroll t))
 (evil-leader/set-key "u" 'universal-argument)
+(setq evil-magic 'very-magic)
+(setq evil-search-module 'evil-search)
 
 (use-package evil :config (evil-mode 1))
 
