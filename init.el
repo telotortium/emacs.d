@@ -234,10 +234,9 @@
 (scroll-bar-mode -1)
 
 ;;; Line and column numbers
-(use-package nlinum-relative
-  :config
-  (nlinum-relative-setup-evil)
-  (add-hook 'prog-mode-hook 'nlinum-relative-mode))
+(setq display-line-numbers-type 'relative)
+(add-hook 'prog-mode-hook #'display-line-numbers-mode)
+(add-hook 'text-mode-hook #'display-line-numbers-mode)
 (line-number-mode 1)
 (column-number-mode 1)
 
