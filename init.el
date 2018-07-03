@@ -1022,6 +1022,14 @@ TAG is chosen interactively from the global tags completion table."
 (org-defkey org-mode-map (kbd "C-c C-q") #'air-org-set-tags)
 
 ;;; Org-gcal
+(use-package alert
+  :config
+  (setq alert-default-style
+        (cond ((executable-find "notify-send")
+               'libnotify)
+              ((eq 'system-type 'darwin)
+               'osx-notifier)
+              (t 'message))))
 (use-package org-gcal
   :ensure org-plus-contrib
   :ensure alert
