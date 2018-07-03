@@ -97,11 +97,11 @@
   :ensure t
   :ensure amx
   :config
-  (setq ivy-use-virtual-buffers t)
-  (setq enable-recursive-minibuffers t)
-  (setq ivy-initial-inputs-alist
-        '((Man-completion-table . "^")
-          (woman . "^")))
+  (setq ivy-use-virtual-buffers t
+        ivy-count-format "%d/%d "
+        enable-recursive-minibuffers t
+        ivy-initial-inputs-alist '((Man-completion-table . "^")
+                                   (woman . "^")))
   (ivy-mode 1)
   (counsel-mode 1)
   (global-set-key "\C-s" 'swiper)
