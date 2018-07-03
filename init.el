@@ -164,8 +164,8 @@
   ":" 'evil-ex)
 
 ;; Shortcut to M-x
-(evil-ex-define-cmd     "mx" 'helm-M-x)
-(define-key evil-ex-map "mx" 'helm-M-x)
+(evil-ex-define-cmd     "mx" #'counsel-M-x)
+(define-key evil-ex-map "mx" #'counsel-M-x)
 
 ;; change mode-line color by evil state
 (let ((default-color (cons (face-background 'mode-line)
