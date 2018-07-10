@@ -1026,7 +1026,7 @@ TAG is chosen interactively from the global tags completion table."
   (setq alert-default-style
         (cond ((executable-find "notify-send")
                'libnotify)
-              ((eq 'system-type 'darwin)
+              ((eq system-type 'darwin)
                'osx-notifier)
               (t 'message))))
 (use-package org-gcal
