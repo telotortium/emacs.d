@@ -1576,7 +1576,6 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 ;; Subfiles
 ;;----------------------------------------------------------------------------
 (use-package whitespace-conf
-  :diminish whitespace-mode
   :ensure nil
   :load-path "~/.emacs.d/lisp")
 (use-package org-drill-cloze-enhancement
