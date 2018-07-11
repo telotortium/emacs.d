@@ -94,6 +94,7 @@
 ;;; ---------------------------------------------------------------------------
 (use-package counsel
   :diminish ivy-mode
+  :diminish counsel-mode
   :ensure t
   :ensure amx
   :config
@@ -378,6 +379,7 @@
 
 ;;; Enable escaping from yasnippet snippets
 (use-package yasnippet
+  :diminish yas-minor-mode
   :config
   (yas-global-mode 1))
 
@@ -1473,8 +1475,11 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   :diminish auto-revert-mode
   :config (global-auto-revert-mode t))
 
-(add-hook 'text-mode-hook 'flyspell-mode 'append)
-(add-hook 'prog-mode-hook 'flyspell-prog-mode 'append)
+(use-package flyspell
+  :diminish flyspell-mode
+  :config
+  (add-hook 'text-mode-hook 'flyspell-mode 'append)
+  (add-hook 'prog-mode-hook 'flyspell-prog-mode 'append))
 
 ;;; Remove trailing whitespace intelligently
 (use-package ws-butler
