@@ -329,6 +329,7 @@
   (global-eclim-mode))
 (use-package company-emacs-eclim
   :ensure eclim
+  :ensure t
   :config
   (company-emacs-eclim-setup))
 
