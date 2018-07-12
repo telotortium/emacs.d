@@ -869,7 +869,9 @@ to get the latest version of the file, then make the change again.")
       (shell-command "xdotool search 'Chrome' key --window '%@' XF86AudioPlay")
       (start-process "lock" nil "xset" "s" "activate"))
      (t
-      (warn "Can't lock screen"))))
+      (display-warning
+           'my-org-pomodoro-finished-lock-screen
+           "Can't lock screen"))))
   (defun my-org-pomodoro-finished-caffeinate ()
     "Prevent system from idle sleeping during Pomodoro breaks."
     (let ((countdown
@@ -884,7 +886,9 @@ to get the latest version of the file, then make the change again.")
                                "caffeinate" 'ignore
                                "-t" (number-to-string countdown)))
          (t
-          (warn "Can't prevent system from sleeping"))))))
+          (display-warning
+           'my-org-pomodoro-finished-caffeinate
+           "Can't prevent system from sleeping"))))))
   (defun my-org-pomodoro-finished-notify-hook ()
     (org-notify "Pomodoro phase finished"))
   (defun my-org-pomodoro-start-break ()
