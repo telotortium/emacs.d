@@ -11,7 +11,13 @@
 ;;;  Package loading
 ;;; ---------------------------------------------------------------------------
 ;;; Avoid loading .elc files older than their corresponding .el file.
-(setq load-prefer-newer t)
+(defmacro c-setq (variable value &optional comment)
+  "Exactly like setq, but handles custom.
+
+Taken from http://lists.gnu.org/archive/html/emacs-devel/2017-11/msg00119.html."
+  `(if (get ',variable 'custom-type)
+       (customize-set-variable ',variable ,value ,comment)
+     (set-default ',variable ,value)))
 
 ;;; Set gc-cons-threshold to a higher value. This should be done before
 ;;; searching for packages because package searches and installation tend to
