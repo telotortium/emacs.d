@@ -3,10 +3,10 @@
 ;;;; Based on https://gist.github.com/ymasory/3794723
 
 ;;; make carriage returns blue and tabs green
-(custom-set-faces
+(custom-theme-set-faces
+ 'user
  '(my-carriage-return-face ((((class color)) (:foreground "blue"))) t)
- '(my-tab-face ((((class color)) (:foreground "green"))) t)
- )
+ '(my-tab-face ((((class color)) (:foreground "green"))) t))
 ;;; add custom font locks to all buffers and all files
 (add-hook
  'font-lock-mode-hook
