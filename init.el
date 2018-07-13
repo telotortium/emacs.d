@@ -121,7 +121,7 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
   (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
   (global-set-key (kbd "C-c g") 'counsel-git)
   (global-set-key (kbd "C-c j") 'counsel-git-grep)
-  (global-set-key (kbd "C-c k") 'counsel-ag)
+  (global-set-key (kbd "C-c k") 'counsel-rg)
   (global-set-key (kbd "C-x l") 'counsel-locate)
   (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
   (global-set-key (kbd "C-x b") 'ivy-switch-buffer)
