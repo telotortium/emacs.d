@@ -18,12 +18,14 @@ Taken from http://lists.gnu.org/archive/html/emacs-devel/2017-11/msg00119.html."
   `(if (get ',variable 'custom-type)
        (customize-set-variable ',variable ,value ,comment)
      (set-default ',variable ,value)))
+(c-setq load-prefer-newer t)
 
-;;; Set gc-cons-threshold to a higher value. This should be done before
-;;; searching for packages because package searches and installation tend to
-;;; generate a lot of garbage.
-;;; http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/
-(setq gc-cons-threshold (* 4 1024 1024))
+(c-setq gc-cons-threshold (* 4 1024 1024) "\
+Set gc-cons-threshold to a higher value. This should be done before
+searching for packages because package searches and installation tend to
+generate a lot of garbage. Cite:
+http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/.")
+
 (defun my-minibuffer-setup-hook ()
   (setq gc-cons-threshold most-positive-fixnum))
 
@@ -35,9 +37,9 @@ Taken from http://lists.gnu.org/archive/html/emacs-devel/2017-11/msg00119.html."
 
 ; Fix TLS certificate "could not be verified" errors
 ; (http://emacs.stackexchange.com/a/18070).
-(setq gnutls-verify-error t)
+(c-setq gnutls-verify-error t)
 
-(setq tls-checktrust 'ask)
+(c-setq tls-checktrust 'ask)
 
 ;;; Load all the packages that are REQUIRE'd below
 (require 'package)
@@ -53,7 +55,7 @@ Taken from http://lists.gnu.org/archive/html/emacs-devel/2017-11/msg00119.html."
   (require 'use-package))
 (use-package bind-key)                  ; To make :bind work
 (use-package diminish)                  ; To use :diminish
-(setq use-package-always-ensure t)
+(c-setq use-package-always-ensure t)
 
 (use-package benchmark-init
   :ensure t
@@ -76,7 +78,7 @@ Taken from http://lists.gnu.org/archive/html/emacs-devel/2017-11/msg00119.html."
 ;;;  Basic startup configuration
 ;;; ---------------------------------------------------------------------------
 ;;; Disable startup screen
-(setq inhibit-startup-message t)
+(c-setq inhibit-startup-message t)
 
 ;;; Command to restart emacs from within emacs
 (use-package restart-emacs)
@@ -89,8 +91,9 @@ Taken from http://lists.gnu.org/archive/html/emacs-devel/2017-11/msg00119.html."
 
 ;;; Leuven theme
 (use-package leuven-theme
+  :custom
+  (leuven-scale-outline-headlines nil)
   :config
-  (setq leuven-scale-outline-headlines nil)
   (load-theme 'leuven t)
   (load-theme 'leuven-customization t))
 
@@ -103,12 +106,13 @@ Taken from http://lists.gnu.org/archive/html/emacs-devel/2017-11/msg00119.html."
   :diminish counsel-mode
   :ensure t
   :ensure amx
+  :custom
+  (ivy-use-virtual-buffers t)
+  (ivy-count-format "%d/%d ")
+  (enable-recursive-minibuffers t)
+  (ivy-initial-inputs-alist '((Man-completion-table . "^")
+                              (woman . "^")))
   :config
-  (setq ivy-use-virtual-buffers t
-        ivy-count-format "%d/%d "
-        enable-recursive-minibuffers t
-        ivy-initial-inputs-alist '((Man-completion-table . "^")
-                                   (woman . "^")))
   (ivy-mode 1)
   (counsel-mode 1)
   (global-set-key "\C-s" 'swiper)
@@ -133,11 +137,12 @@ Taken from http://lists.gnu.org/archive/html/emacs-devel/2017-11/msg00119.html."
   (evil-leader/set-leader "<SPC>"))
 
 ;; Scroll with C-u and access universal-argument with <Leader>-u.
-(custom-set-variables
- '(evil-want-C-u-scroll t))
+(c-setq evil-want-C-u-scroll t)
 (evil-leader/set-key "u" 'universal-argument)
-(setq evil-magic 'very-magic)
-(setq evil-search-module 'evil-search)
+
+;; Evil magic search
+(c-setq evil-magic 'very-magic)
+(c-setq evil-search-module 'evil-search)
 
 (use-package evil :config (evil-mode 1))
 
@@ -206,8 +211,7 @@ Taken from http://lists.gnu.org/archive/html/emacs-devel/2017-11/msg00119.html."
          ("C-c _" . evil-numbers/dec-at-pt)))
 
 ;; Make default encoding UTF-8 everywhere
-(custom-set-variables
- '(current-language-environment "UTF-8"))
+(c-setq current-language-environment "UTF-8")
 (prefer-coding-system 'utf-8)
 
 ;; Convenience bindings for isearch buffer
@@ -241,7 +245,7 @@ Taken from http://lists.gnu.org/archive/html/emacs-devel/2017-11/msg00119.html."
 (scroll-bar-mode -1)
 
 ;;; Line and column numbers
-(setq display-line-numbers-type 'relative)
+(c-setq display-line-numbers-type 'relative)
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
 (add-hook 'text-mode-hook #'display-line-numbers-mode)
 (line-number-mode 1)
@@ -249,12 +253,12 @@ Taken from http://lists.gnu.org/archive/html/emacs-devel/2017-11/msg00119.html."
 
 (use-package elfeed
   :init
-  (setq elfeed-feeds
-        '("http://nullprogram.com/feed/"
-          "http://www.terminally-incoherent.com/blog/feed/"
-          "https://news.ycombinator.com/rss"))
   (add-to-list 'evil-emacs-state-modes 'elfeed-search-mode)
-  (add-to-list 'evil-emacs-state-modes 'elfeed-show-mode))
+  (add-to-list 'evil-emacs-state-modes 'elfeed-show-mode)
+  :custom
+  (elfeed-feeds '("http://nullprogram.com/feed/"
+                  "http://www.terminally-incoherent.com/blog/feed/"
+                  "https://news.ycombinator.com/rss")))
 
 (use-package rg
   :commands (rg rg-project rg-dwin))
@@ -266,10 +270,11 @@ Taken from http://lists.gnu.org/archive/html/emacs-devel/2017-11/msg00119.html."
     (company-flx-mode +1)))
 (use-package company
   :diminish company-mode
+  :custom
+  (company-tooltip-limit 20 "bigger popup window")
+  (company-idle-delay .3 "decrease delay before autocompletion popup shows")
+  (company-echo-delay 0 "remove annoying blinking")
   :config
-  (setq company-tooltip-limit 20)                      ; bigger popup window
-  (setq company-idle-delay .3)                         ; decrease delay before autocompletion popup shows
-  (setq company-echo-delay 0)                          ; remove annoying blinking
   (add-hook 'after-init-hook 'global-company-mode))
 (use-package company-go
   :ensure company)
@@ -284,7 +289,7 @@ Taken from http://lists.gnu.org/archive/html/emacs-devel/2017-11/msg00119.html."
   :mode (("README\\.md\\'" . gfm-mode)
          ("\\.md\\'" . markdown-mode)
          ("\\.markdown\\'" . markdown-mode))
-  :init (setq markdown-command
+  :init (c-setq markdown-command
               "pandoc -f markdown -t html --toc -s --mathjax")
   :config
   ;; Make `<tab>` only call `indent-relative` in Evil insert mode, not cycle.
@@ -301,17 +306,18 @@ Taken from http://lists.gnu.org/archive/html/emacs-devel/2017-11/msg00119.html."
 ;; based on directory.
 (use-package uniquify
   :ensure nil
-  :init (setq uniquify-buffer-name-style 'post-forward-angle-brackets))
+  :custom
+  (uniquify-buffer-name-style 'post-forward-angle-brackets))
 
 ;; Save mini-buffer history
 (use-package savehist
-  :init
-  (setq savehist-additional-variables
-        '(kill-ring search-ring regexp-search-ring compile-history))
-  (setq savehist-file
-        (expand-file-name (concat (file-name-as-directory "cache") "savehist")
-                          user-emacs-directory))
-  (setq history-length 5000)
+  :custom
+  (savehist-additional-variables
+   '(kill-ring search-ring regexp-search-ring compile-history))
+  (savehist-file
+   (expand-file-name (concat (file-name-as-directory "cache") "savehist")
+                     user-emacs-directory))
+  (history-length 5000)
   :config
   (savehist-mode 1))
 
@@ -347,12 +353,12 @@ Taken from http://lists.gnu.org/archive/html/emacs-devel/2017-11/msg00119.html."
 
 ;; Multi Web Mode - automatically switch to right major mode in HTML files
 (use-package multi-web-mode
-  :init
-  (setq mweb--major-mode 'html-mode)
-  (setq mweb-tags '((php-mode "<\\?php\\|<\\? \\|<\\?=" "\\?>")
-                    (js-mode "<script +\\(type=\"text/javascript\"\\|language=\"javascript\"\\)[^>]*>" "</script>")
-                    (css-mode "<style +type=\"text/css\"[^>]*>" "</style>")))
-  (setq mweb-filename-extensions '("php" "htm" "html" "ctp" "phtml" "php4" "php5"))
+  :custom
+  (mweb--major-mode 'html-mode)
+  (mweb-tags '((php-mode "<\\?php\\|<\\? \\|<\\?=" "\\?>")
+               (js-mode "<script +\\(type=\"text/javascript\"\\|language=\"javascript\"\\)[^>]*>" "</script>")
+               (css-mode "<style +type=\"text/css\"[^>]*>" "</style>")))
+  (mweb-filename-extensions '("php" "htm" "html" "ctp" "phtml" "php4" "php5"))
   :config
   (multi-web-global-mode 1))
 
@@ -390,9 +396,9 @@ Taken from http://lists.gnu.org/archive/html/emacs-devel/2017-11/msg00119.html."
   (yas-global-mode 1))
 
 ;;; Don't put yanks into X clipboard buffer by default
-(setq select-enable-primary nil)
-(setq select-enable-clipboard t)
-(setq mouse-drag-copy-region t)
+(c-setq select-enable-primary nil)
+(c-setq select-enable-clipboard t)
+(c-setq mouse-drag-copy-region t)
 
 
 ;;; Copy and paste from macOS pasteboard (from
@@ -424,23 +430,19 @@ Taken from http://lists.gnu.org/archive/html/emacs-devel/2017-11/msg00119.html."
   :ensure paredit
   :bind
   (("C-," . parinfer-toggle-mode))
+  :hook ((clojure-mode emacs-lisp-mode common-lisp-mode scheme-mode lisp-mode)
+         . parinfer-mode)
   :init
-  (progn
-    (setq parinfer-extensions
-          '(defaults       ; should be included.
-             pretty-parens  ; different paren styles for different modes.
-             evil           ; If you use Evil.
-             paredit        ; Introduce some paredit commands.
-             smart-tab      ; C-b & C-f jump positions and smart shift with tab & S-tab.
-             smart-yank))   ; Yank behavior depend on mode.
-    (setq parinfer-auto-switch-indent-mode t)
-    (add-hook 'clojure-mode-hook #'parinfer-mode)
-    (add-hook 'emacs-lisp-mode-hook #'parinfer-mode)
-    (add-hook 'common-lisp-mode-hook #'parinfer-mode)
-    (add-hook 'scheme-mode-hook #'parinfer-mode)
-    (add-hook 'lisp-mode-hook #'parinfer-mode))
+  (c-setq parinfer-extensions
+        '(defaults        ; should be included.
+           pretty-parens  ; different paren styles for different modes.
+           evil           ; If you use Evil.
+           paredit        ; Introduce some paredit commands.
+           smart-tab      ; C-b & C-f jump positions and smart shift with tab & S-tab.
+           smart-yank))   ; Yank behavior depend on mode.
+  (c-setq parinfer-auto-switch-indent-mode t)
   :config
-  (setq parinfer-lighters '(" pi:I" " pi:P")))
+  (c-setq parinfer-lighters '(" pi:I" " pi:P")))
 
 
 ;;; Slime
@@ -487,10 +489,10 @@ Taken from http://lists.gnu.org/archive/html/emacs-devel/2017-11/msg00119.html."
 (advice-add 'org-capture-kill :after 'kk/delete-frame-if-neccessary)
 (advice-add 'org-capture-refile :after 'kk/delete-frame-if-neccessary)
 
-(setq org-agenda-files (expand-file-name "agenda_files" user-emacs-directory))
-(setq org-agenda-span 7)
-(setq org-agenda-start-on-weekday nil)
-(setq org-agenda-skip-deadline-prewarning-if-scheduled t)
+(c-setq org-agenda-files (expand-file-name "agenda_files" user-emacs-directory))
+(c-setq org-agenda-span 7)
+(c-setq org-agenda-start-on-weekday nil)
+(c-setq org-agenda-skip-deadline-prewarning-if-scheduled t)
 
 (defun transform-square-brackets-to-curly-ones (string-to-transform)
   "Transforms [ into ( and ] into ), other chars left unchanged."
@@ -510,7 +512,7 @@ Taken from http://lists.gnu.org/archive/html/emacs-devel/2017-11/msg00119.html."
             (org-clock-report)
             (forward-line 1)))))
 
-(setq org-capture-templates
+(c-setq org-capture-templates
       `(("t" "Task" entry (file+headline (lambda () (concat org-directory "/todo.org"))
                                          "Refile")
          "
@@ -583,19 +585,19 @@ Source: [[%:link][%:description]]
 %(progn (x-focus-frame nil) (setq kk/delete-frame-after-capture 1) nil)
 ")))
 
-(setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
-(setq org-refile-use-outline-path t)
-(setq org-alphabetical-lists t)
-(setq org-src-fontify-natively t)
-(setq org-pretty-entities t)
-(setq org-use-sub-superscripts '{})
+(c-setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
+(c-setq org-refile-use-outline-path t)
+(c-setq org-alphabetical-lists t)
+(c-setq org-src-fontify-natively t)
+(c-setq org-pretty-entities t)
+(c-setq org-use-sub-superscripts '{})
 
 
 ;; Todo settings
-(setq org-todo-keywords
+(c-setq org-todo-keywords
       (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
               (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING"))))
-(setq org-todo-keyword-faces
+(c-setq org-todo-keyword-faces
       (quote (("TODO" :foreground "red" :weight bold)
               ("NEXT" :foreground "blue" :weight bold)
               ("DONE" :foreground "forest green" :weight bold)
@@ -604,7 +606,7 @@ Source: [[%:link][%:description]]
               ("CANCELLED" :foreground "forest green" :weight bold)
               ("MEETING" :foreground "forest green" :weight bold)
               ("PHONE" :foreground "forest green" :weight bold))))
-(setq org-todo-state-tags-triggers
+(c-setq org-todo-state-tags-triggers
       (quote (("CANCELLED" ("CANCELLED" . t))
               ("WAITING" ("WAITING" . t))
               ("HOLD" ("WAITING") ("HOLD" . t))
@@ -614,18 +616,18 @@ Source: [[%:link][%:description]]
               ("DONE" ("WAITING") ("CANCELLED") ("HOLD")))))
 
 ;; Don't show tasks in agenda that are done
-(setq org-agenda-skip-scheduled-if-done t)
-(setq org-agenda-skip-deadline-if-done t)
+(c-setq org-agenda-skip-scheduled-if-done t)
+(c-setq org-agenda-skip-deadline-if-done t)
 
 ;; Skip tasks in the global TODO list that are done or scheduled, because
 ;; either of these means the tasks has been considered. Tasks marked with a
 ;; deadline still need to be scheduled before I've truly considered them, so
 ;; leave them in.
-(setq org-agenda-todo-ignore-scheduled 'future)
+(c-setq org-agenda-todo-ignore-scheduled 'future)
 
-(setq org-agenda-span 1)
+(c-setq org-agenda-span 1)
 (unless (boundp 'org-agenda-custom-commands)
-  (setq org-agenda-custom-commands '()))
+  (c-setq org-agenda-custom-commands '()))
 (add-to-list 'org-agenda-custom-commands
              '("n" "Agenda and all TODOs" ((agenda "") (alltodo))))
 (add-to-list 'org-agenda-custom-commands
@@ -652,18 +654,18 @@ Source: [[%:link][%:description]]
                    (call-interactively 'org-occur-in-agenda-files)))
                ""))
 
-(setq org-stuck-projects
+(c-setq org-stuck-projects
       '("TODO={TODO\\|NEXT}-HOLD-CANCELLED-REFILE" ("NEXT" "HOLD") nil ""))
 
-(setq org-columns-default-format "%60ITEM(Task) %10Effort(Effort){:} %10CLOCKSUM %10CLOCKSUM_T")
-(setq org-global-properties
+(c-setq org-columns-default-format "%60ITEM(Task) %10Effort(Effort){:} %10CLOCKSUM %10CLOCKSUM_T")
+(c-setq org-global-properties
       (quote (("Effort_ALL" . "0:05 0:10 0:15 0:30 0:45 1:00 2:00 3:00 4:00 5:00 6:00 8:00")
               ("SYTLE_ALL" . "habit"))))
 
 (require 'org)
 (require 'org-agenda)
 (require 'org-protocol)
-(setq org-protocol-default-template-key "p")
+(c-setq org-protocol-default-template-key "p")
 
 ;;; No one needs both `h` and `H` for holidays -- online help in org-agenda.
 (org-defkey org-agenda-mode-map "h"
@@ -762,11 +764,11 @@ to get the latest version of the file, then make the change again.")
 
 ;;; Make idle time more accurate on Linux (X idle time rather than just Emacs
 ;;; idle time)
-(setq org-clock-idle-time 15)
+(c-setq org-clock-idle-time 15)
 (when (eq system-type 'gnu/linux)
   (let ((xprintidle (executable-find "xprintidle")))
     (if xprintidle
-        (setq org-clock-x11idle-program-name xprintidle)
+        (c-setq org-clock-x11idle-program-name xprintidle)
       (display-warning
        'environment
        "xprintidle should be installed for accurate idle time on Linux."))))
@@ -786,7 +788,7 @@ to get the latest version of the file, then make the change again.")
                    "-activate" "org.gnu.Emacs"
                    "-timeout" timeout)))
 (when terminal-notifier-command
-  (setq org-show-notification-handler
+  (c-setq org-show-notification-handler
         (lambda (message) (terminal-notifier-notify "Org Mode" message))))
 
 ;;; Ask for effort estimate when clocking in, but only when an effort estimate
@@ -801,11 +803,11 @@ to get the latest version of the file, then make the change again.")
     (org-set-effort)))
 
 ;;; Show current task in frame title
-(setq org-clock-clocked-in-display 'frame-title)
-(setq org-clock-frame-title-format '("" "%b - " org-mode-line-string))
+(c-setq org-clock-clocked-in-display 'frame-title)
+(c-setq org-clock-frame-title-format '("" "%b - " org-mode-line-string))
 
 ;;; Play sound when effort has expired.
-(setq org-clock-sound
+(c-setq org-clock-sound
  (expand-file-name
   ;; Sound source:
   ;; http://soundbible.com/1496-Japanese-Temple-Bell-Small.html
@@ -813,25 +815,25 @@ to get the latest version of the file, then make the change again.")
   user-emacs-directory))
 
 ;;; Fix the very slow tangling of large Org files
-(setq org-babel-use-quick-and-dirty-noweb-expansion t)
+(c-setq org-babel-use-quick-and-dirty-noweb-expansion t)
 
 ;;;; org-refile settings:
 ;;;;
 ;;;; Based on http://doc.norang.ca/org-mode.html#Refiling and
 ;;;; https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html
-(setq org-refile-targets (quote ((nil :maxlevel . 9)
-                                 (org-agenda-files :maxlevel . 9))))
-(setq org-refile-use-outline-path 'buffer-name)
+(c-setq org-refile-targets '((nil :maxlevel . 9)
+                             (org-agenda-files :maxlevel . 9)))
+(c-setq org-refile-use-outline-path 'buffer-name)
 ;;; Targets complete directly with Ivy, so no need to complete in steps.
-(setq org-outline-path-complete-in-steps nil)
+(c-setq org-outline-path-complete-in-steps nil)
 ;;; Allow refile to create parent tasks with confirmation
-(setq org-refile-allow-creating-parent-nodes 'confirm)
+(c-setq org-refile-allow-creating-parent-nodes 'confirm)
 (defun bh/verify-refile-target ()
   "Exclude todo keywords with a done state from refile targets"
   (not (member (nth 2 (org-heading-components)) org-done-keywords)))
-(setq org-refile-target-verify-function 'bh/verify-refile-target)
+(c-setq org-refile-target-verify-function 'bh/verify-refile-target)
 
-(setq org-indirect-buffer-display 'current-window)
+(c-setq org-indirect-buffer-display 'current-window)
 
 ;;; Org-drill
 (use-package org-drill
@@ -841,12 +843,12 @@ to get the latest version of the file, then make the change again.")
   (require 'cl)                         ; org-drill uses old CL func names
   (require 'org)                        ; org variables need to be in scope
   :config
-  (setq org-drill-scope 'agenda-with-archives)
-  (setq org-drill-left-cloze-delimiter "!|")
-  (setq org-drill-right-cloze-delimiter "|!")
-  (setq org-drill-add-random-noise-to-intervals-p t)
-  (setq org-drill-adjust-intervals-for-early-and-late-repetitions-p t)
-  (setq org-drill-learn-fraction 0.3))
+  (c-setq org-drill-scope 'agenda-with-archives)
+  (c-setq org-drill-left-cloze-delimiter "!|")
+  (c-setq org-drill-right-cloze-delimiter "|!")
+  (c-setq org-drill-add-random-noise-to-intervals-p t)
+  (c-setq org-drill-adjust-intervals-for-early-and-late-repetitions-p t)
+  (c-setq org-drill-learn-fraction 0.3))
 (load-file (expand-file-name "lisp/org-clock-fix.el" user-emacs-directory))
 
 (use-package org-pomodoro
@@ -993,7 +995,7 @@ to get the latest version of the file, then make the change again.")
   :ensure t
   :ensure org-plus-contrib
   :init
-  (setq org-special-ctrl-a/e t))
+  (c-setq org-special-ctrl-a/e t))
 
 ;;;; Make tag selection more intuitive
 ;;;; See https://blog.aaronbieber.com/2016/03/05/playing-tag-in-org-mode.html
@@ -1051,7 +1053,7 @@ TAG is chosen interactively from the global tags completion table."
 ;;; Org-gcal
 (use-package alert
   :config
-  (setq alert-default-style
+  (c-setq alert-default-style
         (cond ((executable-find "notify-send")
                'libnotify)
               ((eq system-type 'darwin)
@@ -1064,7 +1066,7 @@ TAG is chosen interactively from the global tags completion table."
   :ensure nil
   :load-path "~/.emacs.d/lisp/org-gcal.git"
   :config
-  (setq org-gcal-config-file (expand-file-name "org-gcal-config.el" user-emacs-directory))
+  (c-setq org-gcal-config-file (expand-file-name "org-gcal-config.el" user-emacs-directory))
   (when (file-exists-p org-gcal-config-file)
     (load org-gcal-config-file)))
 
@@ -1075,31 +1077,31 @@ TAG is chosen interactively from the global tags completion table."
 (org-clock-persistence-insinuate)
 ;;
 ;; Show lot of clocking history so it's easy to pick items off the C-F11 list
-(setq org-clock-history-length 23)
+(c-setq org-clock-history-length 23)
 ;; Resume clocking task on clock-in if the clock is open
-(setq org-clock-in-resume t)
+(c-setq org-clock-in-resume t)
 ;; Change tasks to NEXT when clocking in
-(setq org-clock-in-switch-to-state 'bh/clock-in-to-next)
+(c-setq org-clock-in-switch-to-state 'bh/clock-in-to-next)
 ;; Separate drawers for clocking and logs
-(setq org-drawers (quote ("PROPERTIES" "LOGBOOK")))
+(c-setq org-drawers (quote ("PROPERTIES" "LOGBOOK")))
 ;; Save clock data and state changes and notes in the LOGBOOK drawer
-(setq org-clock-into-drawer t)
+(c-setq org-clock-into-drawer t)
 ;; Sometimes I change tasks I'm clocking quickly - this removes clocked tasks with 0:00 duration
-(setq org-clock-out-remove-zero-time-clocks t)
+(c-setq org-clock-out-remove-zero-time-clocks t)
 ;; Clock out when moving task to a done state
-(setq org-clock-out-when-done t)
+(c-setq org-clock-out-when-done t)
 ;; Save the running clock and all clock history when exiting Emacs, load it on startup
-(setq org-clock-persist t)
+(c-setq org-clock-persist t)
 ;; Do not prompt to resume an active clock
-(setq org-clock-persist-query-resume nil)
+(c-setq org-clock-persist-query-resume nil)
 ;; Enable auto clock resolution for finding open clocks
-(setq org-clock-auto-clock-resolution (quote when-no-clock-is-running))
+(c-setq org-clock-auto-clock-resolution (quote when-no-clock-is-running))
 ;; Include current clocking task in clock reports
-(setq org-clock-report-include-clocking-task t)
+(c-setq org-clock-report-include-clocking-task t)
 ;; Create globally unique entry IDs when needed
-(setq org-id-link-to-org-use-id t)
+(c-setq org-id-link-to-org-use-id t)
 
-(setq bh/keep-clock-running nil)
+(c-setq bh/keep-clock-running nil)
 
 (defun bh/clock-in-to-next (kw)
   "Switch a task from TODO to NEXT when clocking in.
@@ -1181,7 +1183,7 @@ as the default task."
   "Task ID of default Organization task (for use with bh/clock-in-organization-task-as-default. Must specify manually.")
 
 ;; Reset day at 4 AM, just like Anki.
-(setq org-extend-today-until 4)
+(c-setq org-extend-today-until 4)
 
 (defun bh/clock-in-organization-task-as-default ()
   (interactive)
@@ -1371,23 +1373,23 @@ of occur. The original buffer is not modified.
           (switch-to-buffer occur-buffer-name)))))
 
 ;; Don't insert hard spaces to indent text with heading in Org mode
-(setq org-adapt-indentation nil)
-(setq org-startup-indented t)
+(c-setq org-adapt-indentation nil)
+(c-setq org-startup-indented t)
 
 (require 'org-inlinetask)
 
-(setq org-enforce-todo-dependencies t)
+(c-setq org-enforce-todo-dependencies t)
 
-(setq org-log-done (quote time))
-(setq org-log-redeadline (quote time))
-(setq org-log-reschedule (quote time))
+(c-setq org-log-done (quote time))
+(c-setq org-log-redeadline (quote time))
+(c-setq org-log-reschedule (quote time))
 
 ;;; Week in review (https://emacs.stackexchange.com/a/7864)
 (defvar org-timeline-files nil
   "The files to be included in `org-timeline-all-files'. Follows
   the same rules as `org-agenda-files'")
 
-(setq org-timeline-files org-agenda-files)
+(c-setq org-timeline-files org-agenda-files)
 
 (add-to-list 'org-agenda-custom-commands
              '("R" "Week in review"
@@ -1474,12 +1476,12 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
         next-headline))))
 
 ;; Include agenda archive files when searching for things
-(setq org-agenda-text-search-extra-files (quote (agenda-archives)))
+(c-setq org-agenda-text-search-extra-files (quote (agenda-archives)))
 
 ;; Use sticky agenda's so they persist
-(setq org-agenda-sticky t)
+(c-setq org-agenda-sticky t)
 
-(setq org-list-allow-alphabetical t)
+(c-setq org-list-allow-alphabetical t)
 
 (use-package autorevert
   :diminish auto-revert-mode
@@ -1500,10 +1502,8 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   (add-hook 'prog-mode-hook (lambda () (ws-butler-mode 1))))
 
 ;;; Miscellaneous
-(custom-set-variables
- '(bookmark-default-file
-   (expand-file-name (concat (file-name-as-directory "cache") "bookmarks")
-                     user-emacs-directory)))
+(c-setq bookmark-default-file
+        (expand-file-name "cache/bookmarks" user-emacs-directory))
 
 ;;; Weechat
 (use-package weechat
@@ -1540,14 +1540,14 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 
 ;;; Split window vertically if possible -- this will split vertically if the
 ;;; window is wide enough for the contents of both buffers.
-(setq split-height-threshold nil)
+(c-setq split-height-threshold nil)
 
 ;;; Magit
 (use-package magit
   :init
-  (setq magit-last-seen-setup-instructions "1.4.0")
+  (c-setq magit-last-seen-setup-instructions "1.4.0")
   :config
-  (setq vc-handled-backends (delq 'Git vc-handled-backends)))
+  (c-setq vc-handled-backends (delq 'Git vc-handled-backends)))
 
 
 ;;; https://codearsonist.com/reading-for-programmers
@@ -1556,18 +1556,17 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 (use-package interleave)
 (use-package org-ref
   :config
-  (setq org-ref-notes-directory "~/Documents/org/home-org"
-        org-ref-bibliography-notes "~/Documents/org/home-org/index.org"
-        org-ref-default-bibliography '("~/Documents/org/home-org/index.bib")
-        org-ref-pdf-directory "~/Documents/org/home-org/lib/"))
+  (c-setq org-ref-notes-directory "~/Documents/org/home-org")
+  (c-setq org-ref-bibliography-notes "~/Documents/org/home-org/index.org")
+  (c-setq org-ref-default-bibliography '("~/Documents/org/home-org/index.bib"))
+  (c-setq org-ref-pdf-directory "~/Documents/org/home-org/lib/"))
 (use-package helm-bibtex
   :config
-  (setq helm-bibtex-bibliography "~/Documents/org/home-org/index.bib" ;; where your references are stored
-        helm-bibtex-library-path "~/Documents/org/home-org/lib/" ;; where your pdfs etc are stored
-        helm-bibtex-notes-path "~/Documents/org/home-org/index.org" ;; where your notes are stored
-        bibtex-completion-bibliography "~/Documents/org/home-org/index.bib" ;; writing completion
-        bibtex-completion-notes-path "~/Documents/org/home-org/index.org"))
-
+  (c-setq helm-bibtex-bibliography "~/Documents/org/home-org/index.bib") ;; where your references are stored
+  (c-setq helm-bibtex-library-path "~/Documents/org/home-org/lib/") ;; where your pdfs etc are stored
+  (c-setq helm-bibtex-notes-path "~/Documents/org/home-org/index.org") ;; where your notes are stored
+  (c-setq bibtex-completion-bibliography "~/Documents/org/home-org/index.bib") ;; writing completion
+  (c-setq bibtex-completion-notes-path "~/Documents/org/home-org/index.org"))
 
 ;;; Preserve scratch file across sessions
 (use-package persistent-scratch
