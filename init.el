@@ -1602,8 +1602,9 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 ;;;* Folding
 (defun my-fold-setup ()
   (interactive)
-  (outline-minor-mode)
-  (evil-close-folds))
+  (hs-minor-mode)
+  (hs-hide-all)
+  (diminish 'hs-minor-mode))
 (add-hook 'prog-mode-hook #'my-fold-setup)
 
 ;;;* Storage for variables configured via the interactive 'customize' interface
