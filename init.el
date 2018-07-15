@@ -1573,6 +1573,11 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   :config
   (persistent-scratch-setup-default))
 
+(use-package which-key
+  :ensure t
+  :config
+  (which-key-mode 1))
+
 (defun my-hs-minor-mode-setup ()
   (interactive)
   (hs-minor-mode)
