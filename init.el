@@ -1578,12 +1578,11 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   :config
   (which-key-mode 1))
 
-(defun my-hs-minor-mode-setup ()
+(defun my-fold-setup ()
   (interactive)
-  (hs-minor-mode)
-  (hs-hide-all)
-  (diminish 'hs-minor-mode))
-(add-hook 'prog-mode-hook #'my-hs-minor-mode-setup)
+  (outline-minor-mode)
+  (evil-close-folds))
+(add-hook 'prog-mode-hook #'my-fold-setup)
 
 ;;----------------------------------------------------------------------------
 ;; Variables configured via the interactive 'customize' interface
