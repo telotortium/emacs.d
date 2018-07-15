@@ -1,16 +1,14 @@
-;;; -*- lexical-binding: t; no-byte-compile: t -*-
-;;;
-;;; This file bootstraps the configuration, which is divided into
-;;; a number of other files.
-;;;
+; -*- lexical-binding: t; no-byte-compile: t -*-
+
+;;;* Introduction
+
+;;; This file bootstraps the configuration, which is divided into a number of
+;;; other files.
+
 ;;; Byte compilation is disabled for this file to avoid ever loading stale
 ;;; bytecode. The commands in this file will ensure that stale bytecode is
 ;;; never loaded for other files.
 
-;;; ---------------------------------------------------------------------------
-;;;  Package loading
-;;; ---------------------------------------------------------------------------
-;;; Avoid loading .elc files older than their corresponding .el file.
 (defmacro c-setq (variable value &optional comment)
   "Exactly like setq, but handles custom.
 
@@ -18,7 +16,11 @@ Taken from http://lists.gnu.org/archive/html/emacs-devel/2017-11/msg00119.html."
   `(if (get ',variable 'custom-type)
        (customize-set-variable ',variable ,value ,comment)
      (set-default ',variable ,value)))
-(c-setq load-prefer-newer t)
+
+;;;* gc-cons-threshold
+
+;;; Set this higher in the minibuffer, but don't make it too bad other wise
+;;; you'll figure out quick
 
 (c-setq gc-cons-threshold (* 4 1024 1024) "\
 Set gc-cons-threshold to a higher value. This should be done before
@@ -35,8 +37,13 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
 (add-hook 'minibuffer-setup-hook #'my-minibuffer-setup-hook)
 (add-hook 'minibuffer-exit-hook #'my-minibuffer-exit-hook)
 
-; Fix TLS certificate "could not be verified" errors
-; (http://emacs.stackexchange.com/a/18070).
+;;;* Package loading
+
+;;; Avoid loading .elc files older than their corresponding .el file.
+(c-setq load-prefer-newer t)
+
+;;; Fix TLS certificate "could not be verified" errors
+;;; (http://emacs.stackexchange.com/a/18070).)
 (c-setq gnutls-verify-error t)
 
 (c-setq tls-checktrust 'ask)
@@ -74,9 +81,9 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
   :ensure t
   :ensure epl)
 
-;;; ---------------------------------------------------------------------------
-;;;  Basic startup configuration
-;;; ---------------------------------------------------------------------------
+
+;;;* Basic startup configuration
+
 ;;; Disable startup screen
 (c-setq inhibit-startup-message t)
 
@@ -89,7 +96,7 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
   (unless (server-running-p)
     (server-start)))
 
-;;; Leuven theme
+;;;* Leuven theme
 (use-package leuven-theme
   :custom
   (leuven-scale-outline-headlines nil)
@@ -98,9 +105,8 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
   (load-theme 'leuven-customization t))
 
 
-;;; ---------------------------------------------------------------------------
-;;;  Ivy configuration
-;;; ---------------------------------------------------------------------------
+
+;;;* Ivy configuration
 (use-package counsel
   :diminish ivy-mode
   :diminish counsel-mode
@@ -127,9 +133,8 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
   (global-set-key (kbd "C-x b") 'ivy-switch-buffer)
   (define-key read-expression-map (kbd "C-r") 'counsel-expression-history))
 
-;;; ---------------------------------------------------------------------------
-;;;  Evil configuration
-;;; ---------------------------------------------------------------------------
+;;;* Evil configuration
+
 ;; Space as leader
 (use-package evil-leader
   :config
@@ -209,6 +214,8 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
          ("C-c +" . evil-numbers/inc-at-pt)
          ("C-c -" . evil-numbers/dec-at-pt)
          ("C-c _" . evil-numbers/dec-at-pt)))
+
+;;;* Miscellaneous
 
 ;; Make default encoding UTF-8 everywhere
 (c-setq current-language-environment "UTF-8")
@@ -457,9 +464,8 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
   (add-hook 'slime-repl-mode-hook 'override-slime-repl-bindings-with-paredit)
   (slime-setup '(slime-fancy slime-banner)))
 
-;;; ---------------------------------------------------------------------------
-;;;  Org configuration
-;;; ---------------------------------------------------------------------------
+
+;;;* Org configuration
 (use-package org
   :ensure org-plus-contrib
   :ensure htmlize                       ; For org-publish
@@ -471,6 +477,8 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
 (global-set-key "\C-cc" 'org-capture)
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-cq" 'org-occur-in-agenda-files)
+
+;;;** Org capture
 
 ;;; Kill the frame if one was created for the capture (see
 ;;; https://github.com/sprig/org-capture-extension#example-closins-the-frame-after-a-capture).
@@ -593,7 +601,7 @@ Source: [[%:link][%:description]]
 (c-setq org-use-sub-superscripts '{})
 
 
-;; Todo settings
+;;;** Todo settings
 (c-setq org-todo-keywords
       (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
               (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING"))))
@@ -614,6 +622,7 @@ Source: [[%:link][%:description]]
               ("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
               ("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
               ("DONE" ("WAITING") ("CANCELLED") ("HOLD")))))
+;;;** Agenda
 
 ;; Don't show tasks in agenda that are done
 (c-setq org-agenda-skip-scheduled-if-done t)
@@ -698,6 +707,8 @@ Source: [[%:link][%:description]]
 (run-at-time "00:59" 900 'org-save-all-org-buffers)
 
 
+;;;** Supersession
+
 ;;; Add option to merge current buffer and file on disk using emerge if both
 ;;; buffer and disk have changed.
 (defadvice ask-user-about-supersession-threat (around ediff-supersession-threat)
@@ -762,6 +773,8 @@ to get the latest version of the file, then make the change again.")
 (when (and (fboundp 'daemonp) (daemonp))
   (add-hook 'org-mode-hook 'org-column-view-uses-fixed-width-face))
 
+;;;** Idle time
+
 ;;; Make idle time more accurate on Linux (X idle time rather than just Emacs
 ;;; idle time)
 (c-setq org-clock-idle-time 15)
@@ -772,6 +785,8 @@ to get the latest version of the file, then make the change again.")
       (display-warning
        'environment
        "xprintidle should be installed for accurate idle time on Linux."))))
+
+;;;** Notifications
 
 ;;; Enable notifications on OS X using the terminal-notifier program.
 (defvar terminal-notifier-command
@@ -835,7 +850,7 @@ to get the latest version of the file, then make the change again.")
 
 (c-setq org-indirect-buffer-display 'current-window)
 
-;;; Org-drill
+;;;** Org-drill
 (use-package org-drill
   :ensure org-plus-contrib
   :ensure nil
@@ -851,6 +866,7 @@ to get the latest version of the file, then make the change again.")
   (c-setq org-drill-learn-fraction 0.3))
 (load-file (expand-file-name "lisp/org-clock-fix.el" user-emacs-directory))
 
+;;;** Org-pomodoro
 (use-package org-pomodoro
   :ensure t
   :ensure s
@@ -1050,7 +1066,7 @@ TAG is chosen interactively from the global tags completion table."
 (add-hook 'org-ctrl-c-ctrl-c-hook #'air-org-set-tags-ctrl-c-ctrl-c-hook)
 (org-defkey org-mode-map (kbd "C-c C-q") #'air-org-set-tags)
 
-;;; Org-gcal
+;;;** Org-gcal
 (use-package alert
   :config
   (c-setq alert-default-style
@@ -1070,9 +1086,11 @@ TAG is chosen interactively from the global tags completion table."
   (when (file-exists-p org-gcal-config-file)
     (load org-gcal-config-file)))
 
-;;;; Stolen from http://doc.norang.ca/org-mode.html#Clocking
-;;;; bh/organization-task-id changed.
-;;
+;;;** Norang configuration
+
+;; Stolen from http://doc.norang.ca/org-mode.html#Clocking
+;; bh/organization-task-id changed.
+
 ;; Resume clocking task when emacs is restarted
 (org-clock-persistence-insinuate)
 ;;
@@ -1483,17 +1501,19 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 
 (c-setq org-list-allow-alphabetical t)
 
+;;;* Autorevert
 (use-package autorevert
   :diminish auto-revert-mode
   :config (global-auto-revert-mode t))
 
+;;;* Flyspell
 (use-package flyspell
   :diminish flyspell-mode
   :config
   (add-hook 'text-mode-hook 'flyspell-mode 'append)
   (add-hook 'prog-mode-hook 'flyspell-prog-mode 'append))
 
-;;; Remove trailing whitespace intelligently
+;;;* Remove trailing whitespace intelligently
 (use-package ws-butler
   :diminish ws-butler-mode
   :commands ws-butler-mode
@@ -1501,7 +1521,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   (add-hook 'text-mode-hook (lambda () (ws-butler-mode 1)))
   (add-hook 'prog-mode-hook (lambda () (ws-butler-mode 1))))
 
-;;; Miscellaneous
+;;;* Miscellaneous
 (c-setq bookmark-default-file
         (expand-file-name "cache/bookmarks" user-emacs-directory))
 
@@ -1542,7 +1562,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 ;;; window is wide enough for the contents of both buffers.
 (c-setq split-height-threshold nil)
 
-;;; Magit
+;;;* Magit
 (use-package magit
   :init
   (c-setq magit-last-seen-setup-instructions "1.4.0")
@@ -1550,7 +1570,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   (c-setq vc-handled-backends (delq 'Git vc-handled-backends)))
 
 
-;;; https://codearsonist.com/reading-for-programmers
+;;;* https://codearsonist.com/reading-for-programmers
 (use-package pdf-tools)
 (pdf-tools-install)
 (use-package interleave)
@@ -1568,31 +1588,29 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   (c-setq bibtex-completion-bibliography "~/Documents/org/home-org/index.bib") ;; writing completion
   (c-setq bibtex-completion-notes-path "~/Documents/org/home-org/index.org"))
 
-;;; Preserve scratch file across sessions
+;;;* Preserve scratch file across sessions
 (use-package persistent-scratch
   :config
   (persistent-scratch-setup-default))
 
+;;;* which-key
 (use-package which-key
   :ensure t
   :config
   (which-key-mode 1))
 
+;;;* Folding
 (defun my-fold-setup ()
   (interactive)
   (outline-minor-mode)
   (evil-close-folds))
 (add-hook 'prog-mode-hook #'my-fold-setup)
 
-;;----------------------------------------------------------------------------
-;; Variables configured via the interactive 'customize' interface
-;;----------------------------------------------------------------------------
+;;;* Storage for variables configured via the interactive 'customize' interface
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file t)
 
-;;----------------------------------------------------------------------------
-;; Subfiles
-;;----------------------------------------------------------------------------
+;;;* Subfiles
 (use-package whitespace-conf
   :ensure nil
   :load-path "~/.emacs.d/lisp")
@@ -1600,7 +1618,13 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   :ensure nil
   :load-path "~/.emacs.d/lisp")
 
+;;;* Local configuration
+
 ;;; Allow users to provide an optional "init-local" containing personal settings
 (use-package init-local
   :ensure nil
   :load-path "~/.emacs.d/lisp")
+
+;;; Local Variables:
+;;; outline-regexp: ";;;\\*+\\|\\`"
+;;; End:
