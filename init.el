@@ -935,7 +935,8 @@ to get the latest version of the file, then make the change again.")
         (org-notify msg))))
   (defun my-org-pomodoro-short-break-finished-punch-in ()
     "Run bh/punch-in when Pomodoro short breaks end."
-    (bh/punch-in nil))
+    (when (y-or-n-p "Break finished?")
+      (bh/punch-in nil)))
   (defun my-org-pomodoro-long-break-finished-punch-out ()
     "Run bh/punch-out when Pomodoro long breaks end."
     (bh/punch-out))
