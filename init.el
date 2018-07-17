@@ -104,8 +104,6 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
   (load-theme 'leuven t)
   (load-theme 'leuven-customization t))
 
-
-
 ;;;* Ivy configuration
 (use-package counsel
   :diminish ivy-mode
@@ -1607,6 +1605,19 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   (hs-hide-all)
   (diminish 'hs-minor-mode))
 (add-hook 'prog-mode-hook #'my-fold-setup)
+
+;;;* Elfeed
+(use-package elfeed
+  :after evil
+  :custom
+  (elfeed-feeds
+   '("http://nullprogram.com/feed/"
+     "http://www.terminally-incoherent.com/blog/feed/"
+     "https://news.ycombinator.com/rss"
+     "https://www.reddit.com/r/oilshell/.rss"))
+  :config
+  (add-to-list 'evil-emacs-state-modes 'elfeed-search-mode)
+  (add-to-list 'evil-emacs-state-modes 'elfeed-show-mode))
 
 ;;;* Storage for variables configured via the interactive 'customize' interface
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
