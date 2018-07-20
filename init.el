@@ -973,19 +973,43 @@ to get the latest version of the file, then make the change again.")
        my-org-pomodoro-alarm-gcal-client-id
        my-org-pomodoro-alarm-gcal-client-secret
        org-pomodoro-end-time)))
-  (defun my-org-pomodoro--create-alarm-event (calendar-url client-id client-secret time)
-    (let* ((time-iso (format-time-string "%FT%T%z" time))
-           (org-gcal-client-id client-id)
-           (org-gcal-client-secret client-secret)
-           (org-gcal-file-alist `((,calendar-url . nil)))
-           (org-gcal-tokens-plist nil))
-      (org-gcal--ensure-token calendar-url)
-      (org-gcal--post-event time-iso time-iso "org-pomodoro break end -- get back to work!"
-                            nil nil calendar-url calendar-url
-                            ;; skip import and export to avoid attempting to
-                            ;; perform I/O using the NIL file in
-                            ;; ORG-GCAL-FILE-ALIST.
-                            nil nil 'skip-import 'skip-export)))
+  (defvar my-org-pomodoro--create-alarm-event-temp-files '()
+    "Alist mapping calendar IDs to temporary files created by
+my-org-pomodoro--create-alarm-event. Temporary files are deleted by
+my-org-pomodoro--remove-temp-files-hook when Emacs exits.")
+  (defun my-org-pomodoro--remove-temp-files-hook ()
+    (cl-loop for x in my-org-pomodoro--create-alarm-event-temp-files
+             do
+             (delete-file (cdr x))))
+  (add-hook 'kill-emacs-hook #'my-org-pomodoro--remove-temp-files-hook)
+  (defun my-org-pomodoro--create-alarm-event (calendar-id client-id client-secret time)
+    (let* ((temp-file
+            (let ((x (assoc calendar-id
+                            my-org-pomodoro--create-alarm-event-temp-files)))
+              (if (null x)
+                  (progn
+                    (let ((f (make-temp-file "my-org-pomodoro--create-alarm-event")))
+                      (add-to-list 'my-org-pomodoro--create-alarm-event-temp-files
+                                   (cons calendar-id f))
+                      f))
+                (cdr x))))
+           (buffer (find-file-noselect temp-file 'nowarn)))
+      (with-current-buffer buffer
+        (let* ((time-iso (format-time-string "%FT%T%z" time))
+               (org-gcal-client-id client-id)
+               (org-gcal-client-secret client-secret)
+               (org-gcal-file-alist `((,calendar-id . ,temp-file)))
+               (org-gcal-token-file (format "%s-%s" org-gcal-token-file calendar-id))
+               (org-gcal-token-plist nil))
+          (org-gcal--ensure-token)
+          (message "current buffer: %s" (current-buffer))
+          (org-gcal--post-event time-iso time-iso
+                                "org-pomodoro break end -- get back to work!"
+                                nil nil calendar-id
+                                ;; skip import and export to avoid attempting to
+                                ;; perform I/O using the NIL file in
+                                ;; ORG-GCAL-FILE-ALIST.
+                                nil nil 'skip-import 'skip-export)))))
 
   (add-hook 'org-pomodoro-finished-hook #'my-org-pomodoro-finished-notify-hook)
   (add-hook 'org-pomodoro-finished-hook #'my-org-pomodoro-finished-lock-screen)
