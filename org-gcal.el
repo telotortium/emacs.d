@@ -119,6 +119,44 @@ Predicate functions take an event, and if they return nil the
 
 (defconst org-gcal-events-url "https://www.googleapis.com/calendar/v3/calendars/%s/events")
 
+(defvar org-gcal--dynamic-variables
+  (apropos-internal "^org-gcal-.*" (lambda (sym) (boundp sym)))
+  "List of dynamic variables defined by org-gcal.")
+
+(defmacro org-gcal--with-saved-state (state &rest body)
+  "Save all the dynamic variables defined by org-gcal into the STATE variable
+and then execute the BODY forms. The STATE is meant to be restored in callbacks
+called asynchronously inside this macro by URL-RETRIEVE and similar functions.
+To do so, call ORG-GCAL--WITH-RESTORED-STATE inside the function definitions
+for those tasks. Example:
+
+(org-gcal--with-saved-state
+  state
+  (oauth2-url-retrieve
+   (org-gcal-auth)
+   URL
+   (lambda (status)
+    (org-gcal--with-restored-state
+     state
+     ...))
+   nil
+   ...))"
+  `(let ((,state
+          (list
+           ,@(mapcar (lambda (sym) `(cons ',sym (symbol-value ',sym)))
+                     org-gcal--dynamic-variables))))
+     ,@body))
+
+(defmacro org-gcal--with-restored-state (state &rest body)
+  "Restore the dynamic variables saved in STATE by ORG-GCAL--WITH-SAVED-STATE
+while executing the BODY forms."
+  (let ((state-var (make-symbol "state")))
+    `(let* ((,state-var ,state)
+            ,@(mapcar (lambda (sym) `(,sym (cdr (assoc ',sym ,state-var))))
+                      org-gcal--dynamic-variables)
+            )
+       ,@body)))
+
 (defun org-gcal-auth ()
   "Authorize."
   (oauth2-auth-and-store org-gcal-auth-url
