@@ -939,8 +939,8 @@ to get the latest version of the file, then make the change again.")
     "Run bh/punch-out when Pomodoro long breaks end."
     (bh/punch-out))
 
-  (defvar my-org-pomodoro-alarm-gcal-calendar-url nil
-    "The Google Calendar URL on which to create alarms.")
+  (defvar my-org-pomodoro-alarm-gcal-calendar-id nil
+    "The Google Calendar ID on which to create alarms.")
   (defvar my-org-pomodoro-alarm-gcal-client-id nil
     "The Google Calendar API Client ID to use to create alarms.")
   (defvar my-org-pomodoro-alarm-gcal-client-secret nil
@@ -965,11 +965,11 @@ to get the latest version of the file, then make the change again.")
                ;; Current break has not ended yet.
                (> (float-time (time-subtract org-pomodoro-end-time (current-time)))
                   0)
-               my-org-pomodoro-alarm-gcal-calendar-url
+               my-org-pomodoro-alarm-gcal-calendar-id
                my-org-pomodoro-alarm-gcal-client-id
                my-org-pomodoro-alarm-gcal-client-secret)
       (my-org-pomodoro--create-alarm-event
-       my-org-pomodoro-alarm-gcal-calendar-url
+       my-org-pomodoro-alarm-gcal-calendar-id
        my-org-pomodoro-alarm-gcal-client-id
        my-org-pomodoro-alarm-gcal-client-secret
        org-pomodoro-end-time)))
