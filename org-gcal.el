@@ -495,7 +495,7 @@ TO.  Instead an empty string is returned."
 
 (defun org-gcal-end-date (time)
   (if (< 11 (length time))
-      `("end" ("dateTime" .  nil) ("date" .  nil))
+      `("end" ("dateTime" . ,time) ("date" .  nil))
     `("end" ("date" .  ,(org-gcal--iso-next-day time)) ("dateTime" .  nil))))
 
 (defun org-gcal--post-event (start end smry loc desc &optional id)
