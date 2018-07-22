@@ -178,7 +178,7 @@ to non-nil to inhibit notifications."
                  finally
                  (kill-buffer buf))
         (sit-for 2)
-        (org-gcal-sync t t)))
+        (org-gcal-sync t)))
     (erase-buffer)
     (let ((items (org-gcal--filter (plist-get data :items ))))
 		  (if (assoc (car x) org-gcal-header-alist)
@@ -243,7 +243,7 @@ filter returns NIL, discard the item."
                                   (lambda (hl) (org-element-property :end hl)))))))))))
 
 ;;;###autoload
-(defun org-gcal-post-at-point (&optional skip-import)
+(defun org-gcal-post-at-point ()
   "Post entry at point to current calendar.
 If SKIP-IMPORT is not nil, do not import events from the
 current calendar."
@@ -251,8 +251,7 @@ current calendar."
   (save-excursion
     (end-of-line)
     (org-back-to-heading)
-    (let* ((skip-import skip-import)
-           (elem (org-element-headline-parser (point-max) t))
+    (let* ((elem (org-element-headline-parser (point-max) t))
            (tobj (progn (re-search-forward "<[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]"
                                            (save-excursion (outline-next-heading) (point)))
                         (goto-char (match-beginning 0))
@@ -285,7 +284,7 @@ current calendar."
 				 (buffer-substring-no-properties
 				  (plist-get (cadr elem) :contents-begin)
 				  (plist-get (cadr elem) :contents-end))))) "")))
-      (org-gcal--post-event start end smry loc desc id nil skip-import))))
+      (org-gcal--post-event start end smry loc desc id))))
 
 ;;;###autoload
 (defun org-gcal-delete-at-point ()
@@ -499,10 +498,9 @@ TO.  Instead an empty string is returned."
       `("end" ("dateTime" .  nil) ("date" .  nil))
     `("end" ("date" .  ,(org-gcal--iso-next-day time)) ("dateTime" .  nil))))
 
-(defun org-gcal--post-event (start end smry loc desc &optional id a-token skip-import skip-export)
+(defun org-gcal--post-event (start end smry loc desc &optional id)
   (let ((method (if id "PATCH" "POST"))
-        (id (or id ""))
-        b)
+        (id (or id "")))
     (oauth2-url-retrieve
      (org-gcal-auth)
      (concat (format org-gcal-events-url (org-gcal--get-calendar-id-of-buffer)) "/" id)
