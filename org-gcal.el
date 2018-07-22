@@ -136,10 +136,10 @@ Predicate functions take an event, and if they return nil the
       (org-gcal--sync cal (json-read) skip-export))))
 
 ;;;###autoload
-(defun org-gcal-sync (&optional a-token skip-export silent)
+(defun org-gcal-sync (&optional skip-export)
   "Import events from calendars.
-Using A-TOKEN and export the ones to the calendar if unless
-SKIP-EXPORT.  Set SILENT to non-nil to inhibit notifications."
+Export the ones to the calendar unless SKIP-EXPORT.  Set SILENT
+to non-nil to inhibit notifications."
   (interactive)
   ;; (org-gcal--ensure-token)
   (when org-gcal-auto-archive
@@ -179,7 +179,7 @@ SKIP-EXPORT.  Set SILENT to non-nil to inhibit notifications."
                  finally
                  (kill-buffer buf))
         (sit-for 2)
-        (org-gcal-sync nil t t)))
+        (org-gcal-sync t t)))
     (erase-buffer)
     (let ((items (org-gcal--filter (plist-get data :items ))))
 		  (if (assoc (car x) org-gcal-header-alist)
@@ -204,7 +204,7 @@ SKIP-EXPORT.  Set SILENT to non-nil to inhibit notifications."
 (defun org-gcal-fetch ()
   "Fetch event data from google calendar."
   (interactive)
-  (org-gcal-sync nil t))
+  (org-gcal-sync t))
 
 (defun org-gcal--filter (items)
   "Filter ITEMS on an AND of `org-gcal-fetch-event-filters' functions.
