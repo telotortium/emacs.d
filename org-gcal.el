@@ -180,9 +180,9 @@ to non-nil to inhibit notifications."
         (sit-for 2)
         (org-gcal-sync t)))
     (erase-buffer)
-    (let ((items (org-gcal--filter (plist-get data :items ))))
-		  (if (assoc (car x) org-gcal-header-alist)
-			    (insert (cdr (assoc (car x) org-gcal-header-alist))))
+    (let ((items (org-gcal--filter (plist-get data :items))))
+      (if (assoc (car x) org-gcal-header-alist)
+          (insert (cdr (assoc (car x) org-gcal-header-alist))))
       (insert
        (mapconcat 'identity
                   (mapcar (lambda (lst)
@@ -224,7 +224,7 @@ filter returns NIL, discard the item."
   (let ((buf (find-file-noselect file)))
     (with-current-buffer buf
       (org-element-map (org-element-parse-buffer) 'headline
-                              (lambda (hl) (org-element-property :begin hl))))))
+        (lambda (hl) (org-element-property :begin hl))))))
 
 (defun org-gcal--parse-id (file)
   "Return a list of conses (ID . entry) of file FILE."
@@ -240,7 +240,7 @@ filter returns NIL, discard the item."
                                (buffer-substring-no-properties
                                 pos
                                 (car (org-element-map (org-element-at-point) 'headline
-                                  (lambda (hl) (org-element-property :end hl)))))))))))
+                                       (lambda (hl) (org-element-property :end hl)))))))))))
 
 ;;;###autoload
 (defun org-gcal-post-at-point ()
@@ -277,13 +277,13 @@ current calendar."
                    t)))
            (desc  (if (plist-get (cadr elem) :contents-begin)
                       (replace-regexp-in-string "^✱" "*"
-			       (replace-regexp-in-string
-				"\\`\\(?: *<[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9].*?>$\\)\n?\n?" ""
-				(replace-regexp-in-string
-				 " *:PROPERTIES:\n  \\(.*\\(?:\n.*\\)*?\\) :END:\n\n" ""
-				 (buffer-substring-no-properties
-				  (plist-get (cadr elem) :contents-begin)
-				  (plist-get (cadr elem) :contents-end))))) "")))
+                                                (replace-regexp-in-string
+                                                 "\\`\\(?: *<[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9].*?>$\\)\n?\n?" ""
+                                                 (replace-regexp-in-string
+                                                  " *:PROPERTIES:\n  \\(.*\\(?:\n.*\\)*?\\) :END:\n\n" ""
+                                                  (buffer-substring-no-properties
+                                                   (plist-get (cadr elem) :contents-begin)
+                                                   (plist-get (cadr elem) :contents-end))))) "")))
       (org-gcal--post-event start end smry loc desc id))))
 
 ;;;###autoload
@@ -466,9 +466,9 @@ TO.  Instead an empty string is returned."
                   (if (< 11 (length end))
                       end
                     (org-gcal--iso-previous-day end)))))) "\n"
-		    (when desc "\n")
-		    (when desc (replace-regexp-in-string "^\*" "✱" desc))
-		    (when desc (if (string= "\n" (org-gcal--safe-substring desc -1)) "" "\n")))))
+     (when desc "\n")
+     (when desc (replace-regexp-in-string "^\*" "✱" desc))
+     (when desc (if (string= "\n" (org-gcal--safe-substring desc -1)) "" "\n")))))
 
 (defun org-gcal--format-date (str format &optional tz)
   (let* ((plst (org-gcal--parse-date str))
@@ -489,7 +489,7 @@ TO.  Instead an empty string is returned."
                   (buffer-name))))
 
 (defun org-gcal-start-date (time)
-    (if (< 11 (length time))
+  (if (< 11 (length time))
       `("start" ("dateTime" .  ,time) ("date" .  nil))
     `("start" ("date" .  ,time) ("dateTime" .  nil))))
 
