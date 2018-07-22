@@ -185,15 +185,20 @@ to non-nil to inhibit notifications."
           (find-file-noselect (cdr i))
         (org-gcal--archive-old-event))))
   (dolist (cal org-gcal-file-alist)
-    (let ((b (oauth2-url-retrieve
-              (org-gcal-auth)
-              (format "%s?%s"
-                      (format org-gcal-events-url (first cal))
-                      (format "singleEvents=True&orderBy=startTime&timeMin=%s&timeMax=%s"
-                              (org-gcal--subtract-time)
-                              (org-gcal--add-time)))
-              'rgc-cb
-              (list cal skip-export)))))))
+    (org-gcal--with-saved-state
+     state
+     (let ((b (oauth2-url-retrieve
+               (org-gcal-auth)
+               (format "%s?%s"
+                       (format org-gcal-events-url (first cal))
+                       (format "singleEvents=True&orderBy=startTime&timeMin=%s&timeMax=%s"
+                               (org-gcal--subtract-time)
+                               (org-gcal--add-time)))
+               (lambda (status cal skip-export)
+                 (org-gcal--with-restored-state
+                  state
+                  (rgc-cb status cal skip-export)))
+               (list cal skip-export))))))))
 
 (defun org-gcal--sync (x data &optional skip-export)
   "An X. Also data."
@@ -539,33 +544,43 @@ TO.  Instead an empty string is returned."
 (defun org-gcal--post-event (start end smry loc desc &optional id)
   (let ((method (if id "PATCH" "POST"))
         (id (or id "")))
-    (oauth2-url-retrieve
-     (org-gcal-auth)
-     (concat (format org-gcal-events-url (org-gcal--get-calendar-id-of-buffer)) "/" id)
-     (lambda (status) (org-gcal-fetch))
-     nil
-     method
-     (encode-coding-string
-      (json-encode `(,(org-gcal-start-date start)
-                     ,(org-gcal-end-date end)
-                     ("summary" . ,smry)
-                     ("location" . ,loc)
-                     ("description" . ,desc)))
-      'utf-8)
-     '(("Content-Type" . "application/json")))))
+    (org-gcal--with-saved-state
+     state
+     (oauth2-url-retrieve
+      (org-gcal-auth)
+      (concat (format org-gcal-events-url (org-gcal--get-calendar-id-of-buffer)) "/" id)
+      (lambda (status)
+        (org-gcal--with-restored-state
+         state
+         (org-gcal-fetch)))
+      nil
+      method
+      (encode-coding-string
+       (json-encode `(,(org-gcal-start-date start)
+                      ,(org-gcal-end-date end)
+                      ("summary" . ,smry)
+                      ("location" . ,loc)
+                      ("description" . ,desc)))
+       'utf-8)
+      '(("Content-Type" . "application/json"))))))
 
 (defun org-gcal--delete-event (event-id)
   "EVENT-ID is nice."
   (interactive)
-  (oauth2-url-retrieve
-   (rgc-auth)
-   (format "%s/%s"
-           (format org-gcal-events-url
-                   (org-gcal--get-calendar-id-of-buffer))
-           event-id)
-   (lambda (status) (org-gcal-fetch))
-   nil
-   "DELETE"))
+  (org-gcal--with-saved-state
+   state
+   (oauth2-url-retrieve
+    (rgc-auth)
+    (format "%s/%s"
+            (format org-gcal-events-url
+                    (org-gcal--get-calendar-id-of-buffer))
+            event-id)
+    (lambda (status)
+      (org-gcal--with-restored-state
+       state
+       (org-gcal-fetch)))
+    nil
+    "DELETE")))
 
 
 (defun org-gcal--capture-post ()
