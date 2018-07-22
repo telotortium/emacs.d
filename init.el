@@ -787,9 +787,10 @@ to get the latest version of the file, then make the change again.")
 ;;;** Notifications
 
 ;;; Enable notifications on OS X using the terminal-notifier program.
-(defvar terminal-notifier-command
+(defcustom terminal-notifier-command
   (executable-find "terminal-notifier")
-  "The path to terminal-notifier.")
+  "The path to terminal-notifier."
+  :type file)
 (defun terminal-notifier-notify (title message &optional timeout)
   "Show a message with `terminal-notifier-command`."
   (let ((timeout (number-to-string (if timeout timeout 60))))
@@ -877,8 +878,9 @@ to get the latest version of the file, then make the change again.")
     (setq org-pomodoro-end-time
           (time-add (current-time) (* minutes 60))))
 
-  (defvar my-org-pomodoro-break-id nil
-    "Task ID of task to clock into during Pomodoro breaks. Must specify manually.")
+  (defcustom my-org-pomodoro-break-id nil
+    "Task ID of task to clock into during Pomodoro breaks. Must specify manually."
+    :type 'string)
   (defun my-org-pomodoro-finished-lock-screen ()
     "Lock screen at the end of each Pomodoro work session."
     (message "Locking screen in 3 seconds")
@@ -939,14 +941,18 @@ to get the latest version of the file, then make the change again.")
     "Run bh/punch-out when Pomodoro long breaks end."
     (bh/punch-out))
 
-  (defvar my-org-pomodoro-alarm-gcal-calendar-id nil
-    "The Google Calendar ID on which to create alarms.")
-  (defvar my-org-pomodoro-alarm-gcal-client-id nil
-    "The Google Calendar API Client ID to use to create alarms.")
-  (defvar my-org-pomodoro-alarm-gcal-client-secret nil
-    "The Google Calendar API Client Secret to use to create alarms.")
-  (defvar my-org-pomodoro-current-task-reminder-interval 60
-    "Number of seconds between being notified of the current task. Set to nil to disable notifications")
+  (defcustom my-org-pomodoro-alarm-gcal-calendar-id nil
+    "The Google Calendar ID on which to create alarms."
+    :type 'string)
+  (defcustom my-org-pomodoro-alarm-gcal-client-id nil
+    "The Google Calendar API Client ID to use to create alarms."
+    :type 'string)
+  (defcustom my-org-pomodoro-alarm-gcal-client-secret nil
+    "The Google Calendar API Client Secret to use to create alarms."
+    :type 'string)
+  (defcustom my-org-pomodoro-current-task-reminder-interval 60
+    "Number of seconds between being notified of the current task. Set to nil to disable notifications"
+    :type 'number)
   (defun my-org-pomodoro-tick-current-task-reminder ()
     "Prod me with reminders of my current task to stop me from being distracted."
     (let* ((x (cl-floor (float-time (time-subtract org-pomodoro-end-time
@@ -1021,8 +1027,9 @@ my-org-pomodoro--remove-temp-files-hook when Emacs exits.")
   (add-hook 'org-pomodoro-short-break-finished-hook #'my-org-pomodoro-short-break-finished-punch-in)
   (add-hook 'org-pomodoro-long-break-finished-hook #'my-org-pomodoro-long-break-finished-punch-out))
 
-(defvar distraction-id nil
-  "Task ID of task to clock into for distracting tasks (Hacker News, Reddit, etc.). Must specify manually.")
+(defcustom distraction-id nil
+  "Task ID of task to clock into for distracting tasks (Hacker News, Reddit, etc.). Must specify manually."
+  :type 'string)
 (defun distraction-clock-in ()
   "Start distracted time."
   (interactive)
@@ -1220,8 +1227,9 @@ as the default task."
           (when bh/keep-clock-running
             (bh/clock-in-default-task)))))))
 
-(defvar bh/organization-task-id nil
-  "Task ID of default Organization task (for use with bh/clock-in-organization-task-as-default. Must specify manually.")
+(defcustom bh/organization-task-id nil
+  "Task ID of default Organization task (for use with bh/clock-in-organization-task-as-default. Must specify manually."
+  :type 'string)
 
 ;; Reset day at 4 AM, just like Anki.
 (c-setq org-extend-today-until 4)
@@ -1426,9 +1434,10 @@ of occur. The original buffer is not modified.
 (c-setq org-log-reschedule (quote time))
 
 ;;; Week in review (https://emacs.stackexchange.com/a/7864)
-(defvar org-timeline-files nil
+(defcustom org-timeline-files nil
   "The files to be included in `org-timeline-all-files'. Follows
-  the same rules as `org-agenda-files'")
+  the same rules as `org-agenda-files'"
+  :type 'sexp)
 
 (c-setq org-timeline-files org-agenda-files)
 
