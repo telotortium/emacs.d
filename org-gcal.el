@@ -130,10 +130,9 @@ Predicate functions take an event, and if they return nil the
 
 (defun rgc-cb (b cal skip-export)
   (interactive)
-  (with-current-buffer b
-    ;; (search-forward "\n\n")
-    (let ((json-object-type 'plist))
-      (org-gcal--sync cal (json-read) skip-export))))
+  (search-forward "\n\n")
+  (let ((json-object-type 'plist))
+    (org-gcal--sync cal (json-read) skip-export)))
 
 ;;;###autoload
 (defun org-gcal-sync (&optional skip-export)
@@ -147,16 +146,16 @@ to non-nil to inhibit notifications."
       (with-current-buffer
           (find-file-noselect (cdr i))
         (org-gcal--archive-old-event))))
-  (mapc (lambda (cal)
-          (let ((b (oauth2-url-retrieve-synchronously
-                    (org-gcal-auth)
-                    (format "%s?%s"
-                            (format org-gcal-events-url (first cal))
-                            (format "singleEvents=True&orderBy=startTime&timeMin=%s&timeMax=%s"
-                                    (org-gcal--subtract-time)
-                                    (org-gcal--add-time))))))
-            (rgc-cb b cal skip-export)))
-        org-gcal-file-alist))
+  (dolist (cal org-gcal-file-alist)
+    (let ((b (oauth2-url-retrieve
+              (org-gcal-auth)
+              (format "%s?%s"
+                      (format org-gcal-events-url (first cal))
+                      (format "singleEvents=True&orderBy=startTime&timeMin=%s&timeMax=%s"
+                              (org-gcal--subtract-time)
+                              (org-gcal--add-time)))
+              'rgc-cb
+              (list cal skip-export)))))))
 
 (defun org-gcal--sync (x data &optional skip-export)
   "An X. Also data."
@@ -504,31 +503,33 @@ TO.  Instead an empty string is returned."
   (let ((method (if id "PATCH" "POST"))
         (id (or id ""))
         b)
-    (setq b (oauth2-url-retrieve-synchronously
-      (org-gcal-auth)
-      (concat (format org-gcal-events-url (org-gcal--get-calendar-id-of-buffer)) "/" id)
-      method
-      (encode-coding-string
-       (json-encode `(,(org-gcal-start-date start)
-                      ,(org-gcal-end-date end)
-                      ("summary" . ,smry)
-                      ("location" . ,loc)
-                      ("description" . ,desc)))
-       'utf-8)
-      '(("Content-Type" . "application/json"))))
-    (org-gcal-fetch)))
+    (oauth2-url-retrieve
+     (org-gcal-auth)
+     (concat (format org-gcal-events-url (org-gcal--get-calendar-id-of-buffer)) "/" id)
+     (lambda (status) (org-gcal-fetch))
+     nil
+     method
+     (encode-coding-string
+      (json-encode `(,(org-gcal-start-date start)
+                     ,(org-gcal-end-date end)
+                     ("summary" . ,smry)
+                     ("location" . ,loc)
+                     ("description" . ,desc)))
+      'utf-8)
+     '(("Content-Type" . "application/json")))))
 
 (defun org-gcal--delete-event (event-id)
   "EVENT-ID is nice."
   (interactive)
-  (oauth2-url-retrieve-synchronously
+  (oauth2-url-retrieve
    (rgc-auth)
    (format "%s/%s"
            (format org-gcal-events-url
                    (org-gcal--get-calendar-id-of-buffer))
            event-id)
-   "DELETE")
-  (org-gcal-fetch))
+   (lambda (status) (org-gcal-fetch))
+   nil
+   "DELETE"))
 
 
 (defun org-gcal--capture-post ()
