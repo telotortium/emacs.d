@@ -1007,11 +1007,15 @@ my-org-pomodoro--remove-temp-files-hook when Emacs exits.")
                (org-gcal-file-alist `((,calendar-id . ,temp-file)))
                (org-gcal-token-file (format "%s-%s" org-gcal-token-file calendar-id))
                (org-gcal-token-plist nil))
-          ;; (org-gcal--ensure-token)
+          (org-gcal--ensure-token)
           (message "current buffer: %s" (current-buffer))
           (org-gcal--post-event time-iso time-iso
                                 "org-pomodoro break end -- get back to work!"
-                                nil nil nil)))))
+                                nil nil calendar-id
+                                ;; skip import and export to avoid attempting to
+                                ;; perform I/O using the NIL file in
+                                ;; ORG-GCAL-FILE-ALIST.
+                                nil nil 'skip-import 'skip-export)))))
 
   (add-hook 'org-pomodoro-finished-hook #'my-org-pomodoro-finished-notify-hook)
   (add-hook 'org-pomodoro-finished-hook #'my-org-pomodoro-finished-lock-screen)
@@ -1101,19 +1105,10 @@ TAG is chosen interactively from the global tags completion table."
               ((eq system-type 'darwin)
                'osx-notifier)
               (t 'message))))
-(eval-when-compile
- ;; Squelch byte compilation warnings from oauth2 (used by org-gcal) - see
- ;; https://emacs.stackexchange.com/a/37042/17182.
- (defvar url-http-method nil)
- (defvar url-http-data nil)
- (defvar url-http-extra-headers nil)
- (defvar oauth--token-data nil)
- (defvar url-callback-function nil)
- (defvar url-callback-arguments nil))
 (use-package org-gcal
   :ensure org-plus-contrib
   :ensure alert
-  :ensure oauth2
+  :ensure request-deferred
   :ensure nil
   :load-path "~/.emacs.d/lisp/org-gcal.git"
   :config
