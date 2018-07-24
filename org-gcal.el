@@ -195,111 +195,116 @@ SKIP-EXPORT.  Set SILENT to non-nil to inhibit notifications."
 
                  (skip-export skip-export)
                  (silent silent))
-             (deferred:$
-               (request-deferred
-                (format org-gcal-events-url (car x))
-                :type "GET"
-                :params `(("access_token" . ,a-token)
-                          ("key" . ,org-gcal-client-secret)
-                          ("singleEvents" . "True")
-                          ("orderBy" . "startTime")
-                          ("timeMin" . ,(org-gcal--subtract-time))
-                          ("timeMax" . ,(org-gcal--add-time))
-                          ("grant_type" . "authorization_code"))
-                :parser 'org-gcal--json-read
-                :error
-                (cl-function (lambda (&key error-thrown &allow-other-keys)
-                               (message "Got error: %S" error-thrown))))
-               (deferred:nextc it
-                 (lambda (response)
-                   (let
-                       ((temp (request-response-data response))
-                        (status (request-response-status-code response))
-                        (error-msg (request-response-error-thrown response)))
-                     (cond
-                      ;; If there is no network connectivity, the response will
-                      ;; not include a status code.
-                      ((eq status nil)
-                       (org-gcal--notify
-                        "Got Error"
-                        "Could not contact remote service. Please check your network connectivity."))
-                      ;; Receiving a 403 response could mean that the calendar
-                      ;; API has not been enabled. When the user goes and
-                      ;; enables it, a new token will need to be generated. This
-                      ;; takes care of that step.
-                      ((eq 401 (or (plist-get (plist-get (request-response-data response) :error) :code)
-                                   status))
-                       (org-gcal--notify
-                        "Received HTTP 401"
-                        "org-gcal-sync: OAuth token expired. Now trying to refresh-token")
-                       (deferred:next
-                         (lambda()
-                           (org-gcal-refresh-token 'org-gcal-sync skip-export))))
-                      ((eq 403 status)
-                       (org-gcal--notify "Received HTTP 403"
-                                         "Ensure you enabled the Calendar API through the Developers Console, then try again.")
-                       (deferred:nextc it
-                         (lambda()
-                           (org-gcal-refresh-token 'org-gcal-sync skip-export))))
-                      ;; We got some 2xx response, but for some reason no
-                      ;; message body.
-                      ((and (> 299 status) (eq temp nil))
-                       (org-gcal--notify
-                        (concat "Received HTTP" (number-to-string status))
-                        "Error occured, but no message body."))
-                      ((not (eq error-msg nil))
-                       ;; Generic error-handler meant to provide useful
-                       ;; information about failure cases not otherwise
-                       ;; explicitly specified.
-                       (org-gcal--notify
-                        (concat "Status code: " (number-to-string status))
-                        (pp-to-string error-msg)))
-                      ;; Fetch was successful.
-                      (t
-                       (with-current-buffer (find-file-noselect (cdr x))
-                         (unless skip-export
-                           (save-excursion
-                             (cl-loop with buf = (find-file-noselect org-gcal-token-file)
-                                      for local-event in (org-gcal--parse-id (cdr x))
-                                      for pos in (org-gcal--headline-list (cdr x))
-                                      when (or
-                                            (eq (car local-event) nil)
-                                            (not (string= (cdr local-event)
-                                                          (cdr (assoc (caar local-event)
-                                                                      (with-current-buffer buf
-                                                                        (plist-get (read (buffer-string)) (intern (concat ":" (car x))))))))))
-                                      do
-                                      (goto-char pos)
-                                      (org-gcal-post-at-point t)
-                                      finally
-                                      (kill-buffer buf))
-                             (sit-for 2)
-                             (org-gcal-sync nil t t)))
-                         (erase-buffer)
-                         (let ((items (org-gcal--filter (plist-get (request-response-data response) :items))))
-                           (when (assoc (car x) org-gcal-header-alist)
-                             (insert (cdr (assoc (car x) org-gcal-header-alist))))
-                           (insert
-                            (mapconcat 'identity
-                                       (mapcar (lambda (lst) (org-gcal--cons-list lst))
-                                               items)
-                                       ""))
-                           (let ((plst (with-temp-buffer (insert-file-contents org-gcal-token-file)
-                                                         (read (buffer-string)))))
-                             (with-temp-file org-gcal-token-file
-                               (pp (plist-put plst
-                                              (intern (concat ":" (car x)))
-                                              (mapcar
-                                               (lambda (lst)
-                                                       (cons (plist-get lst :id)
-                                                             (org-gcal--cons-list lst)))
-                                               items))
-                                   (current-buffer)))))
-                         (org-set-startup-visibility)
-                         (save-buffer))
-                       (unless silent
-                         (org-gcal--notify "Completed event fetching ."
-                                           (concat "Fetched data overwrote\n" (cdr x)))))))))))))
+             (org-gcal--with-saved-state
+              state
+              (deferred:$
+                (request-deferred
+                 (format org-gcal-events-url (car x))
+                 :type "GET"
+                 :params `(("access_token" . ,a-token)
+                           ("key" . ,org-gcal-client-secret)
+                           ("singleEvents" . "True")
+                           ("orderBy" . "startTime")
+                           ("timeMin" . ,(org-gcal--subtract-time))
+                           ("timeMax" . ,(org-gcal--add-time))
+                           ("grant_type" . "authorization_code"))
+                 :parser 'org-gcal--json-read
+                 :error
+                 (cl-function (lambda (&key error-thrown &allow-other-keys)
+                                (message "Got error: %S" error-thrown))))
+                (deferred:nextc it
+                  (lambda (response)
+                    (org-gcal--with-restored-state
+                     state
+                     (let
+                         ((temp (request-response-data response))
+                          (status (request-response-status-code response))
+                          (error-msg (request-response-error-thrown response)))
+                       (cond
+                        ;; If there is no network connectivity, the response will
+                        ;; not include a status code.
+                        ((eq status nil)
+                         (org-gcal--notify
+                          "Got Error"
+                          "Could not contact remote service. Please check your network connectivity."))
+                        ;; Receiving a 403 response could mean that the calendar
+                        ;; API has not been enabled. When the user goes and
+                        ;; enables it, a new token will need to be generated. This
+                        ;; takes care of that step.
+                        ((eq 401 (or (plist-get (plist-get (request-response-data response) :error) :code)
+                                     status))
+                         (org-gcal--notify
+                          "Received HTTP 401"
+                          "org-gcal-sync: OAuth token expired. Now trying to refresh-token")
+                         (deferred:next
+                           (lambda()
+                             (org-gcal-refresh-token 'org-gcal-sync skip-export))))
+                        ((eq 403 status)
+                         (org-gcal--notify "Received HTTP 403"
+                                           "Ensure you enabled the Calendar API through the Developers Console, then try again.")
+                         (deferred:nextc it
+                           (lambda()
+                             (org-gcal-refresh-token 'org-gcal-sync skip-export))))
+                        ;; We got some 2xx response, but for some reason no
+                        ;; message body.
+                        ((and (> 299 status) (eq temp nil))
+                         (org-gcal--notify
+                          (concat "Received HTTP" (number-to-string status))
+                          "Error occured, but no message body."))
+                        ((not (eq error-msg nil))
+                         (message "org-gcal-sync: response: %S" response)
+                         ;; Generic error-handler meant to provide useful
+                         ;; information about failure cases not otherwise
+                         ;; explicitly specified.
+                         (org-gcal--notify
+                          (concat "org-gcal-sync: Status code: " (number-to-string status))
+                          (pp-to-string error-msg)))
+                        ;; Fetch was successful.
+                        (t
+                         (with-current-buffer (find-file-noselect (cdr x))
+                           (unless skip-export
+                             (save-excursion
+                               (cl-loop with buf = (find-file-noselect org-gcal-token-file)
+                                        for local-event in (org-gcal--parse-id (cdr x))
+                                        for pos in (org-gcal--headline-list (cdr x))
+                                        when (or
+                                              (eq (car local-event) nil)
+                                              (not (string= (cdr local-event)
+                                                            (cdr (assoc (caar local-event)
+                                                                        (with-current-buffer buf
+                                                                          (plist-get (read (buffer-string)) (intern (concat ":" (car x))))))))))
+                                        do
+                                        (goto-char pos)
+                                        (org-gcal-post-at-point t)
+                                        finally
+                                        (kill-buffer buf))
+                               (sit-for 2)
+                               (org-gcal-sync nil t t)))
+                           (erase-buffer)
+                           (let ((items (org-gcal--filter (plist-get (request-response-data response) :items))))
+                             (when (assoc (car x) org-gcal-header-alist)
+                               (insert (cdr (assoc (car x) org-gcal-header-alist))))
+                             (insert
+                              (mapconcat 'identity
+                                         (mapcar (lambda (lst) (org-gcal--cons-list lst))
+                                                 items)
+                                         ""))
+                             (let ((plst (with-temp-buffer (insert-file-contents org-gcal-token-file)
+                                                           (read (buffer-string)))))
+                               (with-temp-file org-gcal-token-file
+                                 (pp (plist-put plst
+                                                (intern (concat ":" (car x)))
+                                                (mapcar
+                                                 (lambda (lst)
+                                                   (cons (plist-get lst :id)
+                                                         (org-gcal--cons-list lst)))
+                                                 items))
+                                     (current-buffer)))))
+                           (org-set-startup-visibility)
+                           (save-buffer))
+                         (unless silent
+                           (org-gcal--notify "Completed event fetching ."
+                                             (concat "Fetched data overwrote\n" (cdr x)))))))))))))))
 
 ;;;###autoload
 (defun org-gcal-fetch ()
@@ -470,6 +475,7 @@ needed."
          (org-gcal--with-restored-state
           state
           (let ((temp (request-response-data response)))
+            (message "org-gcal-sync: %S" temp)
             (plist-put org-gcal-token-plist
                        :access_token
                        (plist-get temp :access_token))
@@ -477,8 +483,9 @@ needed."
             org-gcal-token-plist))))
      (deferred:nextc it
        (lambda (token)
-         (org-gcal--with-restored-state
+         (org-gcal--with-restored-state-excluding-vars
           state
+          '(org-gcal-token-plist)
           (cond ((eq fun 'org-gcal-sync)
                  (org-gcal-sync (plist-get token :access_token) skip-export))
                 ((eq fun 'org-gcal--post-event)
@@ -552,15 +559,17 @@ needed."
 
 (defun org-gcal--get-access-token ()
   (let ((a-token (plist-get org-gcal-token-plist :access_token)))
-    (if a-token
-        a-token
-      (if (file-exists-p org-gcal-token-file)
-          (progn
-            (with-temp-buffer (insert-file-contents org-gcal-token-file)
-                              (plist-get (plist-get (read (buffer-string)) :token) :access_token)))
-        (org-gcal--notify
-         (concat org-gcal-token-file " is not exists")
-         (concat "Make " org-gcal-token-file))))))
+    (cond (a-token a-token)
+          ((file-exists-p org-gcal-token-file)
+           (let ((a-token
+                  (with-temp-buffer (insert-file-contents org-gcal-token-file)
+                                    (plist-get (plist-get (read (buffer-string)) :token) :access_token))))
+             (when (null a-token)
+               (error "org-gcal: File `%s' contains `:access_token nil' and is therefore corrupt. Please delete this file and try again."
+                      org-gcal-token-file))
+             a-token))
+          (t (error "Token file `%s' does not exist. Create it and try again."
+                    org-gcal-token-file)))))
 
 (defun org-gcal--safe-substring (string from &optional to)
   "Call the `substring' function safely.
@@ -772,8 +781,9 @@ TO.  Instead an empty string is returned."
                         "org-gcal--post-event: OAuth token expired. Now trying to refresh-token")
                        (org-gcal-refresh-token 'org-gcal--post-event skip-export start end smry loc desc calendar-id event-id)))
                     (t
+                     (message "org-gcal--post-event: response: %S" response)
                      (org-gcal--notify
-                      (concat "Status code: " (pp-to-string status))
+                      (concat "org-gcal--post-event: Status code: " (pp-to-string status))
                       (pp-to-string error-msg))))))))
 
       :success (cl-function
@@ -816,7 +826,7 @@ TO.  Instead an empty string is returned."
                        (org-gcal-refresh-token 'org-gcal--delete-event skip-export nil nil nil nil nil calendar-id event-id)))
                     (t
                      (org-gcal--notify
-                      (concat "Status code: " (pp-to-string status))
+                      (concat "org-gcal--delete-event: Status code: " (pp-to-string status))
                       (pp-to-string error-msg))))))))
       :success (cl-function
                 (lambda (&key data &allow-other-keys)
