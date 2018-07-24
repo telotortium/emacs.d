@@ -156,15 +156,23 @@ the function definitions for those tasks. Example:
                      org-gcal--dynamic-variables))))
      ,@body))
 
+(defmacro org-gcal--with-restored-state-excluding-vars (state excluded-vars &rest body)
+  "Restore the dynamic variables saved in STATE by ORG-GCAL--WITH-SAVED-STATE,
+minus those whose symbols are contained in EXCLUDED-VARS, while executing the
+BODY forms."
+  (let ((state-var (make-symbol "state"))
+        (restored-vars (cl-remove-if (lambda (sym) (memql sym (eval excluded-vars)))
+                                     org-gcal--dynamic-variables)))
+    `(let* ((,state-var ,state)
+            ,@(mapcar (lambda (sym) `(,sym (cdr (assoc ',sym ,state-var))))
+                      restored-vars))
+
+       ,@body)))
+
 (defmacro org-gcal--with-restored-state (state &rest body)
   "Restore the dynamic variables saved in STATE by ORG-GCAL--WITH-SAVED-STATE
 while executing the BODY forms."
-  (let ((state-var (make-symbol "state")))
-    `(let* ((,state-var ,state)
-            ,@(mapcar (lambda (sym) `(,sym (cdr (assoc ',sym ,state-var))))
-                      org-gcal--dynamic-variables))
-
-       ,@body)))
+  `(org-gcal--with-restored-state-excluding-vars ,state nil ,@body))
 
 ;;;###autoload
 (defun org-gcal-sync (&optional a-token skip-export silent)
