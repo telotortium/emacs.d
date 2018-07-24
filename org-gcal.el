@@ -543,9 +543,9 @@ needed."
          (concat "Make" org-gcal-token-file))))))
 
 (defun org-gcal--get-access-token ()
-  (if org-gcal-token-plist
-      (plist-get org-gcal-token-plist :access_token)
-    (progn
+  (let ((a-token (plist-get org-gcal-token-plist :access_token)))
+    (if a-token
+        a-token
       (if (file-exists-p org-gcal-token-file)
           (progn
             (with-temp-buffer (insert-file-contents org-gcal-token-file)
