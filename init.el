@@ -474,7 +474,35 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
 (global-set-key "\C-cb" 'org-switchb)
 (global-set-key "\C-cc" 'org-capture)
 (global-set-key "\C-cl" 'org-store-link)
-(global-set-key "\C-cq" 'org-occur-in-agenda-files)
+
+(defun swiper-multi-org-agenda-files ()
+  "Swiper-based replacement for ‘org-occur-in-agenda-files’."
+  (interactive)
+  (let* ((files (org-agenda-files))
+         (tnames (mapcar #'file-truename files))
+         (extra org-agenda-text-search-extra-files))
+    (when (eq (car extra) 'agenda-archives)
+      (setq extra (cdr extra))
+      (setq files (org-add-archive-files files)))
+    (dolist (f extra)
+      (unless (member (file-truename f) tnames)
+       (unless (member f files) (setq files (append files (list f))))
+       (setq tnames (append tnames (list (file-truename f))))))
+    ;; First find the buffers for open agenda files.
+    (setq swiper-multi-buffers
+          (cl-remove-if #'null (mapcar #'get-file-buffer files)))
+    ;; Set ‘swiper-multi-candidates’ as done in ‘swiper-multi-action-1’.
+    (setq swiper-multi-candidates
+          (swiper--multi-candidates
+           (mapcar #'get-buffer swiper-multi-buffers)))
+    ;; Call just ‘swiper-multi-action-2’, which does the actual search text
+    ;; completion.
+    (ivy-read "Org-files matching: " swiper-multi-candidates
+              :action 'swiper-multi-action-2
+              :unwind #'swiper--cleanup
+              :caller 'swiper-multi)))
+  
+(global-set-key "\C-cq" #'swiper-multi-org-agenda-files)
 
 ;;;** Org capture
 
