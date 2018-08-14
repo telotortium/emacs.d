@@ -546,6 +546,11 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
             (org-clock-report)
             (forward-line 1)))))
 
+(defcustom org-daily-log-file
+  (concat org-directory "/daily-log.org")
+  "The path to Org file in which daily log entries are captured."
+  :type file)
+
 (c-setq org-capture-templates
       `(("t" "Task" entry (file+headline (lambda () (concat org-directory "/todo.org"))
                                          "Refile")
@@ -578,7 +583,7 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
 :END:
 %?!|2 + 2|! equals !|4|!.
 " :clock-in t :clock-resume t :jump-to-captured t)
-        ("D" "Daily Log" entry (file+olp+datetree (lambda () (concat org-directory "/daily-log.org")))
+        ("D" "Daily Log" entry (file+olp+datetree org-daily-log-file)
          "
 * %u Daily log
 :PROPERTIES:
