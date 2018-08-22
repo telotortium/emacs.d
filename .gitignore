@@ -10,6 +10,7 @@
 /org-clock-save.el
 /.persistent-scratch
 /recentf
+/server
 /smex-items
 /tmp
 /tramp

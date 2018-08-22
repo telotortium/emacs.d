@@ -93,6 +93,7 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
 ;;; Allow access from emacsclient
 (use-package server
   :config
+  (c-setq server-socket-dir "~/.emacs.d/server")
   (if (server-running-p)
       (warn "Not starting server - server with name \"%s\" already running" server-name)
     (server-start)))
