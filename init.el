@@ -905,6 +905,9 @@ to get the latest version of the file, then make the change again.")
   :ensure t
   :ensure s
   :config
+  (c-setq org-pomodoro-length 50)
+  (c-setq org-pomodoro-short-break-length 10)
+  (c-setq org-pomodoro-long-break-length 30)
   (require 's)
 
   (defun org-pomodoro-end-in (minutes)
