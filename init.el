@@ -959,6 +959,13 @@ to get the latest version of the file, then make the change again.")
     (save-excursion
       (org-id-goto my-org-pomodoro-break-id)
       (org-clock-in)))
+  (defun my-org-pomodoro-start-lunch ()
+    (interactive)
+    (org-pomodoro-notify "Going to lunch now" "")
+    (setq org-pomodoro-count 0)
+    (org-pomodoro-start :long-break)
+    (my-org-pomodoro-start-break)
+    (my-org-pomodoro-finished-lock-screen))
   (defun my-org-pomodoro-finished-clock-in-break-hook ()
     "Clock into task with ID my-org-pomodoro-break-id during breaks if set."
     (message "%s %s" my-org-pomodoro-break-id org-pomodoro-state)
