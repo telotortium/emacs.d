@@ -899,6 +899,9 @@ to get the latest version of the file, then make the change again.")
   (c-setq org-drill-add-random-noise-to-intervals-p t)
   (c-setq org-drill-adjust-intervals-for-early-and-late-repetitions-p t)
   (c-setq org-drill-learn-fraction 0.3))
+(use-package org-drill-table
+  :ensure org-drill
+  :ensure t)
 (load-file (expand-file-name "lisp/org-clock-fix.el" user-emacs-directory))
 
 ;;;** Org-pomodoro
