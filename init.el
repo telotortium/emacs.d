@@ -898,7 +898,19 @@ to get the latest version of the file, then make the change again.")
   (c-setq org-drill-right-cloze-delimiter "|!")
   (c-setq org-drill-add-random-noise-to-intervals-p t)
   (c-setq org-drill-adjust-intervals-for-early-and-late-repetitions-p t)
-  (c-setq org-drill-learn-fraction 0.3))
+  (c-setq org-drill-learn-fraction 0.3)
+  (defun my-org-drill-global-visual-line-mode (org-drill &rest r)
+    "Wrap `org-drill' to turn on `global-visual-line-mode' during drills.
+
+This is needed because `org-drill-table' only works on `org-mode' tables, which
+don't support wrapping."
+    (let (old-global-visual-line-mode global-visual-line-mode)
+      (unwind-protect
+          (progn
+            (global-visual-line-mode t)
+            (apply org-drill r))
+        (global-visual-line-mode old-global-visual-line-mode))))
+  (advice-add #'org-drill :around #'my-org-drill-global-visual-line-mode))
 (use-package org-drill-table
   :ensure org-drill
   :ensure t)
