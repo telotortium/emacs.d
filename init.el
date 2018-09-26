@@ -912,7 +912,6 @@ don't support wrapping."
         (global-visual-line-mode old-global-visual-line-mode))))
   (advice-add #'org-drill :around #'my-org-drill-global-visual-line-mode))
 (use-package org-drill-table
-  :ensure org-drill
   :ensure t)
 (load-file (expand-file-name "lisp/org-clock-fix.el" user-emacs-directory))
 
