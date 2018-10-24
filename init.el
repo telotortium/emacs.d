@@ -486,13 +486,18 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
 (global-set-key "\C-cc" 'org-capture)
 (global-set-key "\C-cl" 'org-store-link)
 
-(defun swiper-multi-org-agenda-files ()
-  "Swiper-based replacement for ‘org-occur-in-agenda-files’."
-  (interactive)
+(defun swiper-multi-org-agenda-files (prefix)
+  "Swiper-based replacement for ‘org-occur-in-agenda-files’.
+
+With `\\[universal-argument]' prefix ARG, include archives in the search even \
+if `agenda-archives' is not in `org-agenda-text-search-extra-files'."
+  (interactive "p")
   (let* ((files (org-agenda-files))
          (tnames (mapcar #'file-truename files))
-         (extra org-agenda-text-search-extra-files))
-    (when (eq (car extra) 'agenda-archives)
+         (extra org-agenda-text-search-extra-files)
+         (search-archives (or (eq (car extra) 'agenda-archives)
+                              (> prefix 1))))
+    (when search-archives
       (setq extra (cdr extra))
       (setq files (org-add-archive-files files)))
     (dolist (f extra)
@@ -508,11 +513,12 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
            (mapcar #'get-buffer swiper-multi-buffers)))
     ;; Call just ‘swiper-multi-action-2’, which does the actual search text
     ;; completion.
-    (ivy-read "Org-files matching: " swiper-multi-candidates
+    (ivy-read (format "Org-files (%s) matching: " (if search-archives "with archives" "unarchived"))
+              swiper-multi-candidates
               :action 'swiper-multi-action-2
               :unwind #'swiper--cleanup
               :caller 'swiper-multi)))
-  
+
 (global-set-key "\C-cq" #'swiper-multi-org-agenda-files)
 
 ;;;** Org capture
@@ -1592,9 +1598,6 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
                   nil))  ; available to archive
             (or subtree-end (point-max)))
         next-headline))))
-
-;; Include agenda archive files when searching for things
-(c-setq org-agenda-text-search-extra-files (quote (agenda-archives)))
 
 ;; Use sticky agenda's so they persist
 (c-setq org-agenda-sticky t)
