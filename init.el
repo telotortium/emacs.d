@@ -134,6 +134,11 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
   (global-set-key (kbd "C-x b") 'ivy-switch-buffer)
   (define-key read-expression-map (kbd "C-r") 'counsel-expression-history))
 
+(use-package evil
+  :init
+  (c-setq evil-want-keybinding nil)
+  :config (evil-mode 1))
+
 ;;;* Evil configuration
 
 ;; Space as leader
@@ -150,7 +155,10 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
 (c-setq evil-magic 'very-magic)
 (c-setq evil-search-module 'evil-search)
 
-(use-package evil :config (evil-mode 1))
+(use-package evil-collection
+  :ensure t
+  :after evil
+  :init (evil-collection-init))
 
 (use-package undo-tree
   :diminish undo-tree-mode)
