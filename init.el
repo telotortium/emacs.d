@@ -267,15 +267,6 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
 (line-number-mode 1)
 (column-number-mode 1)
 
-(use-package elfeed
-  :init
-  (add-to-list 'evil-emacs-state-modes 'elfeed-search-mode)
-  (add-to-list 'evil-emacs-state-modes 'elfeed-show-mode)
-  :custom
-  (elfeed-feeds '("http://nullprogram.com/feed/"
-                  "http://www.terminally-incoherent.com/blog/feed/"
-                  "https://news.ycombinator.com/rss")))
-
 (use-package rg
   :commands (rg rg-project rg-dwin))
 
