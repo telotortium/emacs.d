@@ -745,7 +745,15 @@ Source: [[%:link][%:description]]
 ;; Pop up org-agenda-list a few times a day
 (run-at-time "08:00" 21600 'org-agenda-list)
 
-(run-at-time "00:59" 900 'org-save-all-org-buffers)
+;; Save and backup all Org files a few times a day using external script.
+(defun my-org-save-and-backup-repos ()
+  (interactive)
+  (org-save-all-org-buffers)
+  (let ((default-directory (expand-file-name "~")))
+    (async-start-process "my-org-save-and-backup-repos"
+                         (substitute-env-vars "${HOME}/bin/org-git-cron")
+                         'ignore)))
+(run-at-time "00:59" 900 'my-org-save-and-backup-repos)
 
 
 ;;;** Supersession
