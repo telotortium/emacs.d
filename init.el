@@ -132,6 +132,8 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
   (global-set-key (kbd "C-x l") 'counsel-locate)
   (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
   (global-set-key (kbd "C-x b") 'ivy-switch-buffer)
+  ;; Unbind ivy-restrict-to-matches - always annoys me during org-capture.
+  (define-key ivy-minibuffer-map (kbd "S-SPC") nil)
   (define-key read-expression-map (kbd "C-r") 'counsel-expression-history))
 
 (use-package evil
