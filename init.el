@@ -881,9 +881,6 @@ to get the latest version of the file, then make the change again.")
   "Japanese Temple Bell Small-SoundBible.com-113624364.wav"
   user-emacs-directory))
 
-;;; Fix the very slow tangling of large Org files
-(c-setq org-babel-use-quick-and-dirty-noweb-expansion t)
-
 ;;;; org-refile settings:
 ;;;;
 ;;;; Based on http://doc.norang.ca/org-mode.html#Refiling and
@@ -904,8 +901,8 @@ to get the latest version of the file, then make the change again.")
 
 ;;;** Org-drill
 (use-package org-drill
-  :ensure org-plus-contrib
   :ensure nil
+  :after org
   :init
   (require 'cl)                         ; org-drill uses old CL func names
   (require 'org)                        ; org variables need to be in scope
@@ -929,13 +926,15 @@ don't support wrapping."
         (global-visual-line-mode old-global-visual-line-mode))))
   (advice-add #'org-drill :around #'my-org-drill-global-visual-line-mode))
 (use-package org-drill-table
-  :ensure t)
+  :ensure t
+  :after org)
 (load-file (expand-file-name "lisp/org-clock-fix.el" user-emacs-directory))
 
 ;;;** Org-pomodoro
 (use-package org-pomodoro
   :ensure t
   :ensure s
+  :after org
   :config
   (c-setq org-pomodoro-length 50)
   (c-setq org-pomodoro-short-break-length 10)
@@ -1116,7 +1115,7 @@ my-org-pomodoro--remove-temp-files-hook when Emacs exits.")
 
 (use-package evil-org
   :ensure t
-  :ensure org-plus-contrib
+  :after org
   :init
   (c-setq org-special-ctrl-a/e t))
 
@@ -1183,7 +1182,7 @@ TAG is chosen interactively from the global tags completion table."
                'osx-notifier)
               (t 'message))))
 (use-package org-gcal
-  :ensure org-plus-contrib
+  :after org
   :ensure alert
   :ensure request-deferred
   :ensure nil
@@ -1681,6 +1680,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 (pdf-tools-install)
 (use-package interleave)
 (use-package org-ref
+  :after org
   :config
   (c-setq org-ref-notes-directory "~/Documents/org/home-org")
   (c-setq org-ref-bibliography-notes "~/Documents/org/home-org/index.org")
@@ -1736,6 +1736,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   :load-path "~/.emacs.d/lisp")
 (use-package org-drill-cloze-enhancement
   :ensure nil
+  :after org
   :load-path "~/.emacs.d/lisp")
 
 ;;;* Local configuration
