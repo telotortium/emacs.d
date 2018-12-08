@@ -469,8 +469,10 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
 
 ;;;* Org configuration
 (use-package org
-  :ensure org-plus-contrib
   :ensure htmlize                       ; For org-publish
+  :load-path ("~/.emacs.d/lisp/org-mode.git/lisp"
+              "~/.emacs.d/lisp/org-mode.git/contrib/lisp")
+
   :init
   :config
   (add-to-list 'org-modules 'org-habit)
@@ -1642,6 +1644,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 
 ;;; Enable commands disabled by default
 (put 'narrow-to-region 'disabled nil)
+(put 'list-timers 'disabled nil)
 
 ;;; Python
 (defun evil-shift-width-from-guessed-python-indent-offset ()
