@@ -187,6 +187,10 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
 ;; Kill current buffer but keep its frame around
 (define-key evil-normal-state-map "Q" 'kill-this-buffer)
 
+(use-package evil-commentary
+  :config
+  (evil-commentary-mode))
+
 (evil-leader/set-key
   ";" 'evil-ex
   ":" 'evil-ex)
