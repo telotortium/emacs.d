@@ -92,6 +92,7 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
 
 ;;; Allow access from emacsclient
 (use-package server
+  :ensure nil
   :config
   (c-setq server-socket-dir "~/.emacs.d/server")
   (c-setq server-use-tcp t)
@@ -324,6 +325,7 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
 
 ;; Save mini-buffer history
 (use-package savehist
+  :ensure nil
   :custom
   (savehist-additional-variables
    '(kill-ring search-ring regexp-search-ring compile-history))
@@ -380,6 +382,7 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
   :init (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
 (use-package paren
+  :ensure nil
   :config (show-paren-mode 1))
 
 ;;; Go
@@ -1614,11 +1617,13 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 
 ;;;* Autorevert
 (use-package autorevert
+  :ensure nil
   :diminish auto-revert-mode
   :config (global-auto-revert-mode t))
 
 ;;;* Flyspell
 (use-package flyspell
+  :ensure nil
   :diminish flyspell-mode
   :config
   (add-hook 'text-mode-hook 'flyspell-mode 'append)
