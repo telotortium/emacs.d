@@ -484,7 +484,8 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
   :config
   (add-to-list 'org-modules 'org-habit)
   (require 'org-agenda)
-  (require 'org-protocol))
+  (require 'org-protocol)
+  (org-indent-mode 'disable))
 (global-set-key "\C-ca" 'org-agenda)
 (global-set-key "\C-cb" 'org-switchb)
 (global-set-key "\C-cc" 'org-capture)
