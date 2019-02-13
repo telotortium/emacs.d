@@ -476,10 +476,10 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
 
 ;;;* Org configuration
 (use-package org
+  :ensure nil
   :ensure htmlize                       ; For org-publish
   :load-path ("~/.emacs.d/lisp/org-mode.git/lisp"
               "~/.emacs.d/lisp/org-mode.git/contrib/lisp")
-
   :init
   :config
   (add-to-list 'org-modules 'org-habit)
