@@ -946,8 +946,11 @@ don't support wrapping."
   :ensure s
   :after org
   :config
-  (c-setq org-pomodoro-length 50)
-  (c-setq org-pomodoro-short-break-length 10)
+  ;; Complice.co Less Wrong study hall
+  ;; (https://complice.co/room/lesswrong/interstitial). Reference:
+  ;; https://www.lesswrong.com/posts/hyeDFbg8ahYAu4ZJu/#586GQr5xjWBzXWda6
+  (c-setq org-pomodoro-length 32)
+  (c-setq org-pomodoro-short-break-length 8)
   (c-setq org-pomodoro-long-break-length 30)
   (require 's)
 
