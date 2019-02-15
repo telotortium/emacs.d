@@ -18,3 +18,8 @@
 
 # Ignore local changes
 init-local.el
+
+# Secrets
+lisp/org-gcal-alarm-config.el
+oauth2.plstore
+request/curl-cookie-jar
