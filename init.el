@@ -1195,7 +1195,7 @@ TAG is chosen interactively from the global tags completion table."
         (cond ((executable-find "notify-send")
                'libnotify)
               ((eq system-type 'darwin)
-               'osx-notifier)
+               'notifier)
               (t 'message))))
 (use-package org-gcal
   :after org
