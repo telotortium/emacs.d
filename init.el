@@ -1543,16 +1543,18 @@ of occur. The original buffer is not modified.
              '("R" "Week in review"
                agenda ""
                ;; agenda settings
-               ((org-agenda-span 'week
-                                 (org-agenda-start-on-weekday 0) ;; start on Sunday
-                                 (org-agenda-overriding-header "Week in Review")
-                                 (org-agenda-files
-                                  (let ((org-agenda-files org-timeline-files)
-                                        (org-agenda-files nil 'ifmode))))
-                                 (org-agenda-start-with-log-mode t)
-                                 (org-agenda-log-mode-items '(clock state closed))
-                                 (org-agenda-archives-mode t))))) ; include archive files
-
+               ((org-agenda-span 'week)
+                (org-agenda-start-on-weekday 0) ;; start on Sunday
+                (org-agenda-overriding-header "Week in Review (no archives)")
+                (org-agenda-files
+                 (let ((org-agenda-files org-timeline-files))
+                   (org-agenda-files nil 'ifmode)))
+                (org-agenda-log-mode-items '(clock state closed))
+                ;; Ignore scheduled and deadline tasks, showing only log entries
+                (org-agenda-start-with-log-mode 'only)
+                ;; Don't include archive files - I won't have archived items in
+                ;; the past week.
+                (org-agenda-archives-mode nil))))
 
 ;;; https://blog.aaronbieber.com/2016/09/24/an-agenda-for-life-with-org-mode.html
 (add-to-list 'org-agenda-custom-commands
@@ -1563,6 +1565,7 @@ of occur. The original buffer is not modified.
                 (agenda "" ((org-agenda-ndays 1)
                             (org-agenda-overriding-header "Schedule"))))
                ((org-agenda-compact-blocks t))))
+
 (add-to-list 'org-agenda-custom-commands
              '("D" "Like d but include all TODOs (slow)"
                ((tags "PRIORITY=\"A\""
