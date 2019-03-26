@@ -1556,45 +1556,54 @@ of occur. The original buffer is not modified.
                 ;; the past week.
                 (org-agenda-archives-mode nil))))
 
-;;; https://blog.aaronbieber.com/2016/09/24/an-agenda-for-life-with-org-mode.html
+;; Use org-super-agenda only for `C-c a S`.
+(use-package org-super-agenda
+  :ensure t
+  :config
+  (c-setq org-super-agenda-groups nil)
+  (org-super-agenda-mode 1))
 (add-to-list 'org-agenda-custom-commands
-             '("d" "Daily agenda with high-priority items isolated (slow)"
-               ((tags "PRIORITY=\"A\""
-                      ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                       (org-agenda-overriding-header "High-priority unfinished tasks:")))
-                (agenda "" ((org-agenda-ndays 1)
-                            (org-agenda-overriding-header "Schedule"))))
-               ((org-agenda-compact-blocks t))))
-
-(add-to-list 'org-agenda-custom-commands
-             '("D" "Like d but include all TODOs (slow)"
-               ((tags "PRIORITY=\"A\""
-                      ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                       (org-agenda-overriding-header "High-priority unfinished tasks:")))
-                (agenda "" ((org-agenda-ndays 1)
-                            (org-agenda-overriding-header "Schedule")))
-                (alltodo ""
-                         ((org-agenda-skip-function '(or (air-org-skip-subtree-if-habit)
-                                                         (air-org-skip-subtree-if-priority ?A)
-                                                         (org-agenda-skip-if nil '(scheduled deadline))))
-                          (org-agenda-overriding-header "ALL normal priority tasks:"))))
-               ((org-agenda-compact-blocks t))))
-(defun air-org-skip-subtree-if-priority (priority)
-  "Skip an agenda subtree if it has a priority of PRIORITY.
-
-PRIORITY may be one of the characters ?A, ?B, or ?C."
-  (let ((subtree-end (save-excursion (org-end-of-subtree t)))
-        (pri-value (* 1000 (- org-lowest-priority priority)))
-        (pri-current (org-get-priority (thing-at-point 'line t))))
-    (if (= pri-value pri-current)
-        subtree-end
-      nil)))
-(defun air-org-skip-subtree-if-habit ()
-  "Skip an agenda entry if it has a STYLE property equal to \"habit\"."
-  (let ((subtree-end (save-excursion (org-end-of-subtree t))))
-    (if (string= (org-entry-get nil "STYLE") "habit")
-        subtree-end
-      nil)))
+             '("S" "Super agenda"
+               agenda ""
+               ((org-super-agenda-groups
+                      '(;; Each group has an implicit boolean OR operator between its selectors.
+                        (:name "Today"  ; Optionally specify section name
+                               :time-grid t  ; Items that appear on the time grid
+                               :todo "TODAY")  ; Items that have this TODO keyword
+                        (:name "Important"
+                               ;; Single arguments given alone
+                               :priority "A")
+                        ;; Set order of multiple groups at once
+                        (:order-multi (2 (:name "Shopping in town"
+                                                ;; Boolean AND group matches items that match all subgroups
+                                                :and (:tag "shopping" :tag "@town"))
+                                         (:name "Food-related"
+                                                ;; Multiple args given in list with implicit OR
+                                                :tag ("food" "dinner"))
+                                         (:name "Personal"
+                                                :habit t
+                                                :tag "personal")
+                                         (:name "Space-related (non-moon-or-planet-related)"
+                                                ;; Regexps match case-insensitively on the entire entry
+                                                :and (:regexp ("space" "NASA")
+                                                              ;; Boolean NOT also has implicit OR between selectors
+                                                              :not (:regexp "moon" :tag "planet")))))
+                        ;; Groups supply their own section names when none are given
+                        (:todo "WAITING" :order 8)  ; Set order of this section
+                        (:todo ("SOMEDAY" "TO-READ" "CHECK" "TO-WATCH" "WATCHING")
+                               ;; Show this group at the end of the agenda (since it has the
+                               ;; highest number). If you specified this group last, items
+                               ;; with these todo keywords that e.g. have priority A would be
+                               ;; displayed in that group instead, because items are grouped
+                               ;; out in the order the groups are listed.
+                               :order 9)
+                        (:priority<= "B"
+                                     ;; Show this section after "Today" and "Important", because
+                                     ;; their order is unspecified, defaulting to 0. Sections
+                                     ;; are displayed lowest-number-first.
+                                     :order 1))))))
+                        ;; After the last group, the agenda will display items that didn't
+                        ;; match any of these groups, with the default order position of 99
 
 ;;; List tasks that should be archived
 ;;; http://doc.norang.ca/org-mode.html#Archiving
