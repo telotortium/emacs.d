@@ -956,6 +956,7 @@ don't support wrapping."
   (defun org-pomodoro-end-in (minutes)
     "Force the current Pomodoro to end in MINUTES minutes."
     (interactive "nMinutes: ")
+    (setq my-org-pomodoro-seconds-until-break-to-remind 60)
     (setq org-pomodoro-end-time
           (time-add (current-time) (* minutes 60))))
 
@@ -1040,6 +1041,7 @@ don't support wrapping."
   (defcustom my-org-pomodoro-current-task-reminder-interval 60
     "Number of seconds between being notified of the current task. Set to nil to disable notifications"
     :type 'number)
+  (defvar my-org-pomodoro-seconds-until-break-to-remind)
   (defun my-org-pomodoro-tick-current-task-reminder ()
     "Prod me with reminders of my current task to stop me from being distracted."
     (let* ((x (cl-floor (float-time (time-subtract org-pomodoro-end-time
@@ -1049,12 +1051,18 @@ don't support wrapping."
            (remainder (car (cl-floor (cadr x)))))
       (when (and (eql org-pomodoro-state :pomodoro)
                  (not (null my-org-pomodoro-current-task-reminder-interval)))
+        (when (> quotient 0)
+          (setq my-org-pomodoro-seconds-until-break-to-remind 60))
         (when (and (> quotient 0) (= remainder 0))
             (org-pomodoro-notify "Pomodoro in progress" org-clock-heading))
         (when (and (= quotient 0) (> remainder 0))
-          (org-pomodoro-notify (format "Pomodoro in progress - %ds to break"
-                                       remainder)
-                               org-clock-heading)))))
+          ;; Rate limit reminders in last minute to once every 5 seconds.
+          (when (<= remainder my-org-pomodoro-seconds-until-break-to-remind)
+            (setq my-org-pomodoro-seconds-until-break-to-remind
+                  (* 5 (floor (- remainder 1) 5)))
+            (org-pomodoro-notify (format "Pomodoro in progress - %ds to break"
+                                        remainder)
+                                org-clock-heading))))))
   (defun my-org-pomodoro-finished-create-break-end-alarm ()
     (when (and (or (eq org-pomodoro-state :short-break)
                    (eq org-pomodoro-state :long-break))
