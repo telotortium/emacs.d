@@ -4,3 +4,6 @@
 [submodule "lisp/org-mode.git"]
 	path = lisp/org-mode.git
 	url = https://code.orgmode.org/bzg/org-mode.git
+[submodule "lisp/git-auto-commit-mode"]
+	path = lisp/git-auto-commit-mode
+	url = https://github.com/ryuslash/git-auto-commit-mode
