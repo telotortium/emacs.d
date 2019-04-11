@@ -1041,6 +1041,66 @@ don't support wrapping."
   (defcustom my-org-pomodoro-current-task-reminder-interval 60
     "Number of seconds between being notified of the current task. Set to nil to disable notifications"
     :type 'number)
+
+  ;; Update agenda to log count and time of pomodoros elapsed today.
+  (defvar my-org-pomodoro-start-time nil
+    "Start time of current pomodoro.")
+  (defvar my-org-pomodoro-time-today-var 0
+    "Amount of time spent in pomodoro today.
+DO NOT USE - contains only time logged outside of the current pomodoro.
+Call (my-org-pomodoro-time-today) instead.")
+  (defun my-org-pomodoro-time-today ()
+    "Return amount of time spent in pomodoro today, as a floating-point
+number of seconds."
+    (+ my-org-pomodoro-time-today-var
+       (if (eq org-pomodoro-state :pomodoro)
+           (float-time (time-subtract (current-time)
+                                      my-org-pomodoro-start-time))
+         0)))
+  (defun my-org-pomodoro-reset-today (&optional arg)
+    "Resets daily org-pomodoro variables every day"
+    (if (null org-pomodoro-last-clock-in)
+        (setq my-org-pomodoro-time-today-var 0)
+      (let* ((effective-midnight
+              `(0 0 0 . ,(nthcdr 3 (decode-time (current-time))))))
+        (when
+            (and (<= 0
+                     (float-time
+                      (time-subtract (current-time)
+                                     effective-midnight)))
+                 (>= 0
+                     (float-time
+                      (time-subtract org-pomodoro-last-clock-in
+                                     effective-midnight))))
+
+          (setq my-org-pomodoro-time-today-var 0)))))
+  (advice-add #'org-pomodoro :before #'my-org-pomodoro-reset-today)
+  (defun my-org-pomodoro-set-start-time ()
+    "Sets start time for use by my-org-pomodoro-time-today."
+    (setq my-org-pomodoro-start-time (current-time)))
+  (add-hook 'org-pomodoro-started-hook #'my-org-pomodoro-set-start-time)
+  (defun my-org-pomodoro-finished-update-time-today ()
+    "Updates stored variable for my-org-pomodoro-time-today."
+    (setq my-org-pomodoro-time-today-var
+          (+ my-org-pomodoro-time-today-var
+             (float-time (time-subtract (current-time)
+                                        my-org-pomodoro-start-time)))))
+  (add-hook 'org-pomodoro-finished-hook
+            #'my-org-pomodoro-finished-update-time-today)
+  (defun my-org-agenda-pomodoro-info ()
+    "Add Org Pomodoro Count and Time to agenda."
+    (save-excursion
+      (goto-char (point-max))
+      (end-of-line)
+      (newline)
+      (insert
+       (format "Org Pomodoro - Count: %d, Time: %s"
+               org-pomodoro-count
+               (org-timer-secs-to-hms
+                       (round (my-org-pomodoro-time-today)))))))
+  (add-hook 'org-agenda-finalize-hook 'my-org-agenda-pomodoro-info 'append)
+
+  (defun my-org-pomodoro-today-tick-hook ())
   (defvar my-org-pomodoro-seconds-until-break-to-remind)
   (defun my-org-pomodoro-tick-current-task-reminder ()
     "Prod me with reminders of my current task to stop me from being distracted."
