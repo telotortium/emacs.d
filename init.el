@@ -1767,6 +1767,10 @@ of occur. The original buffer is not modified.
   :config
   (c-setq vc-handled-backends (delq 'Git vc-handled-backends)))
 
+;;;* git-auto-commit-mode
+(use-package git-auto-commit-mode
+  :ensure nil
+  :load-path "~/.emacs.d/lisp/git-auto-commit-mode/")
 
 ;;;* https://codearsonist.com/reading-for-programmers
 (use-package pdf-tools)
