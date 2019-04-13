@@ -1093,10 +1093,13 @@ number of seconds."
       (end-of-line)
       (newline)
       (insert
-       (format "Org Pomodoro - Count: %d, Time: %s"
+       (format "Org Pomodoro - Count: %2d, Time: %s"
                org-pomodoro-count
                (org-timer-secs-to-hms
-                       (round (my-org-pomodoro-time-today)))))))
+                       (round (my-org-pomodoro-time-today)))))
+      (newline)
+      ;; Add spaces to align with line above
+      (insert "Try to get above                3:30:00")))
   (add-hook 'org-agenda-finalize-hook 'my-org-agenda-pomodoro-info 'append)
 
   (defun my-org-pomodoro-today-tick-hook ())
