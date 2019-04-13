@@ -965,15 +965,14 @@ don't support wrapping."
     :type 'string)
   (defun my-org-pomodoro-finished-lock-screen ()
     "Lock screen at the end of each Pomodoro work session."
-    (message "Locking screen in 3 seconds")
-    (shell-command "sleep 3")           ; block until sleep completes
+    (message "Locking screen in 15 seconds - post calendar event from *scratch*")
     (cond
      ((eq system-type 'darwin)
-      (start-process "lock" nil "pmset" "displaysleepnow"))
+      (start-process "lock" nil "bash" "-c" "sleep 15; pmset displaysleepnow"))
      ((and (executable-find "xset")
            (not (s-blank-str? (getenv "DISPLAY"))))
       (shell-command "xdotool search 'Chrome' key --window '%@' XF86AudioPlay")
-      (start-process "lock" nil "xset" "s" "activate"))
+      (start-process "lock" nil "bash" "-c" "sleep 15; xset s activate"))
      (t
       (display-warning
            'my-org-pomodoro-finished-lock-screen
