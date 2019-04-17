@@ -1331,7 +1331,7 @@ efforts may be updated by this function."
              (or (org-entry-get (point) org-effort-property) 0)))
            (children-effort 0))
         (while (outline-next-heading)
-          (let ((x (effort-in-children (point))))
+          (let ((x (my-org-update-heading-effort-from-children (point))))
             (setq children-effort (+ children-effort (nth 0 x)))
             (goto-char (nth 1 x))))
         (goto-char pt)
