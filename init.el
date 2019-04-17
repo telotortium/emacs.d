@@ -1330,7 +1330,6 @@ efforts may be updated by this function."
             (org-duration-to-minutes
              (or (org-entry-get (point) org-effort-property) 0)))
            (children-effort 0))
-        (message "Current effort: %s" current-effort)
         (while (outline-next-heading)
           (let ((x (effort-in-children (point))))
             (setq children-effort (+ children-effort (nth 0 x)))
