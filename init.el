@@ -1309,6 +1309,10 @@ TAG is chosen interactively from the global tags completion table."
 ;; Create globally unique entry IDs when needed
 (c-setq org-id-link-to-org-use-id t)
 
+;; Reset day at 4 AM, just like Anki.
+(c-setq org-extend-today-until 4)
+
+;;; bh clocking functions
 (c-setq bh/keep-clock-running nil)
 
 (defun bh/clock-in-to-next (kw)
@@ -1391,9 +1395,6 @@ as the default task."
   "Task ID of default Organization task (for use with bh/clock-in-organization-task-as-default. Must specify manually."
   :type 'string)
 
-;; Reset day at 4 AM, just like Anki.
-(c-setq org-extend-today-until 4)
-
 (defun bh/clock-in-organization-task-as-default ()
   (interactive)
   (org-with-point-at (org-id-find bh/organization-task-id 'marker)
@@ -1408,7 +1409,7 @@ as the default task."
 
 (add-hook 'org-clock-out-hook 'bh/clock-out-maybe 'append)
 
-;;; Needed for clocking functions: http://doc.norang.ca/org-mode.html#Projects
+;; Needed for clocking functions: http://doc.norang.ca/org-mode.html#Projects
 (defun bh/is-project-p ()
   "Any task with a todo keyword subtask"
   (save-restriction
@@ -1581,7 +1582,7 @@ of occur. The original buffer is not modified.
       (if (get-buffer occur-buffer-name)
           (switch-to-buffer occur-buffer-name)))))
 
-;; Don't insert hard spaces to indent text with heading in Org mode
+;;; Don't insert hard spaces to indent text with heading in Org mode
 (c-setq org-adapt-indentation nil)
 (c-setq org-startup-indented nil)
 
