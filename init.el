@@ -463,7 +463,9 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
 
 ;;; Slime
 (use-package slime
+  :ensure t
   :config
+  (require 'slime-autoloads)
   (add-hook 'slime-repl-mode-hook #'activate-paredit-mode)
   ;; Stop SLIME's REPL from grabbing DEL,
   ;; which is annoying when backspacing over a '('
@@ -471,6 +473,12 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
     (define-key slime-repl-mode-map
       (read-kbd-macro paredit-backward-delete-key) nil))
   (add-hook 'slime-repl-mode-hook 'override-slime-repl-bindings-with-paredit)
+  ;; Add contrib directory to load-path for slime-fancy.
+  (add-to-list
+   'load-path
+   (expand-file-name
+    "contrib"
+    (file-name-directory (symbol-file #'slime-mode))))
   (slime-setup '(slime-fancy slime-banner)))
 
 
