@@ -136,12 +136,17 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
   (define-key ivy-minibuffer-map (kbd "S-SPC") nil)
   (define-key read-expression-map (kbd "C-r") 'counsel-expression-history))
 
+;;;* Evil configuration
+
+;; Dependency of evil-mode
+(use-package undo-tree
+  :diminish undo-tree-mode)
+
 (use-package evil
+  :ensure undo-tree
   :init
   (c-setq evil-want-keybinding nil)
   :config (evil-mode 1))
-
-;;;* Evil configuration
 
 ;; Space as leader
 (use-package evil-leader
@@ -161,9 +166,6 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
   :ensure t
   :after evil
   :init (evil-collection-init))
-
-(use-package undo-tree
-  :diminish undo-tree-mode)
 
 ;; Disable all the C-<number> keys, and give C-^ and C-6 the same behavior as
 ;; they have in Vim.
