@@ -1765,16 +1765,6 @@ of occur. The original buffer is not modified.
 (c-setq bookmark-default-file
         (expand-file-name "cache/bookmarks" user-emacs-directory))
 
-;;; Weechat
-(use-package weechat
-  :config
-  (add-hook 'weechat-mode-hook (lambda () (visual-line-mode 1)))
-  (add-hook 'weechat-mode-hook (lambda () (linum-mode -1))))
-(use-package weechat-notifications
-  :ensure weechat
-  :ensure nil
-  :if (featurep 'dbusbind))
-
 ;;; Enable commands disabled by default
 (put 'narrow-to-region 'disabled nil)
 (put 'list-timers 'disabled nil)
