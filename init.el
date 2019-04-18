@@ -1843,19 +1843,6 @@ of occur. The original buffer is not modified.
   (diminish 'hs-minor-mode))
 (add-hook 'prog-mode-hook #'my-fold-setup)
 
-;;;* Elfeed
-(use-package elfeed
-  :after evil
-  :custom
-  (elfeed-feeds
-   '("http://nullprogram.com/feed/"
-     "http://www.terminally-incoherent.com/blog/feed/"
-     "https://news.ycombinator.com/rss"
-     "https://www.reddit.com/r/oilshell/.rss"))
-  :config
-  (add-to-list 'evil-emacs-state-modes 'elfeed-search-mode)
-  (add-to-list 'evil-emacs-state-modes 'elfeed-show-mode))
-
 ;;;* Storage for variables configured via the interactive 'customize' interface
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file t)
