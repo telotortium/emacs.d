@@ -766,6 +766,7 @@ Source: [[%:link][%:description]]
 (run-at-time "08:00" 21600 'org-agenda-list)
 
 ;; Save and backup all Org files a few times a day using external script.
+(use-package async)
 (defun my-org-save-and-backup-repos ()
   (interactive)
   (org-save-all-org-buffers)
@@ -952,6 +953,7 @@ don't support wrapping."
 (use-package org-pomodoro
   :ensure t
   :ensure s
+  :ensure async
   :after org
   :config
   ;; Complice.co Less Wrong study hall
