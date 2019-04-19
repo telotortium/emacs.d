@@ -244,15 +244,9 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
 (define-key isearch-mode-map (kbd "<down>") 'isearch-ring-advance)
 
 ;; Auto-indent
-(add-to-list 'load-path
-             (expand-file-name
-              (apply 'concat
-                     (mapcar 'file-name-as-directory
-                             '("site-lisp" "clean-aindent")))
-              user-emacs-directory))
-(if (fboundp 'clean-aindent)
-    (require 'clean-aindent)
-  (define-key global-map (kbd "RET") 'newline-and-indent))
+(use-package clean-aindent-mode
+  :bind (:map global-map ("RET" . #'newline-and-indent))
+  :config (clean-aindent-mode 1))
 
 ;; No tabs
 (setq-default indent-tabs-mode nil)
