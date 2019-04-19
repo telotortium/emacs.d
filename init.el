@@ -200,6 +200,7 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
 ;; Shortcut to M-x
 (evil-ex-define-cmd     "mx" #'counsel-M-x)
 (define-key evil-ex-map "mx" #'counsel-M-x)
+(evil-leader/set-key "SPC" 'counsel-M-x)
 
 ;; change mode-line color by evil state
 (let ((default-color (cons (face-background 'mode-line)
