@@ -1206,8 +1206,16 @@ my-org-pomodoro--remove-temp-files-hook when Emacs exits.")
 (use-package evil-org
   :ensure t
   :after org
+  :hook ((org-mode . evil-org-mode)
+         (evil-org-mode
+          . (lambda () (evil-org-set-key-theme))))
   :init
-  (c-setq org-special-ctrl-a/e t))
+  (c-setq org-special-ctrl-a/e t)
+  :config
+  ;; ;; Intentionally not enabling bindings for agenda for now.
+  ;; (require 'evil-org-agenda)
+  ;; (evil-org-agenda-set-keys)
+  nil)
 
 ;;;; Make tag selection more intuitive
 ;;;; See https://blog.aaronbieber.com/2016/03/05/playing-tag-in-org-mode.html
