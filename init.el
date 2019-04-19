@@ -757,8 +757,10 @@ Source: [[%:link][%:description]]
 ;; This binding used to be present by default.
 (org-defkey org-mode-map (kbd "C-c !") 'org-time-stamp-inactive)
 
-;; Pop up org-agenda-list a few times a day
-(run-at-time "08:00" 21600 'org-agenda-list)
+;; TODO: re-enable once this can be ordered using use-package to run after
+;; Org-mode is loaded.
+;; ;; Pop up org-agenda-list a few times a day
+;; (run-at-time "08:00" 21600 'org-agenda-list)
 
 ;; Save and backup all Org files a few times a day using external script.
 (use-package async)
