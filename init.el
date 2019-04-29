@@ -489,10 +489,16 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
   (add-to-list 'org-modules 'org-habit)
   (require 'org-agenda)
   (require 'org-protocol))
-(global-set-key "\C-ca" 'org-agenda)
-(global-set-key "\C-cb" 'org-switchb)
-(global-set-key "\C-cc" 'org-capture)
-(global-set-key "\C-cl" 'org-store-link)
+(global-set-key (kbd "C-c a") 'org-agenda)
+(global-set-key (kbd "C-c b") 'org-switchb)
+(global-set-key (kbd "C-c c") 'org-capture)
+(global-set-key (kbd "C-c l") 'org-store-link)
+(global-set-key (kbd "S-<f11>") #'org-clock-goto)
+(global-set-key (kbd "C-<f11>") #'my-org-clock-in)
+(global-set-key (kbd "C-S-<f11>") #'my-org-goto-heading)
+(defun my-org-clock-in () (interactive) (org-clock-in '(4)))
+(defun my-org-goto-heading () (interactive) (org-refile '(4)))
+
 
 (defun swiper-multi-org-agenda-files (prefix)
   "Swiper-based replacement for ‘org-occur-in-agenda-files’.
