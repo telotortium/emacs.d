@@ -497,7 +497,19 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
 (global-set-key (kbd "C-<f11>") #'my-org-clock-in)
 (global-set-key (kbd "C-S-<f11>") #'my-org-goto-heading)
 (defun my-org-clock-in () (interactive) (org-clock-in '(4)))
-(defun my-org-goto-heading () (interactive) (org-refile '(4)))
+(defun my-org-goto-heading ()
+  "Run C-u org-refile to list all headings."
+  (interactive)
+  ;; org-file doesn't work unless it's run from within an Org buffer, so find
+  ;; an arbitrary one.
+  (save-excursion
+    (with-current-buffer
+        (catch 'aaa
+          (dolist (buffer (buffer-list))
+            (with-current-buffer buffer
+              (when (derived-mode-p 'org-mode)
+                (throw 'aaa buffer)))))
+      (org-refile '(4)))))
 
 
 (defun swiper-multi-org-agenda-files (prefix)
