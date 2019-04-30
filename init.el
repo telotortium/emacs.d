@@ -1244,17 +1244,18 @@ my-org-pomodoro--remove-temp-files-hook when Emacs exits.")
 
 The assumption is that TAGS will be a string conforming to Org Mode's
 tag format specifications, or nil to remove all tags."
-  (let ((old-tags (org-get-tags-string))
-        (tags (if tags
-                  (concat " " tags)
-                "")))
+  (let* ((old-tags (org-get-tags-string))
+         (tags (if tags
+                   (concat " " tags)
+                 "")))
     (save-excursion
       (beginning-of-line)
       (re-search-forward
        (concat "[ \t]*" (regexp-quote old-tags) "[ \t]*$")
-       (line-end-position) t)
+       (line-end-position)
+       t)
       (replace-match tags)
-      (org-set-tags t))))
+      (org-set-tags tags))))
 (defun air-org-set-tags (tag)
   "Add TAG if it is not in the list of tags, remove it otherwise.
 
