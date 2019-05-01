@@ -1205,6 +1205,7 @@ my-org-pomodoro--remove-temp-files-hook when Emacs exits.")
                (org-gcal-token-file (format "%s-%s" org-gcal-token-file calendar-id))
                (org-gcal-token-plist nil))
           (org-gcal--ensure-token)
+          (org-gcal-refresh-token)
           (message "current buffer: %s" (current-buffer))
           (org-gcal--post-event time-iso time-iso
                                 "org-pomodoro break end -- get back to work!"
