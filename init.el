@@ -680,7 +680,7 @@ Source: [[%:link][%:description]]
 
 ;;;** Todo settings
 (c-setq org-todo-keywords
-      (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+      (quote ((sequence "TODO(t)" "NEXT(n@/!)" "|" "DONE(d)")
               (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING"))))
 (c-setq org-todo-keyword-faces
       (quote (("TODO" :foreground "red" :weight bold)
