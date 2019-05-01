@@ -1082,6 +1082,14 @@ number of seconds."
            (float-time (time-subtract (current-time)
                                       my-org-pomodoro-start-time))
          0)))
+  (defun my-org-pomodoro-time-today-set ()
+    "Manually prompt for elapsed pomodoro time for today to set."
+    (interactive)
+    (let* ((input
+            (read-from-minibuffer "Org Pomodoro Time Elapsed Today: ")))
+      (message "Setting elapsed time to %s" input)
+      (setq my-org-pomodoro-time-today-var
+            (* 60 (org-duration-to-minutes input)))))
   (defun my-org-pomodoro-reset-today (&optional arg)
     "Resets daily org-pomodoro variables every day"
     (if (null org-pomodoro-last-clock-in)
