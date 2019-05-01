@@ -599,7 +599,10 @@ if `agenda-archives' is not in `org-agenda-text-search-extra-files'."
                                          "Refile")
          "
 * TODO %?%^{Title}
-%^{Effort}p%u" :clock-in t :clock-resume t :jump-to-captured t)
+%^{Effort}p%u
+
+%(progn (x-focus-frame nil) (setq kk/delete-frame-after-capture 1) nil)
+" :clock-in t :clock-resume t :jump-to-captured t)
         ("n" "Note" entry (file+headline org-default-notes-file "Notes")
          "
 * %u %?
