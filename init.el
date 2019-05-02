@@ -657,7 +657,7 @@ after org-capture-mode is entered."
 " :jump-to-captured t)
         ("i" "Idea" entry (file+headline org-default-notes-file "Ideas")
          "
-* %u %?REPLACE                      :IDEA:
+* %u %?REPLACE_ME                      :IDEA:
 " :clock-in t :clock-resume t)
         ("j" "Journal" plain (file+weektree (lambda () (concat org-directory "/journal.org")))
          "
@@ -696,7 +696,7 @@ after org-capture-mode is entered."
 " :time-prompt t :tree-type week :clock-in t :clock-resume t)
         ("p" "Link and Text" entry (file+headline org-default-notes-file "Links")
          "
-* %^{Title}
+* %?REPLACE_ME
 Source: [[%:link][%:description]]
 #+BEGIN_QUOTE
 %i
