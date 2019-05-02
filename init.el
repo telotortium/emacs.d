@@ -547,24 +547,74 @@ if `agenda-archives' is not in `org-agenda-text-search-extra-files'."
 
 (global-set-key "\C-cq" #'swiper-multi-org-agenda-files)
 
+
 ;;;** Org capture
 
-;;; Kill the frame if one was created for the capture (see
-;;; https://github.com/sprig/org-capture-extension#example-closins-the-frame-after-a-capture).
-(defvar kk/delete-frame-after-capture 0 "Whether to delete the last frame after the current capture")
+;;; Kill the frame if one was created for the capture
+(defun my-org-capture-delete-frame-from-org-protocol (oldfun &rest args)
+  "Delete frames created by external org-protocol capture scripts.
 
-(defun kk/delete-frame-if-neccessary (&rest r)
-  (cond
-   ((= kk/delete-frame-after-capture 0) nil)
-   ((> kk/delete-frame-after-capture 1)
-    (setq kk/delete-frame-after-capture (- kk/delete-frame-after-capture 1)))
-   (t
-    (setq kk/delete-frame-after-capture 0)
-    (delete-frame))))
+This hook tests the presence of a frame parameter `org-protocol-capture' on
+the created frame. This can be set using the `--frame-parameters' flag to
+`emacsclient'."
+  ;; First save the current frame before the capture is finalized.
+  (let* ((frame (window-frame (get-buffer-window (current-buffer) t))))
+    (apply oldfun args)
+    ;; After the capture is finalized, delete the frame.
+    (when (frame-parameter frame 'org-protocol-capture)
+      ;; Use condition-case to avoid useless error if attempting to close last frame.
+      (condition-case nil
+          (delete-frame frame)
+        (error nil)))))
 
-(advice-add 'org-capture-finalize :after 'kk/delete-frame-if-neccessary)
-(advice-add 'org-capture-kill :after 'kk/delete-frame-if-neccessary)
-(advice-add 'org-capture-refile :after 'kk/delete-frame-if-neccessary)
+(defun my-org-capture-steal-focus (&rest unused)
+  "Steal focus for frames created by external org-protocol capture scripts.
+
+Stealing focus here ensures that the newly-created frame is the one from which
+prompts are read. Otherwise, the prompt would appear on the existing frame.
+
+This hook tests the presence of a frame parameter `org-protocol-capture' on
+the newly-created frame. This can be set using the `--frame-parameters' flag to
+`emacsclient'."
+  (when (frame-parameter nil 'org-protocol-capture)
+    (x-focus-frame nil)))
+
+(defun my-org-capture-capture-buffer-sole-window ()
+  "Delete all windows containing the current Org Capture buffer except for the
+one launched by a org-protocol Emacsclient.
+
+This hook tests the presence of a frame parameter `org-protocol-capture' on
+the newly-created frame. This can be set using the `--frame-parameters' flag to
+`emacsclient'."
+  (run-at-time 1 nil #'my-org-capture-capture-buffer-sole-window--inner (current-buffer)))
+
+(defun my-org-capture-capture-buffer-sole-window--inner (buf)
+  "Function scheduled from `my-org-capture-capture-buffer-sole-window' to run
+after org-capture-mode is entered."
+  (dolist (frame (frame-list))
+    (message "frame %S" frame)
+    (when (frame-parameter frame 'org-protocol-capture)
+      (message "my-org-capture-capture-buffer-sole-window: %S"
+               (get-buffer-window-list nil nil t))
+      (let* ((wnd (frame-root-window frame)))
+        (with-current-buffer buf
+            ;; Set the newly-created frame's window to the capture buffer.
+            (set-window-buffer wnd buf)
+            ;; Delete all windows except `wnd' containing the capture buffer.
+            (dolist (w (get-buffer-window-list buf nil t))
+              (message "gbwl: %S, %S : %S"
+                       wnd w (eq wnd w))
+              (unless (or (eq wnd w))
+                (message "gbwl: deleting window %S" w)
+                (delete-window w)))
+            ;; Ensure newly-created frame is in the foreground.
+            (select-frame-set-input-focus frame))))))
+
+(advice-add 'org-capture :before #'my-org-capture-steal-focus)
+(add-hook 'org-capture-mode-hook #'my-org-capture-capture-buffer-sole-window)
+(advice-add 'org-capture-finalize :around #'my-org-capture-delete-frame-from-org-protocol)
+(advice-add 'org-capture-kill :around #'my-org-capture-delete-frame-from-org-protocol)
+(advice-add 'org-capture-refile :around #'my-org-capture-delete-frame-from-org-protocol)
 
 (c-setq org-agenda-files (expand-file-name "agenda_files" user-emacs-directory))
 (c-setq org-agenda-span 7)
@@ -600,8 +650,6 @@ if `agenda-archives' is not in `org-agenda-text-search-extra-files'."
          "
 * TODO %?%^{Title}
 %^{Effort}p%u
-
-%(progn (x-focus-frame nil) (setq kk/delete-frame-after-capture 1) nil)
 " :clock-in t :clock-resume t :jump-to-captured t)
         ("n" "Note" entry (file+headline org-default-notes-file "Notes")
          "
@@ -646,12 +694,6 @@ if `agenda-archives' is not in `org-agenda-text-search-extra-files'."
 #+BEGIN: clocktable :maxlevel 9 :emphasize nil :scope agenda :stepskip0 t :fileskip0 t :block %<%F> :link t
 #+END: clocktable
 " :time-prompt t :tree-type week :clock-in t :clock-resume t)
-        ;; org-protocol capture templates for
-        ;; https://github.com/sprig/org-capture-extension.
-        ;;
-        ;; The two progn expressions serve these purposes:
-        ;; 1. Bring the frame in which org-capture was launched into focus.
-        ;; 2. Delete the capture frame after capture is complete (or killed).
         ("p" "Link and Text" entry (file+headline org-default-notes-file "Links")
          "
 * %^{Title}
@@ -660,15 +702,13 @@ Source: [[%:link][%:description]]
 %i
 #+END_QUOTE
 
-%?%U
-%(progn (x-focus-frame nil) (setq kk/delete-frame-after-capture 1) nil)
+%U
 ")
         ("L" "Link" entry (file+headline org-default-notes-file "Links")
          "
 * %?[[%:link][%(transform-square-brackets-to-curly-ones \"%:description\")]]
   %U
-%(progn (x-focus-frame nil) (setq kk/delete-frame-after-capture 1) nil)
-")))
+" :jump-to-captured t)))
 
 (c-setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
 (c-setq org-refile-use-outline-path t)
