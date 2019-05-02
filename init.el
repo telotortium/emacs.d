@@ -645,17 +645,16 @@ after org-capture-mode is entered."
   :type file)
 
 (c-setq org-capture-templates
-      `(("t" "Task" entry (file+headline (lambda () (concat org-directory "/todo.org"))
-                                         "Refile")
+      `(("t" "Task" entry (file (lambda () (concat org-directory "/inbox.org")))
          "
 * TODO %?%^{Title}
 %^{Effort}p%u
 " :clock-in t :clock-resume t :jump-to-captured t)
-        ("n" "Note" entry (file+headline org-default-notes-file "Notes")
+        ("n" "Note" entry (file (lambda () (concat org-directory "/inbox.org")))
          "
 * %u %?
 " :jump-to-captured t)
-        ("i" "Idea" entry (file+headline org-default-notes-file "Ideas")
+        ("i" "Idea" entry (file (lambda () (concat org-directory "/inbox.org")))
          "
 * %u %?REPLACE_ME                      :IDEA:
 " :clock-in t :clock-resume t)
