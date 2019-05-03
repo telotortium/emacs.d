@@ -1321,7 +1321,7 @@ TAG is chosen interactively from the global tags completion table."
            (org-icompleting-read
             "Tag: " 'org-tags-completion-function nil nil nil
             'org-tags-history))))
-  (let* ((cur-list (org-get-tags))
+  (let* ((cur-list (org-get-tags nil t))
          (new-tags (mapconcat 'identity
                               (if (member tag cur-list)
                                   (delete tag cur-list)
