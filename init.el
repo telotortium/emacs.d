@@ -1764,7 +1764,9 @@ of occur. The original buffer is not modified.
 
 (require 'org-inlinetask)
 
+(c-setq org-agenda-dim-blocked-tasks t)
 (c-setq org-enforce-todo-dependencies t)
+(c-setq org-enforce-todo-checkbox-dependencies t)
 
 (c-setq org-log-done (quote time))
 (c-setq org-log-redeadline (quote time))
