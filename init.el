@@ -720,6 +720,61 @@ after org-capture-mode is entered."
 #+BEGIN: clocktable :maxlevel 9 :emphasize nil :scope agenda :stepskip0 t :fileskip0 t :block %<%F> :link t
 #+END: clocktable
 " :time-prompt t :tree-type week :clock-in t :clock-resume t)
+        ("W" "GTD weekly review" entry (file+olp+datetree org-daily-log-file)
+         "
+* %u GTD weekly review
+SCHEDULED: <%<%Y-%m-%d %a 13:00-14:00>>
+:PROPERTIES:
+:Effort:   1:00
+:END:
+Follow:
+
+- [[https://gettingthingsdone.com/wp-content/uploads/2014/10/Weekly_Review_Checklist.pdf][Weekly Review Checklist]]
+- \"Weekly Review\" section in Getting Things Done.
+
+  In 2015 edition: Chapter 8: \"Reflecting: Keeping It All Fresh and
+  Functional\", section \"The Power of the Weekly Review\".
+
+Checklist:
+
+- GET CLEAR
+  - [ ] Collect Loose Papers and Materials \\\\
+    Gather all accumulated business cards, receipts, and miscellaneous
+    paper-based materials into your in-tray.
+  - [ ] Get “IN” to Zero \\\\
+    Process completely all outstanding paper materials, journal and meeting
+    notes, voicemails, dictation, and emails.
+  - [ ] Empty Your Head \\\\
+    Put in writing and process any uncaptured new projects, action items,
+    waiting for’s, someday maybe’s, etc.
+- GET CURRENT
+  - [ ] Review Action Lists \\\\
+    Mark off completed actions. Review for reminders of further action steps to
+    record.
+  - [ ] Review Previous Calendar Data \\\\
+    Review past calendar in detail for remaining action items, reference data,
+    etc., and transfer into the active system.
+  - [ ] Review Upcoming Calendar \\\\
+    Review upcoming calendar events–long and short term. Capture actions
+    triggered.
+  - [ ] Review Waiting For List \\\\
+    Record appropriate actions for any needed follow-up. Check off received
+    ones.
+  - [ ] Review Project (and Larger Outcome) Lists \\\\
+    Evaluate status of projects, goals, and outcomes, one by one, ensuring at
+    least one current action item on each.  Browse through project plans,
+    support material, and any other work-in-progress material to trigger new
+    actions, completions, waiting for’s, etc.
+  - [ ] Review Any Relevant Checklists \\\\
+    Use as a trigger for any new actions.
+- GET CREATIVE
+  - [ ] Review Someday Maybe List \\\\
+    Review for any projects which may now have become active, and transfer to
+    “Projects.” Delete items no longer of interest.
+  - [ ] Be Creative and Courageous \\\\
+    Any new, wonderful, hare-brained, creative, thought-provoking, risk-taking
+    ideas to add into your system???
+" :time-prompt t :tree-type week :clock-in t :clock-resume t :jump-to-captured t)
         ("p" "Link and Text" entry (file+headline org-default-notes-file "Links")
          "
 * %?REPLACE_ME
