@@ -1552,6 +1552,16 @@ as the default task."
             (setq has-subtask t))))
       (and is-a-task has-subtask))))
 
+(defun bh/is-subproject-p ()
+  "Any task which is a subtask of another project"
+  (let ((is-subproject)
+        (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
+    (save-excursion
+      (while (and (not is-subproject) (org-up-heading-safe))
+        (when (member (nth 2 (org-heading-components)) org-todo-keywords-1)
+          (setq is-subproject t))))
+    (and is-a-task is-subproject)))
+
 (defun bh/is-task-p ()
   "Any task with a todo keyword and no subtask"
   (save-restriction
@@ -1568,6 +1578,19 @@ as the default task."
             (setq has-subtask t))))
       (and is-a-task (not has-subtask)))))
 ;;;;
+
+
+(defun my-org-archive-dwim (&optional find-done)
+  "Tag heading with ARCHIVE tag if it's not the top-level of a project.
+Otherwise, archive the subtree to a file.
+
+FIND-DONE has the same meaning "
+  (interactive "P")
+  (if (bh/is-subproject-p)
+      (org-toggle-archive-tag find-done)
+    (org-archive-subtree find-done)))
+(c-setq org-archive-default-command #'my-org-archive-dwim)
+(org-defkey org-agenda-mode-map "$"        'org-agenda-archive-default)
 
 ;;; Find all inactive timestamps in tree, buffer, or all org buffers
 ;;; https://lists.gnu.org/archive/html/emacs-orgmode/2011-07/msg01228.html
