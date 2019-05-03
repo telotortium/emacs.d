@@ -551,14 +551,17 @@ if `agenda-archives' is not in `org-agenda-text-search-extra-files'."
 ;;;** Org capture
 
 ;;; Kill the frame if one was created for the capture
-(defun my-org-capture-delete-frame-from-org-protocol (oldfun &rest args)
+(defun my-org-capture-finalize-delete-frame-from-org-protocol (oldfun &rest args)
   "Delete frames created by external org-protocol capture scripts.
 
 This hook tests the presence of a frame parameter `org-protocol-capture' on
 the created frame. This can be set using the `--frame-parameters' flag to
 `emacsclient'."
   ;; First save the current frame before the capture is finalized.
-  (let* ((frame (window-frame (get-buffer-window (current-buffer) t))))
+  (let* ((frame (window-frame (get-buffer-window (current-buffer) t)))
+         ;; Ensure org-capture-refile prompt appears in foreground frame
+         (default-minibuffer-frame frame)
+         (minibuffer-auto-raise t))
     (apply oldfun args)
     ;; After the capture is finalized, delete the frame.
     (when (frame-parameter frame 'org-protocol-capture)
@@ -566,6 +569,27 @@ the created frame. This can be set using the `--frame-parameters' flag to
       (condition-case nil
           (delete-frame frame)
         (error nil)))))
+
+(defun my-org-capture-refile-delete-frame-from-org-protocol (oldfun &rest args)
+  "Delete frames created by external org-protocol capture scripts.
+
+Advice around `org-capture-refile' to temporarily remove advice
+`my-org-capture-delete-frame-from-org-protocol' around `org-capture-finalize'
+while calling `org-capture-refile'. This is needed because `org-capture-refile'
+calls `org-capture-finalize' internally. Without removing the advice, the frame
+is closed before I have a chance to refile it.
+"
+  (unwind-protect
+      (progn
+        (advice-remove 'org-capture-finalize
+                       #'my-org-capture-finalize-delete-frame-from-org-protocol)
+        (apply #'my-org-capture-finalize-delete-frame-from-org-protocol
+               oldfun args))
+    (advice-add 'org-capture-finalize
+                :around
+                #'my-org-capture-finalize-delete-frame-from-org-protocol)))
+(defalias 'my-org-capture-kill-delete-frame-from-org-protocol
+  #'my-org-capture-refile-delete-frame-from-org-protocol)
 
 (defun my-org-capture-steal-focus (&rest unused)
   "Steal focus for frames created by external org-protocol capture scripts.
@@ -579,16 +603,16 @@ the newly-created frame. This can be set using the `--frame-parameters' flag to
   (when (frame-parameter nil 'org-protocol-capture)
     (x-focus-frame nil)))
 
-(defun my-org-capture-capture-buffer-sole-window ()
+(defun my-org-capture-buffer-sole-window ()
   "Delete all windows containing the current Org Capture buffer except for the
 one launched by a org-protocol Emacsclient.
 
 This hook tests the presence of a frame parameter `org-protocol-capture' on
 the newly-created frame. This can be set using the `--frame-parameters' flag to
 `emacsclient'."
-  (run-at-time 1 nil #'my-org-capture-capture-buffer-sole-window--inner (current-buffer)))
+  (run-at-time 1 nil #'my-org-capture-buffer-sole-window--inner (current-buffer)))
 
-(defun my-org-capture-capture-buffer-sole-window--inner (buf)
+(defun my-org-capture-buffer-sole-window--inner (buf)
   "Function scheduled from `my-org-capture-capture-buffer-sole-window' to run
 after org-capture-mode is entered."
   (dolist (frame (frame-list))
@@ -611,10 +635,13 @@ after org-capture-mode is entered."
             (select-frame-set-input-focus frame))))))
 
 (advice-add 'org-capture :before #'my-org-capture-steal-focus)
-(add-hook 'org-capture-mode-hook #'my-org-capture-capture-buffer-sole-window)
-(advice-add 'org-capture-finalize :around #'my-org-capture-delete-frame-from-org-protocol)
-(advice-add 'org-capture-kill :around #'my-org-capture-delete-frame-from-org-protocol)
-(advice-add 'org-capture-refile :around #'my-org-capture-delete-frame-from-org-protocol)
+(add-hook 'org-capture-mode-hook #'my-org-capture-buffer-sole-window)
+(advice-add 'org-capture-finalize
+            :around #'my-org-capture-finalize-delete-frame-from-org-protocol)
+(advice-add 'org-capture-kill
+            :around #'my-org-capture-kill-delete-frame-from-org-protocol)
+(advice-add 'org-capture-refile
+            :around #'my-org-capture-refile-delete-frame-from-org-protocol)
 
 (c-setq org-agenda-files (expand-file-name "agenda_files" user-emacs-directory))
 (c-setq org-agenda-span 7)
