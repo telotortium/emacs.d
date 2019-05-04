@@ -722,7 +722,7 @@ after org-capture-mode is entered."
 " :time-prompt t :tree-type week :clock-in t :clock-resume t)
         ("W" "GTD weekly review" entry (file+olp+datetree org-daily-log-file)
          "
-* %u GTD weekly review
+* %u NEXT GTD weekly review
 SCHEDULED: <%<%Y-%m-%d %a 13:00-14:00>>
 :PROPERTIES:
 :Effort:   1:00
