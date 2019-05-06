@@ -833,16 +833,26 @@ Source: [[%:link][%:description]]
 (c-setq org-agenda-todo-ignore-scheduled 'future)
 
 (c-setq org-agenda-span 1)
-(unless (boundp 'org-agenda-custom-commands)
-  (c-setq org-agenda-custom-commands '()))
+(c-setq org-agenda-custom-commands '())
 (add-to-list 'org-agenda-custom-commands
-             '("n" "Agenda and all TODOs" ((agenda "") (alltodo))))
+             '("n" "NEXT (grouped by parent, except scheduled for future)"
+               ((tags-todo
+                 "TODO=\"NEXT\"-HOLD-CANCELLED-ARCHIVE-SCHEDULED>=\"<tomorrow>\""
+                 (
+                  (org-agenda-overriding-header "Projects & Task Groups")
+                  (org-super-agenda-groups
+                   '((:auto-map
+                      my-org-super-agenda-group-by-project-or-task-group))))))))
 (add-to-list 'org-agenda-custom-commands
-             '("u" "Unscheduled TODOs" todo ""
-               ((org-agenda-skip-function
-                 '(org-agenda-skip-entry-if 'scheduled 'deadline 'regexp "\n]+>"))
-                (org-agenda-overriding-header "Unscheduled TODO entries: ")
-                (org-agenda-sorting-strategy '(time-down)))))
+             '("u" "Tasks making projects stuck"
+               ((tags-todo
+                 "TODO<>\"NEXT\"-HOLD-CANCELLED-ARCHIVE-SCHEDULED>=\"<tomorrow>\""
+                 (
+                  (org-agenda-overriding-header "Projects with stuck tasks")
+                  (org-super-agenda-groups
+                   '((:auto-parent t)))
+                  (org-agenda-skip-function
+                   #'bh/skip-non-subprojects))))))
 (add-to-list 'org-agenda-custom-commands
              '("Q" . "Custom queries"))
 (add-to-list 'org-agenda-custom-commands
@@ -1659,6 +1669,38 @@ as the default task."
           (when (member (org-get-todo-state) org-todo-keywords-1)
             (setq has-subtask t))))
       (and is-a-task (not has-subtask)))))
+
+(defun bh/skip-non-subprojects ()
+  "Show subprojects (including both projects and leaf tasks)."
+  (save-restriction
+    (widen)
+    (cond
+     ((bh/is-subproject-p) nil)
+     (t
+      (let ((next-headline
+             (save-excursion (or (outline-next-heading) (point-max)))))
+        next-headline)))))
+
+(defun my-org-super-agenda-group-by-project-or-task-group (item)
+  "Output the name of the parent headline of the current headline.
+
+In order to ensure that tasks that are part of projects are sorted before loose
+tasks (tasks not part of projects), the name of the parent headline is prefixed
+with “P: ” if it contains a TODO keyword and “TG: ” (for “task group”)
+otherwise."
+  (org-super-agenda--when-with-marker-buffer
+    (org-super-agenda--get-marker item)
+    (let* ((parent-title)
+           (parent-has-todo))
+      (save-excursion
+        (when (org-up-heading-safe)
+          (setq parent-title (org-get-heading 'notags 'notodo))
+          (setq parent-has-todo
+                (member (nth 2 (org-heading-components)) org-todo-keywords-1))))
+      (when parent-title
+        (if parent-has-todo
+            (format "P: %s" parent-title)
+          (format "TG: %s" parent-title))))))
 ;;;;
 
 
