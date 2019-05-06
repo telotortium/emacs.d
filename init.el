@@ -1632,17 +1632,9 @@ as the default task."
   "Any task with a todo keyword subtask"
   (save-restriction
     (widen)
-    (let ((has-subtask)
-          (subtree-end (save-excursion (org-end-of-subtree t)))
-          (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
-      (save-excursion
-        (forward-line 1)
-        (while (and (not has-subtask)
-                    (< (point) subtree-end)
-                    (re-search-forward "^\*+ " subtree-end t))
-          (when (member (org-get-todo-state) org-todo-keywords-1)
-            (setq has-subtask t))))
-      (and is-a-task has-subtask))))
+    (let ((is-a-task
+           (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
+      (and is-a-task (not (bh/is-task-p))))))
 
 (defun bh/is-subproject-p ()
   "Any task which is a subtask of another project"
@@ -1655,17 +1647,19 @@ as the default task."
     (and is-a-task is-subproject)))
 
 (defun bh/is-task-p ()
-  "Any task with a todo keyword and no subtask"
+  "Any task with a todo keyword and no todo keyword subtask"
   (save-restriction
     (widen)
     (let ((has-subtask)
-          (subtree-end (save-excursion (org-end-of-subtree t)))
-          (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
+          (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1))
+          (top-level (org-current-level)))
       (save-excursion
-        (forward-line 1)
-        (while (and (not has-subtask)
-                    (< (point) subtree-end)
-                    (re-search-forward "^\*+ " subtree-end t))
+        (while (and
+                ;; is-a-task never changes - use it for early exit.
+                is-a-task
+                (not has-subtask)
+                (outline-next-heading)
+                (> (org-current-level) top-level))
           (when (member (org-get-todo-state) org-todo-keywords-1)
             (setq has-subtask t))))
       (and is-a-task (not has-subtask)))))
