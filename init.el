@@ -835,14 +835,15 @@ Source: [[%:link][%:description]]
 (c-setq org-agenda-span 1)
 (c-setq org-agenda-custom-commands '())
 (add-to-list 'org-agenda-custom-commands
-             '("n" "NEXT (grouped by parent, except scheduled for future)"
+             '("U" "Loose TODOs (not part of projects)"
                ((tags-todo
-                 "TODO=\"NEXT\"-HOLD-CANCELLED-ARCHIVE-SCHEDULED>=\"<tomorrow>\""
+                 "TODO=\"TODO\"-HOLD-CANCELLED-ARCHIVE-SCHEDULED>=\"<tomorrow>\""
                  (
-                  (org-agenda-overriding-header "Projects & Task Groups")
+                  (org-agenda-overriding-header "Loose TODOs")
                   (org-super-agenda-groups
-                   '((:auto-map
-                      my-org-super-agenda-group-by-project-or-task-group))))))))
+                   '((:auto-parent t)))
+                  (org-agenda-skip-function
+                   #'bh/skip-subprojects))))))
 (add-to-list 'org-agenda-custom-commands
              '("u" "Tasks making projects stuck"
                ((tags-todo
@@ -853,6 +854,15 @@ Source: [[%:link][%:description]]
                    '((:auto-parent t)))
                   (org-agenda-skip-function
                    #'bh/skip-non-subprojects))))))
+(add-to-list 'org-agenda-custom-commands
+             '("n" "NEXT (grouped by parent, except scheduled for future)"
+               ((tags-todo
+                 "TODO=\"NEXT\"-HOLD-CANCELLED-ARCHIVE-SCHEDULED>=\"<tomorrow>\""
+                 (
+                  (org-agenda-overriding-header "Projects & Task Groups")
+                  (org-super-agenda-groups
+                   '((:auto-map
+                      my-org-super-agenda-group-by-project-or-task-group))))))))
 (add-to-list 'org-agenda-custom-commands
              '("Q" . "Custom queries"))
 (add-to-list 'org-agenda-custom-commands
@@ -1663,6 +1673,17 @@ as the default task."
           (when (member (org-get-todo-state) org-todo-keywords-1)
             (setq has-subtask t))))
       (and is-a-task (not has-subtask)))))
+
+(defun bh/skip-subprojects ()
+  "Skip subprojects (including both projects and leaf tasks)."
+  (save-restriction
+    (widen)
+    (cond
+     ((not (bh/is-subproject-p)) nil)
+     (t
+      (let ((next-headline
+             (save-excursion (or (outline-next-heading) (point-max)))))
+        next-headline)))))
 
 (defun bh/skip-non-subprojects ()
   "Show subprojects (including both projects and leaf tasks)."
