@@ -1565,6 +1565,7 @@ efforts may be updated by this function."
     ('abort 'abort)
     (_ nil)))
 (add-hook 'org-clock-in-prepare-hook 'my-org-effort-from-children-hook)
+
 (defun my-org-update-heading-effort-from-children-all ()
   "Run over all projects, updating their efforts from their children.
 
