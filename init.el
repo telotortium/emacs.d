@@ -1507,38 +1507,83 @@ TAG is chosen interactively from the global tags completion table."
 the sum is greater than the current effort for this heading, offer to update
 it. This function is called recursively on each child, so the entire tree's
 efforts may be updated by this function."
-  (save-excursion
-    (save-restriction
-      (goto-char pt)
-      (org-back-to-heading)
-      (org-narrow-to-subtree)
-      (outline-show-all)
-      (let*
-          ((current-effort
-            (org-duration-to-minutes
-             (or (org-entry-get (point) org-effort-property) 0)))
-           (children-effort 0))
-        (while (outline-next-heading)
-          (let ((x (my-org-update-heading-effort-from-children (point))))
-            (setq children-effort (+ children-effort (nth 0 x)))
-            (goto-char (nth 1 x))))
-        (goto-char pt)
-        (let ((children-effort-duration
-               (org-duration-from-minutes children-effort)))
-          (when (and (< current-effort children-effort)
-                 (y-or-n-p-with-timeout
-                  (format "Update effort to children's sum (%s)?"
-                          children-effort-duration)
-                  60 nil))
-            (org-entry-put (point) org-effort-property
-                           children-effort-duration)
-            (setq current-effort children-effort)))
-        (list current-effort (point-max))))))
+  (let*
+      ((abort-at-point)
+       (abort-at-buffer)
+       (ret
+        (catch
+            'break
+          (save-excursion
+            (save-restriction
+              (goto-char pt)
+              (org-back-to-heading)
+              (org-narrow-to-subtree)
+              (outline-show-all)
+              (let*
+                  ((current-effort
+                    (org-duration-to-minutes
+                     (or (org-entry-get (point) org-effort-property) 0)))
+                   (children-effort 0))
+                (while (outline-next-heading)
+                  (pcase (my-org-update-heading-effort-from-children (point))
+                    ('abort
+                     (throw 'break 'abort))
+                    (x
+                     (setq children-effort (+ children-effort (nth 0 x)))
+                     (goto-char (nth 1 x)))))
+                (goto-char pt)
+                (let ((children-effort-duration
+                       (org-duration-from-minutes children-effort)))
+                  (when (< current-effort children-effort)
+                    (pcase (read-char-choice
+                            (format
+                             "Update effort to children's sum (%s)? (y,n,j) "
+                             children-effort-duration)
+                            '(?y ?n ?j))
+                      (?n nil)
+                      (?y
+                       (org-entry-put (point) org-effort-property
+                                      children-effort-duration)
+                       (setq current-effort children-effort))
+                      (?j
+                       (setq abort-at-point (point)
+                             abort-at-buffer (current-buffer))
+                       (throw 'break 'abort-at-buffer-point)))))
+                (list current-effort (point-max))))))))
+    (pcase ret
+      ('abort-at-buffer-point
+       (message "%S %S" abort-at-buffer abort-at-point)
+       (pop-to-buffer-same-window abort-at-buffer)
+       (set-buffer abort-at-buffer)
+       (goto-char abort-at-point)
+       'abort)
+      ('abort 'abort)
+      (_ ret))))
 (defun my-org-effort-from-children-hook ()
   "Update effort of a heading from its children before clocking in."
-  (my-org-update-heading-effort-from-children (point))
-  nil)
+  (pcase (my-org-update-heading-effort-from-children (point))
+    ('abort 'abort)
+    (_ nil)))
 (add-hook 'org-clock-in-prepare-hook 'my-org-effort-from-children-hook)
+(defun my-org-update-heading-effort-from-children-all ()
+  "Run over all projects, updating their efforts from their children.
+
+Pressing ‘j’ will abort the run, leaving the point at the heading we were at
+when ‘j’ was pressed."
+  (interactive)
+  (org-map-entries
+   (lambda ()
+     (display-buffer (current-buffer) '(display-buffer-same-window))
+     (recenter nil)
+     (pcase (my-org-effort-from-children-hook)
+       ('abort
+        (message "'abort")
+        (setq org-map-continue-from (point))
+        (let ((debug-on-quit nil))
+          (signal 'quit nil)))
+       (x x)))
+   nil 'agenda #'bh/skip-tasks)
+  (message "Updating efforts complete."))
 
 ;;; bh clocking functions
 (c-setq bh/keep-clock-running nil)
@@ -1684,6 +1729,20 @@ as the default task."
       (let ((next-headline
              (save-excursion (or (outline-next-heading) (point-max)))))
         next-headline)))))
+
+(defun bh/skip-tasks ()
+  "Show projects (including subprojects). Skip leaf tasks."
+  (save-restriction
+    (widen)
+    (let ((is-a-task
+           (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
+      (cond
+       ((and is-a-task (bh/is-project-p)) nil)
+       (t
+        (let ((next-headline
+               (save-excursion (or (outline-next-heading) (point-max)))))
+          next-headline))))))
+
 
 (defun bh/skip-non-subprojects ()
   "Show subprojects (including both projects and leaf tasks)."
