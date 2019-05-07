@@ -502,14 +502,14 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
   (interactive)
   ;; org-file doesn't work unless it's run from within an Org buffer, so find
   ;; an arbitrary one.
-  (save-excursion
-    (with-current-buffer
-        (catch 'aaa
-          (dolist (buffer (buffer-list))
-            (with-current-buffer buffer
-              (when (derived-mode-p 'org-mode)
-                (throw 'aaa buffer)))))
-      (org-refile '(4)))))
+  (with-current-buffer
+    (save-excursion
+      (catch 'aaa
+        (dolist (buffer (buffer-list))
+          (with-current-buffer buffer
+            (when (derived-mode-p 'org-mode)
+              (throw 'aaa buffer))))))
+    (org-refile '(4))))
 
 
 (defun swiper-multi-org-agenda-files (prefix)
