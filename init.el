@@ -276,6 +276,11 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
 
 (use-package rg
   :commands (rg rg-project rg-dwin))
+(rg-define-search rg-org
+  "Run rg on my Org files"
+  :query ask
+  :files "org"
+  :dir "~/Documents/org")
 
 ;;; Company
 (use-package company-flx
