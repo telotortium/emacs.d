@@ -1976,6 +1976,16 @@ of occur. The original buffer is not modified.
 
 (require 'org-inlinetask)
 
+(use-package org-randomnote
+  :ensure t
+  :bind ("C-c r" . org-randomnote)
+  :config
+  (c-setq org-randomnote-candidates
+          (remove-if
+           (lambda (x)
+             (string-match-p "/gcal.org$" x))
+           (org-agenda-files))))
+
 (c-setq org-agenda-dim-blocked-tasks t)
 (c-setq org-enforce-todo-dependencies t)
 (c-setq org-enforce-todo-checkbox-dependencies t)
