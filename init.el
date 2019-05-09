@@ -875,7 +875,9 @@ Source: [[%:link][%:description]]
                   (org-agenda-overriding-header "Projects & Task Groups")
                   (org-super-agenda-groups
                    '((:auto-map
-                      my-org-super-agenda-group-by-project-or-task-group))))))))
+                      my-org-super-agenda-group-by-project-or-task-group)))
+                  (org-agenda-skip-function
+                   #'bh/skip-non-tasks))))))
 (add-to-list 'org-agenda-custom-commands
              '("Q" . "Custom queries"))
 (add-to-list 'org-agenda-custom-commands
@@ -1746,6 +1748,19 @@ as the default task."
       (let ((next-headline
              (save-excursion (or (outline-next-heading) (point-max)))))
         next-headline)))))
+
+(defun bh/skip-non-tasks ()
+  "Show leaf tasks. Skip projects (including subprojects)."
+  (save-restriction
+    (widen)
+    (let ((is-a-task
+           (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
+      (cond
+       ((and is-a-task (bh/is-task-p)) nil)
+       (t
+        (let ((next-headline
+               (save-excursion (or (outline-next-heading) (point-max)))))
+          next-headline))))))
 
 (defun bh/skip-tasks ()
   "Show projects (including subprojects). Skip leaf tasks."
