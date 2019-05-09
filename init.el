@@ -804,6 +804,12 @@ Source: [[%:link][%:description]]
 (c-setq org-src-fontify-natively t)
 (c-setq org-pretty-entities t)
 (c-setq org-use-sub-superscripts '{})
+(c-setq org-hide-macro-markers t)
+(defun org-toggle-hide-macro-markers ()
+  "Toggle the literal or descriptive display of macros."
+  (interactive)
+  (setq org-hide-macro-markers (not org-hide-macro-markers))
+  (org-restart-font-lock))
 
 
 ;;;** Todo settings
