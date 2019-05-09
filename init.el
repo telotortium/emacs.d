@@ -2177,6 +2177,13 @@ of occur. The original buffer is not modified.
   :config
   (which-key-mode 1))
 
+
+;;;* browse-kill-ring
+(use-package browse-kill-ring
+  :config
+  (browse-kill-ring-default-keybindings))
+
+
 ;;;* Folding
 (defun my-fold-setup ()
   (interactive)
