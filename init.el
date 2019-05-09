@@ -2128,6 +2128,7 @@ of occur. The original buffer is not modified.
 
 ;; Don't use Evil for image-mode.
 (add-to-list 'evil-emacs-state-modes 'image-mode)
+(delete 'git-commit-mode evil-emacs-state-modes)
 
 
 ;;; Split window vertically if possible -- this will split vertically if the
