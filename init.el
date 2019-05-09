@@ -166,7 +166,10 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
 (use-package evil-collection
   :ensure t
   :after evil
-  :init (evil-collection-init))
+  :init (evil-collection-init)
+  :config
+  ;; Avoid conflict with evil-org
+  (setq evil-collection-outline-bind-tab-p nil))
 
 ;; Disable all the C-<number> keys, and give C-^ and C-6 the same behavior as
 ;; they have in Vim.
