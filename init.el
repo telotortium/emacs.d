@@ -157,6 +157,7 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
 ;; Scroll with C-u and access universal-argument with <Leader>-u.
 (c-setq evil-want-C-u-scroll t)
 (evil-leader/set-key "u" 'universal-argument)
+(evil-leader/set-key "s" (lambda () (interactive) (switch-to-buffer "*scratch*")))
 
 ;; Evil magic search
 (c-setq evil-magic 'very-magic)
