@@ -1171,6 +1171,8 @@ don't support wrapping."
           (display-warning
            'my-org-pomodoro-finished-caffeinate
            "Can't prevent system from sleeping"))))))
+  (defun my-org-pomodoro-started-notify-hook ()
+    (org-notify "Pomodoro started - snooze notifications in Hangouts Chat."))
   (defun my-org-pomodoro-finished-notify-hook ()
     (org-notify "Pomodoro phase finished"))
   (defun my-org-pomodoro-start-break ()
@@ -1363,6 +1365,7 @@ my-org-pomodoro--remove-temp-files-hook when Emacs exits.")
                                 ;; ORG-GCAL-FILE-ALIST.
                                 nil nil 'skip-import 'skip-export)))))
 
+  (add-hook 'org-pomodoro-started-hook #'my-org-pomodoro-started-notify-hook)
   (add-hook 'org-pomodoro-finished-hook #'my-org-pomodoro-finished-notify-hook)
   (add-hook 'org-pomodoro-finished-hook #'my-org-pomodoro-finished-lock-screen)
   (add-hook 'org-pomodoro-finished-hook #'my-org-pomodoro-finished-caffeinate)
