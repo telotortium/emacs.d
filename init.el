@@ -857,6 +857,14 @@ Source: [[%:link][%:description]]
 (c-setq org-agenda-span 1)
 (c-setq org-agenda-custom-commands '())
 (add-to-list 'org-agenda-custom-commands
+             '("W" "WAITING"
+               ((tags-todo
+                 "WAITING-HOLD-CANCELLED-ARCHIVE-SCHEDULED>=\"<tomorrow>\""
+                 (
+                  (org-agenda-overriding-header "WAITING for tasks")
+                  (org-super-agenda-groups
+                   '((:auto-parent t))))))))
+(add-to-list 'org-agenda-custom-commands
              '("U" "Loose TODOs (not part of projects)"
                ((tags-todo
                  "TODO=\"TODO\"-HOLD-CANCELLED-ARCHIVE-SCHEDULED>=\"<tomorrow>\""
