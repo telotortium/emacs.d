@@ -758,7 +758,7 @@ Checklist:
     - [ ] Corp email
     - [ ] Corp tasks (use ~sync-tasks~)
     - [ ] [[https://b.corp.google.com/savedsearches/5024171][Buganizer: Org-mode assigned but not captured]]
-    - [ ] [[https://critique.corp.google.com/#search/&q=reviewer:me%20-is:submitted][Critique: CLs to review]]
+    - [ ] [[https://critique.corp.google.com/#search/&q=reviewer:me%20-is:submitted%20-starred:me][Critique: CLs to review]]
     - [ ] Chats
   - [ ] Empty Your Head \\\\
     Put in writing and process any uncaptured new projects, action items,
