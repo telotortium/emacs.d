@@ -1300,18 +1300,27 @@ number of seconds."
             #'my-org-pomodoro-finished-update-time-today)
   (defun my-org-agenda-pomodoro-info ()
     "Add Org Pomodoro Count and Time to agenda."
-    (save-excursion
-      (goto-char (point-max))
-      (end-of-line)
-      (newline)
-      (insert
-       (format "Org Pomodoro - Count: %2d, Time: %s"
-               org-pomodoro-count
-               (org-timer-secs-to-hms
-                       (round (my-org-pomodoro-time-today)))))
-      (newline)
-      ;; Add spaces to align with line above
-      (insert "Try to get above                3:30:00")))
+    (save-restriction
+      (widen)
+      (save-excursion
+        (goto-char (point-min))
+        (let* ((search-for "Org Pomodoro - Count:")
+               (match (search-forward search-for nil 'noerror)))
+          (if match
+            (let ((start-match (- (point) (length search-for))))
+                (goto-char start-match)
+                (delete-region start-match (point-max)))
+            (progn
+              (end-of-line)
+              (newline)))
+          (insert
+           (format "Org Pomodoro - Count: %2d, Time: %s"
+                   org-pomodoro-count
+                   (org-timer-secs-to-hms
+                           (round (my-org-pomodoro-time-today)))))
+          (newline)
+          ;; Add spaces to align with line above
+          (insert "Try to get above                3:30:00")))))
   (add-hook 'org-agenda-finalize-hook 'my-org-agenda-pomodoro-info 'append)
 
   (defun my-org-pomodoro-today-tick-hook ())
