@@ -855,7 +855,19 @@ Source: [[%:link][%:description]]
 (c-setq org-agenda-todo-ignore-scheduled 'future)
 
 (c-setq org-agenda-span 1)
+(setq my-org-agenda-export-options
+      ;; Use defaults for now, but leave available for future customization
+      '())
 (c-setq org-agenda-custom-commands '())
+(add-to-list 'org-agenda-custom-commands
+             '("H" "Someday/Maybe"
+               ((tags-todo
+                 "HOLD-CANCELLED-ARCHIVE-SCHEDULED>=\"<tomorrow>\""
+                 (
+                  (org-agenda-overriding-header "Someday/Maybe tasks")
+                  (org-super-agenda-groups
+                   '((:auto-map
+                      my-org-super-agenda-group-by-project-or-task-group))))))))
 (add-to-list 'org-agenda-custom-commands
              '("W" "WAITING"
                ((tags-todo
@@ -865,7 +877,7 @@ Source: [[%:link][%:description]]
                   (org-super-agenda-groups
                    '((:auto-parent t))))))))
 (add-to-list 'org-agenda-custom-commands
-             '("U" "Loose TODOs (not part of projects)"
+             `("U" "Loose TODOs (not part of projects)"
                ((tags-todo
                  "TODO=\"TODO\"-HOLD-CANCELLED-ARCHIVE-SCHEDULED>=\"<tomorrow>\""
                  (
@@ -873,7 +885,12 @@ Source: [[%:link][%:description]]
                   (org-super-agenda-groups
                    '((:auto-parent t)))
                   (org-agenda-skip-function
-                   #'bh/skip-subprojects))))))
+                   #'bh/skip-subprojects))))
+               ((org-agenda-write-buffer-name
+                 "Loose TODOs (not part of projects)")
+                (org-agenda-exporter-settings
+                  my-org-agenda-export-options))
+               "~/Downloads/agenda-U-export.pdf"))
 (add-to-list 'org-agenda-custom-commands
              '("u" "Tasks making projects stuck"
                ((tags-todo
@@ -883,7 +900,12 @@ Source: [[%:link][%:description]]
                   (org-super-agenda-groups
                    '((:auto-parent t)))
                   (org-agenda-skip-function
-                   #'bh/skip-non-subprojects))))))
+                   #'bh/skip-non-subprojects))))
+               ((org-agenda-write-buffer-name
+                 "Tasks making projects stuck")
+                (org-agenda-exporter-settings
+                  my-org-agenda-export-options))
+               "~/Downloads/agenda-u-export.pdf"))
 (add-to-list 'org-agenda-custom-commands
              '("n" "NEXT (grouped by parent, except scheduled for future)"
                ((tags-todo
@@ -894,7 +916,12 @@ Source: [[%:link][%:description]]
                    '((:auto-map
                       my-org-super-agenda-group-by-project-or-task-group)))
                   (org-agenda-skip-function
-                   #'bh/skip-non-tasks))))))
+                   #'bh/skip-non-tasks))))
+               ((org-agenda-write-buffer-name
+                 "NEXT (grouped by parent, except scheduled for future)")
+                (org-agenda-exporter-settings
+                  my-org-agenda-export-options))
+               "~/Downloads/agenda-n-export.pdf"))
 (add-to-list 'org-agenda-custom-commands
              '("Q" . "Custom queries"))
 (add-to-list 'org-agenda-custom-commands
@@ -912,6 +939,22 @@ Source: [[%:link][%:description]]
                                (t (cons 'agenda-archives tmp)))))
                    (call-interactively 'org-occur-in-agenda-files)))
                ""))
+(defvar my-org-agenda-combined-output-file
+  "~/Downloads/agenda-export.pdf"
+  "Output PDF of ‘my-org-agenda-write-combined’.")
+(defun my-org-agenda--get-export-file (key)
+  (nth 3 (alist-get key org-agenda-custom-commands nil nil #'string=)))
+(defun my-org-agenda-write-combined ()
+  "Combine several agenda views into one PDF suitable for printing"
+  (interactive)
+  ;; (org-store-agenda-views)
+  (call-process "pdfnup" nil (get-buffer-create "*Async Shell Command*") nil
+                "--nup" "2x2" "--no-landscape"
+                "-o" (expand-file-name my-org-agenda-combined-output-file)
+                (expand-file-name (my-org-agenda--get-export-file "n"))
+                (expand-file-name (my-org-agenda--get-export-file "u"))
+                (expand-file-name (my-org-agenda--get-export-file "U")))
+  (message "Wrote %s" my-org-agenda-combined-output-file))
 
 (c-setq org-stuck-projects
       '("TODO={TODO\\|NEXT}-HOLD-CANCELLED-REFILE" ("NEXT" "HOLD") nil ""))
