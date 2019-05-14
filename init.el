@@ -807,6 +807,65 @@ Source: [[%:link][%:description]]
   %U
 " :jump-to-captured t)))
 
+(defun my-org-daily-log--find-daily-log ()
+   (re-search-forward
+    (rx-to-string
+     `(and
+       line-start
+       (repeat 4 "*")
+       " "
+       (0+ not-newline)
+       ,(let ((d (calendar-gregorian-from-absolute (org-today))))
+         (format "[%04d-%02d-%02d "
+                 (calendar-extract-year d)
+                 (calendar-extract-month d)
+                 (calendar-extract-day d)))
+       (0+ not-newline)
+       "] Daily log"))))
+
+(defun my-org-daily-log--find-today ()
+   (re-search-forward
+    (rx-to-string
+     `(and
+       line-start
+       (repeat 3 "*")
+       ,(let ((d (calendar-gregorian-from-absolute (org-today))))
+         (format " %04d-%02d-%02d "
+                 (calendar-extract-year d)
+                 (calendar-extract-month d)
+                 (calendar-extract-day d)))))))
+
+(defun my-org-daily-log--goto-daily-log-headline ()
+  (condition-case nil
+      (with-current-buffer (get-file-buffer org-daily-log-file)
+        (save-restriction
+          (widen)
+          (save-excursion
+            (goto-char (point-min))
+            (my-org-daily-log--find-today)
+            (org-narrow-to-subtree)
+            (my-org-daily-log--find-daily-log)
+            (point-marker))))
+    (error nil)))
+
+(defun my-org-daily-log-goto-today ()
+  "Go to today's default log, or create it if not created yet."
+  (interactive)
+  (let ((daily-log-marker (my-org-daily-log--goto-daily-log-headline)))
+    (if daily-log-marker
+        (progn
+          (message "in marker branch")
+          (switch-to-buffer (marker-buffer daily-log-marker))
+          (goto-char (marker-position daily-log-marker))
+          (org-narrow-to-subtree)
+          (set-marker daily-log-marker nil))
+      (progn
+        (let ((org-overriding-default-time
+               (current-time)))
+          (org-capture nil "D")
+          (org-capture-finalize 'stay-with-capture)
+          (org-narrow-to-subtree))))))
+
 (c-setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
 (c-setq org-refile-use-outline-path t)
 (c-setq org-alphabetical-lists t)
