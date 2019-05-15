@@ -1303,6 +1303,10 @@ don't support wrapping."
   (defun my-org-pomodoro-start-break ()
     "Start break - clock into task with ID my-org-pomodoro-break-id."
     (interactive)
+    ;; Set org-clock-idle-time to nil to disable it during Pomodoro breaks -
+    ;; sometimes Emacs will hang after the break.
+    (setq my-org-pomodoro-clock-idle-time org-clock-idle-time)
+    (setq org-clock-idle-time nil)
     (save-excursion
       (org-id-goto my-org-pomodoro-break-id)
       (org-clock-in)))
@@ -1327,6 +1331,7 @@ don't support wrapping."
         (org-notify msg))))
   (defun my-org-pomodoro-short-break-finished-punch-in ()
     "Run bh/punch-in when Pomodoro short breaks end."
+    (setq org-clock-idle-time my-org-pomodoro-clock-idle-time)
     (message-box "Break finished - please run bh/punch-in"))
   (defun my-org-pomodoro-long-break-finished-punch-out ()
     "Run bh/punch-out when Pomodoro long breaks end."
