@@ -1067,23 +1067,13 @@ Source: [[%:link][%:description]]
 ;; (run-at-time "08:00" 21600 'org-agenda-list)
 
 ;; Save and backup all Org files a few times a day using external script.
-(use-package async)
-(defun my-org-save-and-backup-repos ()
-  (interactive)
-  (org-save-all-org-buffers)
-  (let ((default-directory (expand-file-name "~")))
-    (async-start-process "my-org-save-and-backup-repos"
-                         (substitute-env-vars "${HOME}/bin/org-git-cron")
-                         'ignore)))
-(run-at-time "00:59" 900 'my-org-save-and-backup-repos)
-
 
 ;;;** Supersession
 
 ;;; Add option to merge current buffer and file on disk using emerge if both
 ;;; buffer and disk have changed.
 (defadvice ask-user-about-supersession-threat (around ediff-supersession-threat)
-  "Wrap `ask-user-about-supersession-threat' to provide the option to run
+  "Wrap `ask-user-about-supersession-threat' to provide the option to run)
 `ediff-current-buffer' instead."
   (save-window-excursion
     (let ((prompt
