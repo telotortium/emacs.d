@@ -1686,7 +1686,8 @@ efforts may be updated by this function."
                   (when (< current-effort children-effort)
                     (pcase (read-char-choice
                             (format
-                             "Update effort to children's sum (%s)? (y,n,j) "
+                             "Update effort in \"%s\" to children's sum (%s)? (y,n,j) "
+                             (org-get-heading 'no-tags 'no-todo 'no-priority 'no-comment)
                              children-effort-duration)
                             '(?y ?n ?j))
                       (?n nil)
