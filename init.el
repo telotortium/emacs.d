@@ -807,6 +807,14 @@ Source: [[%:link][%:description]]
   %U
 " :jump-to-captured t)))
 
+(defun org-today-overridden ()
+  (if (null org-overriding-default-time)
+      (org-today)
+    (let* ((ot
+            (decode-time org-overriding-default-time))
+           (cgreg (list (nth 4 ot) (nth 3 ot) (nth 5 ot))))
+      (calendar-absolute-from-gregorian cgreg))))
+
 (defun my-org-daily-log--find-daily-log ()
    (re-search-forward
     (rx-to-string
@@ -815,7 +823,7 @@ Source: [[%:link][%:description]]
        (repeat 4 "*")
        " "
        (0+ not-newline)
-       ,(let ((d (calendar-gregorian-from-absolute (org-today))))
+       ,(let ((d (calendar-gregorian-from-absolute (org-today-overridden))))
          (format "[%04d-%02d-%02d "
                  (calendar-extract-year d)
                  (calendar-extract-month d)
@@ -829,7 +837,7 @@ Source: [[%:link][%:description]]
      `(and
        line-start
        (repeat 3 "*")
-       ,(let ((d (calendar-gregorian-from-absolute (org-today))))
+       ,(let ((d (calendar-gregorian-from-absolute (org-today-overridden))))
          (format " %04d-%02d-%02d "
                  (calendar-extract-year d)
                  (calendar-extract-month d)
@@ -861,7 +869,7 @@ Source: [[%:link][%:description]]
           (set-marker daily-log-marker nil))
       (progn
         (let ((org-overriding-default-time
-               (current-time)))
+               (or org-overriding-default-time (current-time))))
           (org-capture nil "D")
           (org-capture-finalize 'stay-with-capture)
           (org-narrow-to-subtree))))))
