@@ -665,11 +665,18 @@ after org-capture-mode is entered."
                      ((equal c ?\]) ?\})
                      (t c)))
            string-to-transform)))
-(defun org-clock-report-buffer ()
-  "Evaluate all the clocktables in the buffer."
-  (interactive)
-  (save-excursion
-    (save-restriction
+(defun org-clock-report-buffer (&optional no-narrow)
+  "Evaluate all the clocktables in the buffer.
+
+By default, evaluate only the clocktables in the current Org subtree, in order
+to avoid recomputing all the clock tables in the buffer, which will take a
+while in my daily-log.org file. With ‘prefix’, evaluate all the clocktables in
+the currently visible portion of the buffer."
+  (interactive "P")
+  (save-restriction
+    (unless no-narrow
+      (org-narrow-to-subtree))
+    (save-excursion
         (goto-char (point-min))
         (while (re-search-forward "#\\\+BEGIN: clocktable" nil t)
             (org-clock-report)
