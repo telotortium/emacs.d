@@ -1459,6 +1459,7 @@ number of seconds."
                                         remainder)
                                 org-clock-heading))))))
   (defun my-org-pomodoro-finished-create-break-end-alarm ()
+    (interactive)
     (when (and (or (eq org-pomodoro-state :short-break)
                    (eq org-pomodoro-state :long-break))
                ;; Current break has not ended yet.
