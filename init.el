@@ -93,6 +93,7 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
 (use-package server
   :ensure nil
   :config
+  (c-setq server-name "server")
   (c-setq server-socket-dir "~/.emacs.d/server")
   (c-setq server-use-tcp t)
   (if (server-running-p)
