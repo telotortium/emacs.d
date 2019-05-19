@@ -269,7 +269,7 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
 (scroll-bar-mode -1)
 
 ;;; Line and column numbers
-(c-setq display-line-numbers-type 'relative)
+(c-setq display-line-numbers-type 'visual)
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
 (add-hook 'text-mode-hook #'display-line-numbers-mode)
 (line-number-mode 1)
