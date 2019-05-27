@@ -2343,6 +2343,11 @@ of occur. The original buffer is not modified.
   (diminish 'hs-minor-mode))
 (add-hook 'prog-mode-hook #'my-fold-setup)
 
+;;;* Automatic indentation detection
+(use-package dtrt-indent
+  :custom
+  (dtrt-indent-mode t))
+
 ;;;* Storage for variables configured via the interactive 'customize' interface
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file t)
