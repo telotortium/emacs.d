@@ -555,7 +555,7 @@ if `agenda-archives' is not in `org-agenda-text-search-extra-files'."
               :unwind #'swiper--cleanup
               :caller 'swiper-multi)))
 
-(global-set-key "\C-cq" #'swiper-multi-org-agenda-files)
+(global-set-key (kbd "C-c q") #'swiper-multi-org-agenda-files)
 
 
 ;;;** Org capture
