@@ -853,15 +853,15 @@ Source: [[%:link][%:description]]
 
 (defun my-org-daily-log--goto-daily-log-headline ()
   (condition-case nil
+    (save-excursion
       (with-current-buffer (get-file-buffer org-daily-log-file)
         (save-restriction
           (widen)
-          (save-excursion
-            (goto-char (point-min))
-            (my-org-daily-log--find-today)
-            (org-narrow-to-subtree)
-            (my-org-daily-log--find-daily-log)
-            (point-marker))))
+          (goto-char (point-min))
+          (my-org-daily-log--find-today)
+          (org-narrow-to-subtree)
+          (my-org-daily-log--find-daily-log)
+          (point-marker))))
     (error nil)))
 
 (defun my-org-daily-log-goto-today ()
@@ -872,6 +872,7 @@ Source: [[%:link][%:description]]
         (progn
           (message "in marker branch")
           (switch-to-buffer (marker-buffer daily-log-marker))
+          (widen)
           (goto-char (marker-position daily-log-marker))
           (org-narrow-to-subtree)
           (set-marker daily-log-marker nil))
