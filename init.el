@@ -1068,6 +1068,7 @@ Source: [[%:link][%:description]]
 
 ;; This binding used to be present by default.
 (org-defkey org-mode-map (kbd "C-c !") 'org-time-stamp-inactive)
+(org-defkey org-mode-map (kbd "C-c C-1") 'org-time-stamp-inactive)
 
 ;; TODO: re-enable once this can be ordered using use-package to run after
 ;; Org-mode is loaded.
