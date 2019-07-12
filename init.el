@@ -1263,6 +1263,8 @@ don't support wrapping."
   (c-setq org-pomodoro-length 32)
   (c-setq org-pomodoro-short-break-length 8)
   (c-setq org-pomodoro-long-break-length 30)
+  (c-setq org-pomodoro-ticking-sound-p t)
+  (c-setq org-pomodoro-ticking-sound-states '(:pomodoro))
   (require 's)
 
   (defun org-pomodoro-end-in (minutes)
