@@ -1352,12 +1352,6 @@ don't support wrapping."
   (defcustom my-org-pomodoro-alarm-gcal-calendar-id nil
     "The Google Calendar ID on which to create alarms."
     :type 'string)
-  (defcustom my-org-pomodoro-alarm-gcal-client-id nil
-    "The Google Calendar API Client ID to use to create alarms."
-    :type 'string)
-  (defcustom my-org-pomodoro-alarm-gcal-client-secret nil
-    "The Google Calendar API Client Secret to use to create alarms."
-    :type 'string)
   (defcustom my-org-pomodoro-current-task-reminder-interval 60
     "Number of seconds between being notified of the current task. Set to nil to disable notifications"
     :type 'number)
@@ -1476,52 +1470,18 @@ number of seconds."
                ;; Current break has not ended yet.
                (> (float-time (time-subtract org-pomodoro-end-time (current-time)))
                   0)
-               my-org-pomodoro-alarm-gcal-calendar-id
-               my-org-pomodoro-alarm-gcal-client-id
-               my-org-pomodoro-alarm-gcal-client-secret)
+               my-org-pomodoro-alarm-gcal-calendar-id)
       (my-org-pomodoro--create-alarm-event
        my-org-pomodoro-alarm-gcal-calendar-id
-       my-org-pomodoro-alarm-gcal-client-id
-       my-org-pomodoro-alarm-gcal-client-secret
        org-pomodoro-end-time)))
-  (defvar my-org-pomodoro--create-alarm-event-temp-files '()
-    "Alist mapping calendar IDs to temporary files created by
-my-org-pomodoro--create-alarm-event. Temporary files are deleted by
-my-org-pomodoro--remove-temp-files-hook when Emacs exits.")
-  (defun my-org-pomodoro--remove-temp-files-hook ()
-    (cl-loop for x in my-org-pomodoro--create-alarm-event-temp-files
-             do
-             (delete-file (cdr x))))
-  (add-hook 'kill-emacs-hook #'my-org-pomodoro--remove-temp-files-hook)
-  (defun my-org-pomodoro--create-alarm-event (calendar-id client-id client-secret time)
-    (let* ((temp-file
-            (let ((x (assoc calendar-id
-                            my-org-pomodoro--create-alarm-event-temp-files)))
-              (if (null x)
-                  (progn
-                    (let ((f (make-temp-file "my-org-pomodoro--create-alarm-event")))
-                      (add-to-list 'my-org-pomodoro--create-alarm-event-temp-files
-                                   (cons calendar-id f))
-                      f))
-                (cdr x))))
-           (buffer (find-file-noselect temp-file 'nowarn)))
-      (with-current-buffer buffer
-        (let* ((time-iso (format-time-string "%FT%T%z" time))
-               (org-gcal-client-id client-id)
-               (org-gcal-client-secret client-secret)
-               (org-gcal-file-alist `((,calendar-id . ,temp-file)))
-               (org-gcal-token-file (format "%s-%s" org-gcal-token-file calendar-id))
-               (org-gcal-token-plist nil))
-          (org-gcal--ensure-token)
-          (org-gcal-refresh-token)
-          (message "current buffer: %s" (current-buffer))
-          (org-gcal--post-event time-iso time-iso
-                                "org-pomodoro break end -- get back to work!"
-                                nil nil calendar-id
-                                ;; skip import and export to avoid attempting to
-                                ;; perform I/O using the NIL file in
-                                ;; ORG-GCAL-FILE-ALIST.
-                                nil nil 'skip-import 'skip-export)))))
+  (defun my-org-pomodoro--create-alarm-event (calendar-id time)
+    (call-process
+     (expand-file-name "pomodoro_schedule_alarm.py"
+                       user-emacs-directory)
+     nil (get-buffer-create "*pomodoro_schedule_alarm.py*") nil
+     "--calendar_id" calendar-id
+     "--timestamp" (format-time-string "%FT%T%z" time)
+     "--title" "org-pomodoro break end -- get back to work!"))
 
   (add-hook 'org-pomodoro-started-hook #'my-org-pomodoro-started-notify-hook)
   (add-hook 'org-pomodoro-finished-hook #'my-org-pomodoro-finished-notify-hook)

@@ -21,6 +21,7 @@
 init-local.el
 
 # Secrets
-lisp/org-gcal-alarm-config.el
+calendar.dat
+client_secrets.json
 oauth2.plstore
 request/curl-cookie-jar
