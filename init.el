@@ -1270,7 +1270,7 @@ don't support wrapping."
   (defun org-pomodoro-end-in (minutes)
     "Force the current Pomodoro to end in MINUTES minutes."
     (interactive "nMinutes: ")
-    (setq my-org-pomodoro-seconds-until-break-to-remind 60)
+    (setq my-org-pomodoro-current-task-reminder-next-time nil)
     (setq org-pomodoro-end-time
           (time-add (current-time) (* minutes 60))))
 
@@ -1441,28 +1441,34 @@ number of seconds."
   (add-hook 'org-agenda-finalize-hook 'my-org-agenda-pomodoro-info 'append)
 
   (defun my-org-pomodoro-today-tick-hook ())
-  (defvar my-org-pomodoro-seconds-until-break-to-remind)
+  (defvar my-org-pomodoro-current-task-reminder-next-time nil)
   (defun my-org-pomodoro-tick-current-task-reminder ()
     "Prod me with reminders of my current task to stop me from being distracted."
-    (let* ((x (cl-floor (float-time (time-subtract org-pomodoro-end-time
-                                                   (current-time)))
-                        my-org-pomodoro-current-task-reminder-interval))
-           (quotient (car x))
-           (remainder (car (cl-floor (cadr x)))))
-      (when (and (eql org-pomodoro-state :pomodoro)
-                 (not (null my-org-pomodoro-current-task-reminder-interval)))
-        (when (> quotient 0)
-          (setq my-org-pomodoro-seconds-until-break-to-remind 60))
-        (when (and (> quotient 0) (= remainder 0))
+    (when (or (null my-org-pomodoro-current-task-reminder-next-time)
+              (> (float-time) my-org-pomodoro-current-task-reminder-next-time))
+      (let* ((x (cl-floor
+                 (float-time (time-subtract org-pomodoro-end-time (current-time)))
+                 60))
+             (quotient (car x))
+             (remainder (car (cl-floor (cadr x)))))
+        (when (and (eql org-pomodoro-state :pomodoro)
+                   (not (null my-org-pomodoro-current-task-reminder-interval)))
+          (cond
+           ((> quotient 0)
+            ;; Rate limit reminders in last minute to once every
+            ;; ‘my-org-pomodoro-current-task-reminder-interval’ seconds.
+            (setq my-org-pomodoro-current-task-reminder-next-time
+                  (min (car (cl-floor (+ (float-time)
+                                         my-org-pomodoro-current-task-reminder-interval)))
+                       (float-time (time-subtract org-pomodoro-end-time 60))))
             (org-pomodoro-notify "Pomodoro in progress" org-clock-heading))
-        (when (and (= quotient 0) (> remainder 0))
-          ;; Rate limit reminders in last minute to once every 5 seconds.
-          (when (<= remainder my-org-pomodoro-seconds-until-break-to-remind)
-            (setq my-org-pomodoro-seconds-until-break-to-remind
-                  (* 5 (floor (- remainder 1) 5)))
+           (t
+            ;; Rate limit reminders in last minute to once every 5 seconds.
+            (setq my-org-pomodoro-current-task-reminder-next-time
+                  (car (cl-floor (+ (float-time) 5))))
             (org-pomodoro-notify (format "Pomodoro in progress - %ds to break"
-                                        remainder)
-                                org-clock-heading))))))
+                                         remainder)
+                                 org-clock-heading)))))))
   (defun my-org-pomodoro-finished-create-break-end-alarm ()
     (interactive)
     (when (and (or (eq org-pomodoro-state :short-break)
