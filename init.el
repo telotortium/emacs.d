@@ -1586,7 +1586,7 @@ TAG is chosen interactively from the global tags completion table."
   :ensure alert
   :ensure request-deferred
   :ensure nil
-  :load-path "~/.emacs.d/lisp/org-gcal.git"
+  :load-path "~/.emacs.d/rmi-org-gcal"
   :config
   (c-setq org-gcal-config-file (expand-file-name "org-gcal-config.el" user-emacs-directory))
   (when (file-exists-p org-gcal-config-file)
