@@ -1592,7 +1592,63 @@ TAG is chosen interactively from the global tags completion table."
   (when (file-exists-p org-gcal-config-file)
     (load org-gcal-config-file)))
 
-;;;** Norang configuration
+(defun my-org-gcal-schedule ()
+  "\
+Suggest a default schedule time for the event at point and create/update it
+using ‘org-gcal-post-at-point’. Default suggestions (in the absence of existing
+data in the entry):
+
+- Calendar ID: first entry in ‘org-gcal-file-alist’
+- Start time: tomorrow at 10 AM
+- End time: start time plus effort. Prompt for effort if not already present.
+"
+  (interactive)
+  (save-excursion
+    (org-back-to-heading)
+    (let* ((elem (org-element-at-point))
+           (tobj (org-element-property :scheduled elem))
+           (effort (org-element-property :EFFORT elem))
+           (calendar-id
+            (org-element-property
+             (org-gcal--property-from-name org-gcal-calendar-id-property)
+             elem)))
+      (unless calendar-id
+        (setq calendar-id
+              (read-from-minibuffer "Calendar ID: "
+                                    (caar org-gcal-file-alist)))
+        (org-entry-put (point) org-gcal-calendar-id-property calendar-id))
+      ;; Set SCHEDULED time if not already present.
+      (unless (plist-get (cadr tobj) :hour-start)
+        (org-schedule nil "+1d 10:00")
+        (org-schedule nil))
+      (unless effort
+        (org-set-effort))
+      (setq elem (org-element-at-point))
+      (setq tobj (org-element-property :scheduled elem)
+            effort (org-element-property :EFFORT elem))
+      (when (and (= (plist-get (cadr tobj) :hour-start)
+                    (plist-get (cadr tobj) :hour-end))
+                 (= (plist-get (cadr tobj) :minute-start)
+                    (plist-get (cadr tobj) :minute-end)))
+        (let* ((duration (read-from-minibuffer "Duration: " effort))
+               (duration-minutes (org-duration-to-minutes duration))
+               (duration-seconds (* 60 duration-minutes))
+               (end-time (org-timestamp-from-time
+                          (time-add (org-timestamp-to-time tobj)
+                                    duration-seconds)
+                          'with-time)))
+          ;; Add SCHEDULED time with start and end times filled out.
+          (org-add-planning-info
+           'scheduled
+           (concat
+            (org-timestamp-format tobj "%Y-%m-%d %a %H:%M")
+            "-"
+            (org-timestamp-format end-time "%H:%M")))))
+      ;; Finally, create/update event with information added to entry.
+      (org-gcal-post-at-point 'skip-import))))
+
+
+;;;** norang configuration
 
 ;; Stolen from http://doc.norang.ca/org-mode.html#Clocking
 ;; bh/organization-task-id changed.
