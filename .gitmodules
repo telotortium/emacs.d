@@ -7,3 +7,6 @@
 [submodule "lisp/git-auto-commit-mode"]
 	path = lisp/git-auto-commit-mode
 	url = https://github.com/ryuslash/git-auto-commit-mode
+[submodule "rmi-org-gcal"]
+	path = rmi-org-gcal
+	url = git@github.com:telotortium/org-gcal.el
