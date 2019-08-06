@@ -2361,6 +2361,14 @@ of occur. The original buffer is not modified.
   :config
   (browse-kill-ring-default-keybindings))
 
+(defun my-ycmd--request-url-retrieve (f &rest args)
+  "Change ‘request-backend’ in ‘ycmd--request’ to ‘url-retrieve’.
+
+Work around https://github.com/abingham/emacs-ycmd/issues/496.
+"
+  (let ((request-backend 'url-retrieve))
+    (apply f args)))
+(advice-add 'ycmd--request :around #'my-ycmd--request-url-retrieve)
 
 ;;;* Folding
 (defun my-fold-setup ()
