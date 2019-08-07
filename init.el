@@ -1608,7 +1608,7 @@ data in the entry):
     (org-back-to-heading)
     (let* ((elem (org-element-at-point))
            (tobj (org-element-property :scheduled elem))
-           (effort (org-element-property :EFFORT elem))
+           (duration (org-element-property :EFFORT elem))
            (calendar-id
             (org-element-property
              (org-gcal--property-from-name org-gcal-calendar-id-property)
@@ -1622,16 +1622,30 @@ data in the entry):
       (unless (plist-get (cadr tobj) :hour-start)
         (org-schedule nil "+1d 10:00")
         (org-schedule nil))
-      (unless effort
+      (unless duration
         (org-set-effort))
       (setq elem (org-element-at-point))
       (setq tobj (org-element-property :scheduled elem)
-            effort (org-element-property :EFFORT elem))
+            ;; By default, set duration to effort minus clocked time with
+            ;; adjustments.
+            duration
+            (let ((min-duration 5)      ; Minimum event duration
+                  (resolution 5))       ; Event resolution
+              (org-duration-from-minutes
+               (max
+                 min-duration
+                 ;; Round up to the nearest multiple of ‘resolution’ minutes.
+                 (* resolution
+                    (ceiling
+                      (/ (- (org-duration-to-minutes (org-element-property
+                                                         :EFFORT elem))
+                            (org-clock-sum-current-item))
+                         resolution)))))))
       (when (and (= (plist-get (cadr tobj) :hour-start)
                     (plist-get (cadr tobj) :hour-end))
                  (= (plist-get (cadr tobj) :minute-start)
                     (plist-get (cadr tobj) :minute-end)))
-        (let* ((duration (read-from-minibuffer "Duration: " effort))
+        (let* ((duration (read-from-minibuffer "Duration: " duration))
                (duration-minutes (org-duration-to-minutes duration))
                (duration-seconds (* 60 duration-minutes))
                (end-time (org-timestamp-from-time
