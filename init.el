@@ -2404,6 +2404,14 @@ Work around https://github.com/abingham/emacs-ycmd/issues/496.
   :custom
   (dtrt-indent-mode t))
 
+;;;* Faster GDB-MI interface
+(use-package gdb-mi :quelpa (gdb-mi :fetcher git
+                                    :url "https://github.com/weirdNox/emacs-gdb.git"
+                                    :files ("*.el" "*.c" "*.h" "Makefile"))
+  :init
+  (fmakunbound 'gdb)
+  (fmakunbound 'gdb-enable-debug))
+
 ;;;* Storage for variables configured via the interactive 'customize' interface
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file t)
