@@ -54,11 +54,18 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
 (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") 'append)
 (package-initialize)
 
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
+(mapc
+ (lambda (package)
+  (unless (package-installed-p package)
+    (package-refresh-contents)
+    (package-install package)))
+ '(use-package quelpa quelpa-use-package))
 (eval-when-compile
-  (require 'use-package))
+  (require 'use-package)
+  (require 'quelpa)
+  (require 'quelpa-use-package)
+  (customize-set-variable 'use-package-always-ensure t)
+  (quelpa-use-package-activate-advice))
 (use-package bind-key)                  ; To make :bind work
 (use-package diminish)                  ; To use :diminish
 (c-setq use-package-always-ensure t)
