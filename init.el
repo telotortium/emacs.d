@@ -687,7 +687,7 @@ the currently visible portion of the buffer."
 (defcustom org-daily-log-file
   (concat org-directory "/daily-log.org")
   "The path to Org file in which daily log entries are captured."
-  :type file)
+  :type 'file)
 
 (c-setq org-capture-templates
       `(("t" "Task" entry (file (lambda () (concat org-directory "/inbox.org")))
@@ -1164,7 +1164,7 @@ to get the latest version of the file, then make the change again.")
 (defcustom terminal-notifier-command
   (executable-find "terminal-notifier")
   "The path to terminal-notifier."
-  :type file)
+  :type 'file)
 (defun terminal-notifier-notify (title message &optional timeout)
   "Show a message with `terminal-notifier-command`."
   (let ((timeout (number-to-string (if timeout timeout 60))))
