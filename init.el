@@ -1227,6 +1227,10 @@ to get the latest version of the file, then make the change again.")
 
 (c-setq org-indirect-buffer-display 'current-window)
 
+;; Display images inline, but not too wide by default.
+(c-setq org-startup-with-inline-images t)
+(c-setq org-image-actual-width '(800))
+
 ;;;** Org-drill
 (use-package org-drill
   :ensure nil
