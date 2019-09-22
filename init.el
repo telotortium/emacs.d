@@ -2397,11 +2397,27 @@ Work around https://github.com/abingham/emacs-ycmd/issues/496.
 
 ;;;* Folding
 (defun my-fold-setup ()
+  "Set up folding in current buffer."
   (interactive)
   (hs-minor-mode)
-  (hs-hide-all)
+  (condition-case nil
+    (hs-hide-all)
+    (scan-error
+     (message "scan-error: not folding")
+     nil))
   (diminish 'hs-minor-mode))
-(add-hook 'prog-mode-hook #'my-fold-setup)
+(defun my-fold-setup-hook ()
+  "Set up folding when buffer becomes visible, and then remove this hook."
+  ;; Check whether buffer is visible - see
+  ;; https://emacs.stackexchange.com/a/2979/17182
+  (when (get-buffer-window (current-buffer) 'visible)
+    (my-fold-setup)
+    ;; Remove hook after running fold the first time.
+    (remove-hook 'post-command-hook #'my-fold-setup-hook 'local)))
+(defun my-fold-major-mode-hook ()
+  "Add hook to set up folding when buffer becomes visible."
+  (add-hook 'post-command-hook #'my-fold-setup-hook nil 'local))
+(add-hook 'prog-mode-hook #'my-fold-major-mode-hook)
 
 ;;;* Automatic indentation detection
 (use-package dtrt-indent
