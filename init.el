@@ -1710,6 +1710,8 @@ data in the entry):
 ;; Reset day at 4 AM, just like Anki.
 (c-setq org-extend-today-until 4)
 
+(c-setq org-html-htmlize-output-type 'css)
+
 ;;; Recompute effort of a parent headline from the efforts of the children if
 ;;; they sum to a higher value.
 (defun my-org-update-heading-effort-from-children (pt)
