@@ -306,6 +306,17 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
 (use-package company-go
   :ensure company)
 
+;;; Flycheck
+(use-package flycheck
+  :ensure nil
+  :defer t                              ; init-local-google will locate this
+  :config
+  ;; Don't re-run Flycheck syntax checkers on inserting new lines, to save
+  ;; performance.
+  (c-setq flycheck-check-syntax-automatically '(save idle-change mode-enabled))
+  (c-setq flycheck-idle-change-delay 4))
+
+
 ;;; Syntax highlighting for Vimscript files
 (use-package vimrc-mode
   :mode ".vim\\(rc\\)?$")
