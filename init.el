@@ -2458,6 +2458,32 @@ of occur. The original buffer is not modified.
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file t)
 
+;;; Update environment - https://emacs.stackexchange.com/a/6107
+(defun my-update-env (fn &optional unset)
+  "Update environment variables from file FN containing variables.
+
+Format is \"VAR=VAL\", NUL-separated. If UNSET is non-nil, the variables are
+instead unset."
+  (let ((str
+         (with-temp-buffer
+           (insert-file-contents fn)
+           (buffer-string))) lst)
+    (setq lst (split-string str "\000"))
+    (while lst
+      (setq cur (car lst))
+      (when (string-match "^\\(.*?\\)=\\(.*\\)" cur)
+        (setq var (match-string 1 cur))
+        (setq value (match-string 2 cur))
+        (if unset
+            (setenv var nil)
+          (setenv var value)))
+      (setq lst (cdr lst)))))
+(defun my-update-env-unset (fn)
+  "Unset environment variables from file FN containing variables.
+
+Format is \"VAR=VAL\", NUL-separated. Everything starting at \"=\" is ignored."
+  (my-update-env fn 'unset))
+
 ;;;* Subfiles
 (use-package whitespace-conf
   :ensure nil
