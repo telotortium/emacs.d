@@ -1612,6 +1612,10 @@ TAG is chosen interactively from the global tags completion table."
   :load-path "~/.emacs.d/rmi-org-gcal"
   :config
   (c-setq org-gcal-config-file (expand-file-name "org-gcal-config.el" user-emacs-directory))
+  ;; Disable Auto Archive - my gcal.org_archive is so big that this majorly
+  ;; slows down every fetch. Instead, I'll just archive old entries once a
+  ;; month along with the rest of the entries to be archived.
+  (c-setq org-gcal-auto-archive nil)
   (when (file-exists-p org-gcal-config-file)
     (load org-gcal-config-file)))
 
