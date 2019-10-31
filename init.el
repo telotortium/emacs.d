@@ -1673,6 +1673,13 @@ data in the entry):
       ;; Finally, create/update event with information added to entry.
       (org-gcal-post-at-point 'skip-import))))
 
+;;;** Org-gtasks
+(use-package org-gtasks
+  :after org
+  :ensure alert
+  :ensure request-deferred
+  :ensure nil
+  :load-path "~/.emacs.d/lisp/org-gtasks.git/")
 
 ;;;** norang configuration
 
