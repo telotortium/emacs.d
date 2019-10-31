@@ -2419,6 +2419,13 @@ of occur. The original buffer is not modified.
   (add-hook 'post-command-hook #'my-fold-setup-hook nil 'local))
 (add-hook 'prog-mode-hook #'my-fold-major-mode-hook)
 
+;;;* so-long - increase performance in buffers with long lines
+(use-package so-long
+  :ensure nil
+  :load-path "~/.emacs.d/lisp"
+  :config
+  (global-so-long-mode 1))
+
 ;;;* Automatic indentation detection
 (use-package dtrt-indent
   :custom
