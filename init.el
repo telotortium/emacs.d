@@ -780,6 +780,7 @@ Checklist:
   - [ ] Get “IN” to Zero \\\\
     Process completely all outstanding paper materials, journal and meeting
     notes, voicemails, dictation, and emails.
+    - [ ] inbox.org files
     - [ ] Personal email
     - [ ] Personal tasks (use ~sync-tasks~)
     - [ ] Corp email
