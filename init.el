@@ -1245,7 +1245,7 @@ to get the latest version of the file, then make the change again.")
 
 ;;;** Org-drill
 (use-package org-drill
-  :ensure nil
+  :ensure t
   :after org
   :init
   (require 'cl)                         ; org-drill uses old CL func names
