@@ -2286,14 +2286,20 @@ of occur. The original buffer is not modified.
     (widen)
     (let ((next-headline (save-excursion (or (outline-next-heading) (point-max))))
           (subtree-end (save-excursion (org-end-of-subtree t)))
-          (is-gcal-entry (and (null (org-get-todo-state)) (member "gcal" (org-get-tags)))))
+          (is-gcal-entry (and (null (org-get-todo-state)) (member "gcal" (org-get-tags))))
+          (is-daily-log (member "dailylog" (org-get-tags))))
       ;; Consider these types of headlines for archiving:
+      ;;
       ;; - Headlines with a *done* todo keyword.
       ;; - Headlines with *no* todo keyword tagged with "gcal" - these are
       ;;   entries created by org-gcal. If I'm actively managing such a task,
       ;;   I'll always add a todo keyword of some kind to the heading, so these
       ;;   tasks will be saved from archiving unless they're marked done.
-      (if (or is-gcal-entry (member (org-get-todo-state) org-todo-keywords-1))
+      ;;
+      ;; Daily log entries (marked by the "dailylog" tag) should never be
+      ;; archived.
+      (if (and (not is-daily-log)
+               (or is-gcal-entry (member (org-get-todo-state) org-todo-keywords-1)))
           (if (or is-gcal-entry (member (org-get-todo-state) org-done-keywords))
               (let* ((daynr (string-to-number (format-time-string "%d" (current-time))))
                      (a-month-ago (* 60 60 24 (+ daynr 1)))
