@@ -2284,11 +2284,17 @@ of occur. The original buffer is not modified.
   "Skip trees that are not available for archiving"
   (save-restriction
     (widen)
-    ;; Consider only tasks with done todo headings as archivable candidates
     (let ((next-headline (save-excursion (or (outline-next-heading) (point-max))))
-          (subtree-end (save-excursion (org-end-of-subtree t))))
-      (if (member (org-get-todo-state) org-todo-keywords-1)
-          (if (member (org-get-todo-state) org-done-keywords)
+          (subtree-end (save-excursion (org-end-of-subtree t)))
+          (is-gcal-entry (and (null (org-get-todo-state)) (member "gcal" (org-get-tags)))))
+      ;; Consider these types of headlines for archiving:
+      ;; - Headlines with a *done* todo keyword.
+      ;; - Headlines with *no* todo keyword tagged with "gcal" - these are
+      ;;   entries created by org-gcal. If I'm actively managing such a task,
+      ;;   I'll always add a todo keyword of some kind to the heading, so these
+      ;;   tasks will be saved from archiving unless they're marked done.
+      (if (or is-gcal-entry (member (org-get-todo-state) org-todo-keywords-1))
+          (if (or is-gcal-entry (member (org-get-todo-state) org-done-keywords))
               (let* ((daynr (string-to-number (format-time-string "%d" (current-time))))
                      (a-month-ago (* 60 60 24 (+ daynr 1)))
                      (last-month (format-time-string "%Y-%m-" (time-subtract (current-time) (seconds-to-time a-month-ago))))
