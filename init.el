@@ -951,6 +951,48 @@ Source: [[%:link][%:description]]
 ;; leave them in.
 (c-setq org-agenda-todo-ignore-scheduled 'future)
 
+(defcustom my-org-agenda-active-days 14
+  "Number of days in the past to search for active projects")
+(cl-defun my-org-agenda-next-projects ()
+  "Show agenda for NEXT steps in org-mode projects
+
+Use `org-ql-search' to search for all NEXT steps for projects.  Show only the
+NEXT steps that have a timestamp within the last `my-org-agenda-active-days'
+days."
+  (interactive)
+  (org-ql-search
+    (org-agenda-files)
+    `(and
+      (todo "NEXT")
+      (not (tags "HOLD" "CANCELLED" "ARCHIVED"))
+      (not (scheduled :from 1))
+      (ts :from ,(- my-org-agenda-active-days)))
+    :super-groups '((:auto-map my-org-super-agenda-group-by-project-or-task-group))
+    :sort 'date
+    :title (format
+            "NEXT (grouped by parent, except scheduled for future, %d-day active)"
+            my-org-agenda-active-days)))
+(cl-defun my-org-agenda-next-projects-agenda-command (unused)
+  "Wrap `my-org-agenda-next-projects' for `org-agenda'."
+  (my-org-agenda-next-projects))
+(cl-defun my-org-agenda-waiting ()
+  "Show agenda for NEXT steps in org-mode projects
+
+Use `org-ql-search' to search for all WAITING tasks."
+  (interactive)
+  (org-ql-search
+    (org-agenda-files)
+    `(and
+      (tags "WAITING")
+      (not (tags "HOLD" "CANCELLED" "ARCHIVED"))
+      (not (scheduled :from 1)))
+    :super-groups '((:auto-map my-org-super-agenda-group-by-project-or-task-group))
+    :sort 'date
+    :title "WAITING for tasks"))
+(cl-defun my-org-agenda-waiting-agenda-command (unused)
+  "Wrap `my-org-agenda-waiting' for `org-agenda'."
+  (my-org-agenda-waiting))
+
 (c-setq org-agenda-span 1)
 (setq my-org-agenda-export-options
       ;; Use defaults for now, but leave available for future customization
@@ -966,13 +1008,11 @@ Source: [[%:link][%:description]]
                    '((:auto-map
                       my-org-super-agenda-group-by-project-or-task-group))))))))
 (add-to-list 'org-agenda-custom-commands
-             '("W" "WAITING"
-               ((tags-todo
-                 "WAITING-HOLD-CANCELLED-ARCHIVE-SCHEDULED>=\"<tomorrow>\""
-                 (
-                  (org-agenda-overriding-header "WAITING for tasks")
-                  (org-super-agenda-groups
-                   '((:auto-parent t))))))))
+             ;; TODO: Once https://github.com/alphapapa/org-ql/issues/79 is
+             ;; fixed, use `org-ql-block' to avoid rendering agenda in 2
+             ;; buffers.
+             `("W" "WAITING"
+               ((my-org-agenda-waiting-agenda-command ""))))
 (add-to-list 'org-agenda-custom-commands
              `("U" "Loose TODOs (not part of projects)"
                ((tags-todo
@@ -1004,18 +1044,17 @@ Source: [[%:link][%:description]]
                   my-org-agenda-export-options))
                "~/Downloads/agenda-u-export.pdf"))
 (add-to-list 'org-agenda-custom-commands
-             '("n" "NEXT (grouped by parent, except scheduled for future)"
-               ((tags-todo
-                 "TODO=\"NEXT\"-HOLD-CANCELLED-ARCHIVE-SCHEDULED>=\"<tomorrow>\""
-                 (
-                  (org-agenda-overriding-header "Projects & Task Groups")
-                  (org-super-agenda-groups
-                   '((:auto-map
-                      my-org-super-agenda-group-by-project-or-task-group)))
-                  (org-agenda-skip-function
-                   #'bh/skip-non-tasks))))
+             ;; TODO: Once https://github.com/alphapapa/org-ql/issues/79 is
+             ;; fixed, use `org-ql-block' to avoid rendering agenda in 2
+             ;; buffers.
+             ;;
+             ;; TODO: Once skip functions are implemented (track
+             ;; https://github.com/alphapapa/org-ql/issues/3), add back
+             ;; `bh/skip-non-tasks'.
+             `("n" "NEXT (active, grouped by parent, except scheduled for future)"
+               ((my-org-agenda-next-projects-agenda-command ""))
                ((org-agenda-write-buffer-name
-                 "NEXT (grouped by parent, except scheduled for future)")
+                 "NEXT (active, grouped by parent, except scheduled for future)")
                 (org-agenda-exporter-settings
                   my-org-agenda-export-options))
                "~/Downloads/agenda-n-export.pdf"))
@@ -2273,6 +2312,8 @@ of occur. The original buffer is not modified.
             ;; match any of these groups, with the default order position of 99
 
   (org-super-agenda-mode 1))
+(use-package org-ql
+  :ensure t)
 
 ;;; List tasks that should be archived
 ;;; http://doc.norang.ca/org-mode.html#Archiving
