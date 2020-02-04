@@ -1,6 +1,3 @@
-[submodule "org-gcal.git"]
-	path = lisp/org-gcal.git
-	url = git@github.com:telotortium/org-gcal.el
 [submodule "lisp/org-mode.git"]
 	path = lisp/org-mode.git
 	url = https://code.orgmode.org/bzg/org-mode.git
