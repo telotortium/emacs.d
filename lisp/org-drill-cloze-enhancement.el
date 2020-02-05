@@ -6,7 +6,7 @@
 
 ;; remove clozes when exporting ;;
 (defun gsc/drill-compute-cloze-regexp ()
-"Same regular expression as in org-drill-cloze-regexp,
+  "Same regular expression as in org-drill-cloze-regexp,
 but adding a group for the first delimiter, so that it can be
 distinguished easily in a match."
   (concat "\\("
@@ -17,22 +17,28 @@ distinguished easily in a match."
           (regexp-quote org-drill-right-cloze-delimiter)
           "\\)"))
 
+;; Old function removed at some point from `org-drill'.
+(defun org-pos-in-regexp (pos regexp &optional nlines)
+  (save-excursion
+    (goto-char pos)
+    (org-in-regexp regexp nlines)))
+
 (defun gsc/drill-cloze-removal (backend)
   "Remove drill clozes in the current buffer.
 BACKEND is the export back-end being used, as a symbol."
-     (while (re-search-forward (gsc/drill-compute-cloze-regexp) nil t)
-       ;; (Copy-pasted this from org-drill-el)
-       ;; Don't delete:
-       ;; - org links, partly because they might contain inline
-       ;;   images which we want to keep visible.
-       ;; - LaTeX math fragments
-       ;; - the contents of SRC blocks
-      (unless (save-match-data
-                (or (org-pos-in-regexp (match-beginning 0)
-                                       org-bracket-link-regexp 1)
-                    (org-in-src-block-p)
-                    (org-inside-LaTeX-fragment-p)))
-        (replace-match "\\2" nil nil))))
+  (while (re-search-forward (gsc/drill-compute-cloze-regexp) nil t)
+    ;; (Copy-pasted this from org-drill-el)
+    ;; Don't delete:
+    ;; - org links, partly because they might contain inline
+    ;;   images which we want to keep visible.
+    ;; - LaTeX math fragments
+    ;; - the contents of SRC blocks
+    (unless (save-match-data
+              (or (org-pos-in-regexp (match-beginning 0)
+                                     org-bracket-link-regexp 1)
+                  (org-in-src-block-p)
+                  (org-inside-LaTeX-fragment-p)))
+      (replace-match "\\2" nil nil))))
 
 (add-hook 'org-export-before-processing-hook 'gsc/drill-cloze-removal)
 
