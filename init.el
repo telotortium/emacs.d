@@ -103,11 +103,11 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
   (c-setq server-name "server")
   (c-setq server-socket-dir "~/.emacs.d/server")
   (c-setq server-use-tcp t)
-  (defun server-name-changed-p (original-server-name)
+  (defun warn-server-name-changed (original-server-name)
     (when (not (string= server-name original-server-name))
       (warn "server-name = \"%s\", should be \"%s\""
             server-name original-server-name)))
-  (run-at-time nil 30 #'server-name-changed-p server-name)
+  (run-at-time nil 30 #'warn-server-name-changed server-name)
   (if (server-running-p)
       (warn "Not starting server - server with name \"%s\" already running" server-name)
     (server-start)))
