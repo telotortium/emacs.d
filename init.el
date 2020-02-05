@@ -1047,7 +1047,7 @@ days."
 Consider these types of headlines for archiving:
 
 - Headlines with a *done* todo keyword.
-- Headlines with *no* todo keyword tagged with "gcal" - these are
+- Headlines with *no* todo keyword tagged with \"gcal\" - these are
   entries created by org-gcal. If I'm actively managing such a task,
   I'll always add a todo keyword of some kind to the heading, so these
   tasks will be saved from archiving unless they're marked done.
@@ -1056,7 +1056,7 @@ Only consider top-level tasks in project trees - don't individually archive
 tasks that are part of an ongoing project. Only archive projects that have been
 done for at least 30 days.
 
-Daily log entries (marked by the "dailylog" tag) should never be
+Daily log entries (marked by the \"dailylog\" tag) should never be
 archived.
 
 Use `org-ql-search' to search."
