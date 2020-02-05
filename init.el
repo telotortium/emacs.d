@@ -953,7 +953,69 @@ Source: [[%:link][%:description]]
 
 (defcustom my-org-agenda-active-days 14
   "Number of days in the past to search for active projects")
-(cl-defun my-org-agenda-next-projects ()
+(cl-defun my-org-agenda-someday-maybe (&optional buffer)
+  "Show agenda for Someday/Maybe tasks.
+
+Use `org-ql-search' to search."
+  (interactive)
+  (org-ql-search
+    (org-agenda-files)
+    `(and
+      (todo)
+      (tags "HOLD")
+      (not (tags "CANCELLED" "ARCHIVED"))
+      (not (scheduled :from 1)))
+    :super-groups '((:auto-map my-org-super-agenda-group-by-project-or-task-group))
+    :buffer (or buffer org-ql-view-buffer)
+    :title "Someday/Maybe tasks"))
+(cl-defun my-org-agenda-waiting (&optional buffer)
+  "Show agenda for NEXT steps in org-mode projects
+
+Use `org-ql-search' to search for all WAITING tasks."
+  (interactive)
+  (org-ql-search
+    (org-agenda-files)
+    `(and
+      (todo)
+      (tags "WAITING")
+      (not (tags "HOLD" "CANCELLED" "ARCHIVED"))
+      (not (scheduled :from 1)))
+    :super-groups '((:auto-map my-org-super-agenda-group-by-project-or-task-group))
+    :buffer (or buffer org-ql-view-buffer)
+    :sort 'date
+    :title "WAITING for tasks"))
+(cl-defun my-org-agenda-loose-todos (&optional buffer)
+  "Show agenda for Loose TODOs (those not part of projects)
+
+Use `org-ql-search' to search for all loose TODOs."
+  (interactive)
+  (org-ql-search
+    (org-agenda-files)
+    `(and
+      (todo "TODO")
+      (not (tags "HOLD" "CANCELLED" "ARCHIVED"))
+      (not (scheduled :from 1))
+      (not (bh/skip-subprojects)))
+    :super-groups '((:auto-map my-org-super-agenda-group-by-project-or-task-group))
+    :title "Loose TODOs (not part of projects)"
+    :buffer (or buffer org-ql-view-buffer)))
+(cl-defun my-org-agenda-stuck-projects (&optional buffer)
+  "Show agenda for projects with stuck tasks
+
+Use `org-ql-search' to search."
+  (interactive)
+  (org-ql-search
+    (org-agenda-files)
+    `(and
+      (not (done))
+      (not (todo "NEXT"))
+      (not (tags "HOLD" "CANCELLED" "ARCHIVED"))
+      (not (scheduled :from 1))
+      (not (bh/skip-non-subprojects)))
+    :super-groups '((:auto-map my-org-super-agenda-group-by-project-or-task-group))
+    :title "Tasks making project stuck"
+    :buffer (or buffer org-ql-view-buffer)))
+(cl-defun my-org-agenda-next-projects (&optional buffer)
   "Show agenda for NEXT steps in org-mode projects
 
 Use `org-ql-search' to search for all NEXT steps for projects.  Show only the
@@ -966,32 +1028,71 @@ days."
       (todo "NEXT")
       (not (tags "HOLD" "CANCELLED" "ARCHIVED"))
       (not (scheduled :from 1))
+      (not (bh/skip-non-tasks))
       (ts :from ,(- my-org-agenda-active-days)))
+    :buffer (or buffer org-ql-view-buffer)
     :super-groups '((:auto-map my-org-super-agenda-group-by-project-or-task-group))
     :sort 'date
     :title (format
             "NEXT (grouped by parent, except scheduled for future, %d-day active)"
             my-org-agenda-active-days)))
-(cl-defun my-org-agenda-next-projects-agenda-command (unused)
-  "Wrap `my-org-agenda-next-projects' for `org-agenda'."
-  (my-org-agenda-next-projects))
-(cl-defun my-org-agenda-waiting ()
-  "Show agenda for NEXT steps in org-mode projects
+(cl-defun my-org-agenda-archivable-tasks (&optional buffer)
+  "Show agenda for Archivable tasks
 
-Use `org-ql-search' to search for all WAITING tasks."
+Consider these types of headlines for archiving:
+
+- Headlines with a *done* todo keyword.
+- Headlines with *no* todo keyword tagged with "gcal" - these are
+  entries created by org-gcal. If I'm actively managing such a task,
+  I'll always add a todo keyword of some kind to the heading, so these
+  tasks will be saved from archiving unless they're marked done.
+
+Only consider top-level tasks in project trees - don't individually archive
+tasks that are part of an ongoing project. Only archive projects that have been
+done for at least 30 days.
+
+Daily log entries (marked by the "dailylog" tag) should never be
+archived.
+
+Use `org-ql-search' to search."
   (interactive)
   (org-ql-search
     (org-agenda-files)
     `(and
-      (tags "WAITING")
-      (not (tags "HOLD" "CANCELLED" "ARCHIVED"))
-      (not (scheduled :from 1)))
+      (not (tags "REFILE" "dailylog" "ARCHIVE"))
+      (not (ts :from -30))
+      (or (done)
+          (and (tags "gcal")
+               (not (todo))))
+      (or (not (parent))
+          (parent (and (not (todo)) (not (done)))))
+      (or (not (children))
+          (descendants
+           (and (not (todo))
+                (not (ts :from -30))))))
+    :buffer (or buffer org-ql-view-buffer)
     :super-groups '((:auto-map my-org-super-agenda-group-by-project-or-task-group))
     :sort 'date
-    :title "WAITING for tasks"))
-(cl-defun my-org-agenda-waiting-agenda-command (unused)
-  "Wrap `my-org-agenda-waiting' for `org-agenda'."
-  (my-org-agenda-waiting))
+    :title "Archivable tasks"))
+(defmacro my-org-agenda-ql-wrapper (wrapper-name wrapped-func-name)
+  "Define a function named WRAPPER-NAME that wraps WRAPPED-FUNC-NAME in order
+to be called by `org-agenda-custom-commands'."
+  `(cl-defun ,wrapper-name (unused)
+     ,(format "Wrap `%s' for `org-agenda'" wrapped-func-name)
+     (with-current-buffer org-agenda-buffer-name
+       (,wrapped-func-name (current-buffer)))))
+(my-org-agenda-ql-wrapper my-org-agenda-someday-maybe-agenda-command
+                          my-org-agenda-someday-maybe)
+(my-org-agenda-ql-wrapper my-org-agenda-waiting-agenda-command
+                          my-org-agenda-waiting)
+(my-org-agenda-ql-wrapper my-org-agenda-loose-todos-agenda-command
+                          my-org-agenda-loose-todos)
+(my-org-agenda-ql-wrapper my-org-agenda-stuck-projects-agenda-command
+                          my-org-agenda-stuck-projects)
+(my-org-agenda-ql-wrapper my-org-agenda-next-projects-agenda-command
+                          my-org-agenda-next-projects)
+(my-org-agenda-ql-wrapper my-org-agenda-archivable-tasks-agenda-command
+                          my-org-agenda-archivable-tasks)
 
 (c-setq org-agenda-span 1)
 (setq my-org-agenda-export-options
@@ -1000,29 +1101,13 @@ Use `org-ql-search' to search for all WAITING tasks."
 (c-setq org-agenda-custom-commands '())
 (add-to-list 'org-agenda-custom-commands
              '("H" "Someday/Maybe"
-               ((tags-todo
-                 "HOLD-CANCELLED-ARCHIVE-SCHEDULED>=\"<tomorrow>\""
-                 (
-                  (org-agenda-overriding-header "Someday/Maybe tasks")
-                  (org-super-agenda-groups
-                   '((:auto-map
-                      my-org-super-agenda-group-by-project-or-task-group))))))))
+               ((my-org-agenda-someday-maybe-agenda-command ""))))
 (add-to-list 'org-agenda-custom-commands
-             ;; TODO: Once https://github.com/alphapapa/org-ql/issues/79 is
-             ;; fixed, use `org-ql-block' to avoid rendering agenda in 2
-             ;; buffers.
              `("W" "WAITING"
                ((my-org-agenda-waiting-agenda-command ""))))
 (add-to-list 'org-agenda-custom-commands
              `("U" "Loose TODOs (not part of projects)"
-               ((tags-todo
-                 "TODO=\"TODO\"-HOLD-CANCELLED-ARCHIVE-SCHEDULED>=\"<tomorrow>\""
-                 (
-                  (org-agenda-overriding-header "Loose TODOs")
-                  (org-super-agenda-groups
-                   '((:auto-parent t)))
-                  (org-agenda-skip-function
-                   #'bh/skip-subprojects))))
+               ((my-org-agenda-loose-todos-agenda-command ""))
                ((org-agenda-write-buffer-name
                  "Loose TODOs (not part of projects)")
                 (org-agenda-exporter-settings
@@ -1030,27 +1115,13 @@ Use `org-ql-search' to search for all WAITING tasks."
                "~/Downloads/agenda-U-export.pdf"))
 (add-to-list 'org-agenda-custom-commands
              '("u" "Tasks making projects stuck"
-               ((tags-todo
-                 "TODO<>\"NEXT\"-HOLD-CANCELLED-ARCHIVE-SCHEDULED>=\"<tomorrow>\""
-                 (
-                  (org-agenda-overriding-header "Projects with stuck tasks")
-                  (org-super-agenda-groups
-                   '((:auto-parent t)))
-                  (org-agenda-skip-function
-                   #'bh/skip-non-subprojects))))
+               ((my-org-agenda-stuck-projects-agenda-command ""))
                ((org-agenda-write-buffer-name
                  "Tasks making projects stuck")
                 (org-agenda-exporter-settings
                   my-org-agenda-export-options))
                "~/Downloads/agenda-u-export.pdf"))
 (add-to-list 'org-agenda-custom-commands
-             ;; TODO: Once https://github.com/alphapapa/org-ql/issues/79 is
-             ;; fixed, use `org-ql-block' to avoid rendering agenda in 2
-             ;; buffers.
-             ;;
-             ;; TODO: Once skip functions are implemented (track
-             ;; https://github.com/alphapapa/org-ql/issues/3), add back
-             ;; `bh/skip-non-tasks'.
              `("n" "NEXT (active, grouped by parent, except scheduled for future)"
                ((my-org-agenda-next-projects-agenda-command ""))
                ((org-agenda-write-buffer-name
@@ -1058,6 +1129,11 @@ Use `org-ql-search' to search for all WAITING tasks."
                 (org-agenda-exporter-settings
                   my-org-agenda-export-options))
                "~/Downloads/agenda-n-export.pdf"))
+(add-to-list 'org-agenda-custom-commands
+             '("A" "Archivable tasks"
+               ((my-org-agenda-archivable-tasks-agenda-command ""))
+               ((org-tags-match-list-sublevels nil)
+                (org-agenda-archives-mode nil))))
 (add-to-list 'org-agenda-custom-commands
              '("Q" . "Custom queries"))
 (add-to-list 'org-agenda-custom-commands
@@ -1075,6 +1151,7 @@ Use `org-ql-search' to search for all WAITING tasks."
                                (t (cons 'agenda-archives tmp)))))
                    (call-interactively 'org-occur-in-agenda-files)))
                ""))
+(c-setq org-agenda-custom-commands org-agenda-custom-commands)
 (defvar my-org-agenda-combined-output-file
   "~/Downloads/agenda-export.pdf"
   "Output PDF of ‘my-org-agenda-write-combined’.")
@@ -2055,16 +2132,22 @@ otherwise."
   (org-super-agenda--when-with-marker-buffer
     (org-super-agenda--get-marker item)
     (let* ((parent-title)
-           (parent-has-todo))
+           (parent-has-todo)
+           (parent-outline-path))
       (save-excursion
         (when (org-up-heading-safe)
           (setq parent-title (org-get-heading 'notags 'notodo))
+          (setq parent-outline-path
+                (let ((p (org-get-outline-path)))
+                  (if p
+                      (format " | %s" (string-join p "/"))
+                    "")))
           (setq parent-has-todo
                 (member (nth 2 (org-heading-components)) org-todo-keywords-1))))
       (when parent-title
         (if parent-has-todo
-            (format "P: %s" parent-title)
-          (format "TG: %s" parent-title))))))
+            (format "P: %s%s" parent-title parent-outline-path)
+          (format "TG: %s%s" parent-title parent-outline-path))))))
 ;;;;
 
 
@@ -2314,48 +2397,6 @@ of occur. The original buffer is not modified.
   (org-super-agenda-mode 1))
 (use-package org-ql
   :ensure t)
-
-;;; List tasks that should be archived
-;;; http://doc.norang.ca/org-mode.html#Archiving
-(add-to-list 'org-agenda-custom-commands
-             '("A" "Archivable tasks" tags "-REFILE"
-               ((org-agenda-skip-function #'bh/skip-non-archivable-tasks)
-                (org-tags-match-list-sublevels nil)
-                (org-agenda-archives-mode nil))))
-(defun bh/skip-non-archivable-tasks ()
-  "Skip trees that are not available for archiving"
-  (save-restriction
-    (widen)
-    (let ((next-headline (save-excursion (or (outline-next-heading) (point-max))))
-          (subtree-end (save-excursion (org-end-of-subtree t)))
-          (is-gcal-entry (and (null (org-get-todo-state)) (member "gcal" (org-get-tags))))
-          (is-daily-log (member "dailylog" (org-get-tags))))
-      ;; Consider these types of headlines for archiving:
-      ;;
-      ;; - Headlines with a *done* todo keyword.
-      ;; - Headlines with *no* todo keyword tagged with "gcal" - these are
-      ;;   entries created by org-gcal. If I'm actively managing such a task,
-      ;;   I'll always add a todo keyword of some kind to the heading, so these
-      ;;   tasks will be saved from archiving unless they're marked done.
-      ;;
-      ;; Daily log entries (marked by the "dailylog" tag) should never be
-      ;; archived.
-      (if (and (not is-daily-log)
-               (or is-gcal-entry (member (org-get-todo-state) org-todo-keywords-1)))
-          (if (or is-gcal-entry (member (org-get-todo-state) org-done-keywords))
-              (let* ((daynr (string-to-number (format-time-string "%d" (current-time))))
-                     (a-month-ago (* 60 60 24 (+ daynr 1)))
-                     (last-month (format-time-string "%Y-%m-" (time-subtract (current-time) (seconds-to-time a-month-ago))))
-                     (this-month (format-time-string "%Y-%m-" (current-time)))
-                     (subtree-is-current (save-excursion
-                                           (forward-line 1)
-                                           (and (< (point) subtree-end)
-                                                (re-search-forward (concat last-month "\\|" this-month) subtree-end t)))))
-                (if subtree-is-current
-                    subtree-end ; Has a date in this month or last month, skip it
-                  nil))  ; available to archive
-            (or subtree-end (point-max)))
-        next-headline))))
 
 ;; Use sticky agenda's so they persist
 (c-setq org-agenda-sticky t)
