@@ -12,7 +12,8 @@
 (defmacro c-setq (variable value &optional comment)
   "Exactly like setq, but handles custom.
 
-Taken from http://lists.gnu.org/archive/html/emacs-devel/2017-11/msg00119.html."
+If VARIABLE was declared by `defcustom', then use `customize-set-variable' to
+set it.  Otherwise, use just `set-default'.  Taken from http://lists.gnu.org/archive/html/emacs-devel/2017-11/msg00119.html."
   `(if (get ',variable 'custom-type)
        (customize-set-variable ',variable ,value ,comment)
      (set-default ',variable ,value)))
@@ -29,9 +30,15 @@ generate a lot of garbage. Cite:
 http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/.")
 
 (defun my-minibuffer-setup-hook ()
+  "Disable GC inside minibuffer.
+
+See also `my-minibuffer-exit-hook'."
   (setq gc-cons-threshold most-positive-fixnum))
 
 (defun my-minibuffer-exit-hook ()
+  "Re-enable GC upon exiting minibuffer.
+
+See also `my-minibuffer-setup-hook'."
   (setq gc-cons-threshold (* 4 1024 1024)))
 
 (add-hook 'minibuffer-setup-hook #'my-minibuffer-setup-hook)
@@ -184,11 +191,12 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
   ;; Avoid conflict with evil-org
   (setq evil-collection-outline-bind-tab-p nil))
 
-;; Disable all the C-<number> keys, and give C-^ and C-6 the same behavior as
-;; they have in Vim.
 (defun switch-to-previous-buffer ()
+  "Switch to previously current buffer."
   (interactive)
   (switch-to-buffer (other-buffer (current-buffer))))
+;; Disable all the C-<number> keys, and give C-^ and C-6 the same behavior as
+;; they have in Vim.
 (define-key evil-normal-state-map (kbd "C-^") 'switch-to-previous-buffer)
 (define-key evil-normal-state-map (kbd "C-6") 'switch-to-previous-buffer)
 (dolist (key (mapcar 'kbd
@@ -271,6 +279,7 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
 ;; Automatically wrap long lines
 (setq-default fill-column 79)
 (defun prog-mode-wrap-hook ()
+  "Set auto-fill for comments only in `prog-mode'."
   (setq-local comment-auto-fill-only-comments t)
   (auto-fill-mode t)
   (diminish 'auto-fill-function))
@@ -318,6 +327,7 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
   :config
   ;; Don't re-run Flycheck syntax checkers on inserting new lines, to save
   ;; performance.
+  (add-hook 'after-init-hook #'global-flycheck-mode)
   (c-setq flycheck-check-syntax-automatically '(save idle-change mode-enabled))
   (c-setq flycheck-idle-change-delay 4))
 
@@ -530,7 +540,9 @@ http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/."
 (global-set-key (kbd "S-<f11>") #'org-clock-goto)
 (global-set-key (kbd "C-<f11>") #'my-org-clock-in)
 (global-set-key (kbd "C-S-<f11>") #'my-org-goto-heading)
-(defun my-org-clock-in () (interactive) (org-clock-in '(4)))
+(defun my-org-clock-in ()
+  "Select a recently clock-in task to clock into.  See `org-clock-in'."
+  (interactive) (org-clock-in '(4)))
 (defun my-org-goto-heading ()
   "Run C-u org-refile to list all headings."
   (interactive)
@@ -609,10 +621,11 @@ the created frame. This can be set using the `--frame-parameters' flag to
 
 Advice around `org-capture-refile' to temporarily remove advice
 `my-org-capture-delete-frame-from-org-protocol' around `org-capture-finalize'
-while calling `org-capture-refile'. This is needed because `org-capture-refile'
-calls `org-capture-finalize' internally. Without removing the advice, the frame
+while calling `org-capture-refile'.  This is needed because `org-capture-refile'
+calls `org-capture-finalize' internally.  Without removing the advice, the frame
 is closed before I have a chance to refile it.
-"
+
+Takes an UNUSED argument."
   (unwind-protect
       (progn
         (advice-remove 'org-capture-finalize
@@ -629,11 +642,13 @@ is closed before I have a chance to refile it.
   "Steal focus for frames created by external org-protocol capture scripts.
 
 Stealing focus here ensures that the newly-created frame is the one from which
-prompts are read. Otherwise, the prompt would appear on the existing frame.
+prompts are read.  Otherwise, the prompt would appear on the existing frame.
 
-This hook tests the presence of a frame parameter `org-protocol-capture' on
-the newly-created frame. This can be set using the `--frame-parameters' flag to
-`emacsclient'."
+This hook tests the presence of a frame parameter `org-protocol-capture' on the
+newly-created frame.  This can be set using the `--frame-parameters' flag to
+`emacsclient'.
+
+Takes an UNUSED argument."
   (when (frame-parameter nil 'org-protocol-capture)
     (x-focus-frame nil)))
 
@@ -683,7 +698,9 @@ after org-capture-mode is entered."
 (c-setq org-agenda-skip-deadline-prewarning-if-scheduled t)
 
 (defun transform-square-brackets-to-curly-ones (string-to-transform)
-  "Transforms [ into ( and ] into ), other chars left unchanged."
+  "Transforms [ into ( and ] into ) in STRING-TO-TRANSFORM.
+
+Other chars left unchanged."
   (concat
    (mapcar #'(lambda (c)
                (cond ((equal c ?\[) ?\{)
@@ -695,8 +712,8 @@ after org-capture-mode is entered."
 
 By default, evaluate only the clocktables in the current Org subtree, in order
 to avoid recomputing all the clock tables in the buffer, which will take a
-while in my daily-log.org file. With ‘prefix’, evaluate all the clocktables in
-the currently visible portion of the buffer."
+while in my daily-log.org file.  With a prefix arg NO-NARROW, evaluate all the
+clocktables in the currently visible portion of the buffer."
   (interactive "P")
   (save-restriction
     (unless no-narrow
@@ -957,7 +974,7 @@ Source: [[%:link][%:description]]
 (c-setq org-agenda-todo-ignore-scheduled 'future)
 
 (defcustom my-org-agenda-active-days 14
-  "Number of days in the past to search for active projects")
+  "Number of days in the past to search for active projects.")
 (cl-defun my-org-agenda-someday-maybe (&optional buffer)
   "Show agenda for Someday/Maybe tasks.
 
@@ -1080,8 +1097,12 @@ Use `org-ql-search' to search."
     :sort 'date
     :title "Archivable tasks"))
 (defmacro my-org-agenda-ql-wrapper (wrapper-name wrapped-func-name)
-  "Define a function named WRAPPER-NAME that wraps WRAPPED-FUNC-NAME in order
-to be called by `org-agenda-custom-commands'."
+  "Defines a wrapper for use in `org-agenda-custom-commands'.
+
+Calling this macro will define a function named WRAPPER-NAME that wraps
+WRAPPED-FUNC-NAME in order to be called by
+`org-agenda-custom-commands'.  WRAPPED-FUNC-NAME must be passed an unused
+argument when called in `org-agenda-custom-commands'."
   `(cl-defun ,wrapper-name (unused)
      ,(format "Wrap `%s' for `org-agenda'" wrapped-func-name)
      (with-current-buffer org-agenda-buffer-name
@@ -1961,7 +1982,7 @@ Switch projects and subprojects from NEXT back to TODO"
       "TODO"))))
 
 (defun bh/find-project-task ()
-  "Move point to the parent (project) task if any"
+  "Move point to the parent (project) task if any."
   (save-restriction
     (widen)
     (let ((parent-task (save-excursion (org-back-to-heading 'invisible-ok) (point))))
@@ -2090,7 +2111,7 @@ as the default task."
         next-headline)))))
 
 (defun bh/skip-non-tasks ()
-  "Show leaf tasks. Skip projects (including subprojects)."
+  "Show leaf tasks.  Skip projects (including subprojects)."
   (save-restriction
     (widen)
     (let ((is-a-task
@@ -2103,7 +2124,7 @@ as the default task."
           next-headline))))))
 
 (defun bh/skip-tasks ()
-  "Show projects (including subprojects). Skip leaf tasks."
+  "Show projects (including subprojects).  Skip leaf tasks."
   (save-restriction
     (widen)
     (let ((is-a-task
@@ -2173,17 +2194,15 @@ FIND-DONE has the same meaning "
 (defun org-find-timestamps ()
   "Find inactive timestamps within a date-range and maybe sort them.
 
-This function can help to bring the notes, that you take within
-org-mode, into a chronological order, even if they are scattered
-among many different nodes. The result is somewhat like a diary,
-listing your notes for each successive day. Please be aware
-however: This intended usage requires, that you routinely
-insert inactive timestamps into the notes that you write.
+This function can help to bring the notes, that you take within `org-mode',
+into a chronological order, even if they are scattered among many different
+nodes.  The result is somewhat like a diary, listing your notes for each
+successive day.  Please be aware however: This intended usage requires, that
+you routinely insert inactive timestamps into the notes that you write.
 
-org-find-timstamps works by creating a regular expression to
-match a given range of dates, doing a search for it and
-displaying the results either as a sparse tree or with the help
-of occur. The original buffer is not modified.
+`org-find-timstamps' works by creating a regular expression to match a given
+range of dates, doing a search for it and displaying the results either as a
+sparse tree or with the help of occur.  The original buffer is not modified.
 "
   (interactive)
   (let ((occur-buffer-name "*Occur*")
@@ -2333,8 +2352,9 @@ of occur. The original buffer is not modified.
 
 ;;; Week in review (https://emacs.stackexchange.com/a/7864)
 (defcustom org-timeline-files nil
-  "The files to be included in `org-timeline-all-files'. Follows
-  the same rules as `org-agenda-files'"
+  "The files to be included in `org-timeline-all-files'.
+
+Follows the same rules as `org-agenda-files'"
   :type 'sexp)
 
 (c-setq org-timeline-files org-agenda-files)
@@ -2440,15 +2460,17 @@ of occur. The original buffer is not modified.
 
 ;;; Python
 (defun evil-shift-width-from-guessed-python-indent-offset ()
-  "Fix Evil shiftwidth based on Python indent"
+  "Fix Evil shiftwidth based on Python indent."
   (python-indent-guess-indent-offset)
   (setq-local evil-shift-width python-indent-offset))
 (add-hook 'python-mode-hook 'evil-shift-width-from-guessed-python-indent-offset)
 
 
 ;;; Fix newline behavior to use M-j by default.
-;;; See http://stackoverflow.com/a/9060267.
 (defun my-coding-config ()
+  "Set RET key to use the behavior of M-j by default.
+
+See http://stackoverflow.com/a/9060267."
   (local-set-key (kbd "RET") (key-binding (kbd "M-j")))
   (local-set-key (kbd "<S-return>") 'newline))
 (add-hook 'prog-mode-hook 'my-coding-config)
@@ -2582,7 +2604,8 @@ instead unset."
 (defun my-update-env-unset (fn)
   "Unset environment variables from file FN containing variables.
 
-Format is \"VAR=VAL\", NUL-separated. Everything starting at \"=\" is ignored."
+Format is \"VAR=VAL\", NUL-separated.  Everything starting at \"=\" is
+ignored."
   (my-update-env fn 'unset))
 
 ;;;* Subfiles
