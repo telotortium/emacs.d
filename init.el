@@ -1037,7 +1037,7 @@ Use `org-ql-search' to search."
     :super-groups '((:auto-map my-org-super-agenda-group-by-project-or-task-group))
     :title "Tasks making project stuck"
     :buffer (or buffer org-ql-view-buffer)))
-(cl-defun my-org-agenda-next-projects (&optional buffer)
+(cl-defun my-org-agenda-next-tasks (&optional buffer)
   "Show agenda for NEXT steps in org-mode projects
 
 Use `org-ql-search' to search for all NEXT steps for projects.  Show only the
@@ -1050,7 +1050,8 @@ days."
       (todo "NEXT")
       (not (tags "HOLD" "CANCELLED" "ARCHIVED"))
       (not (scheduled :from 1))
-      (not (bh/skip-non-tasks))
+      (or (not (children))
+          (children (not (todo))))
       (ts :from ,(- my-org-agenda-active-days)))
     :buffer (or buffer org-ql-view-buffer)
     :super-groups '((:auto-map my-org-super-agenda-group-by-project-or-task-group))
@@ -1115,8 +1116,8 @@ argument when called in `org-agenda-custom-commands'."
                           my-org-agenda-loose-todos)
 (my-org-agenda-ql-wrapper my-org-agenda-stuck-projects-agenda-command
                           my-org-agenda-stuck-projects)
-(my-org-agenda-ql-wrapper my-org-agenda-next-projects-agenda-command
-                          my-org-agenda-next-projects)
+(my-org-agenda-ql-wrapper my-org-agenda-next-tasks-agenda-command
+                          my-org-agenda-next-tasks)
 (my-org-agenda-ql-wrapper my-org-agenda-archivable-tasks-agenda-command
                           my-org-agenda-archivable-tasks)
 
@@ -1149,7 +1150,7 @@ argument when called in `org-agenda-custom-commands'."
                "~/Downloads/agenda-u-export.pdf"))
 (add-to-list 'org-agenda-custom-commands
              `("n" "NEXT (active, grouped by parent, except scheduled for future)"
-               ((my-org-agenda-next-projects-agenda-command ""))
+               ((my-org-agenda-next-tasks-agenda-command ""))
                ((org-agenda-write-buffer-name
                  "NEXT (active, grouped by parent, except scheduled for future)")
                 (org-agenda-exporter-settings
