@@ -1978,7 +1978,7 @@ Switch projects and subprojects from NEXT back to TODO"
            (bh/is-task-p))
       "NEXT")
      ((and (member (org-get-todo-state) (list "NEXT"))
-           (bh/is-project-p))
+           (bh/is-project-with-active-tasks-p))
       "TODO"))))
 
 (defun bh/find-project-task ()
@@ -2064,12 +2064,28 @@ as the default task."
 
 ;; Needed for clocking functions: http://doc.norang.ca/org-mode.html#Projects
 (defun bh/is-project-p ()
-  "Any task with a todo keyword subtask"
+  "Any task with a todo keyword subtask."
   (save-restriction
     (widen)
     (let ((is-a-task
            (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
       (and is-a-task (not (bh/is-task-p))))))
+
+(defun bh/is-project-with-active-tasks-p ()
+  "Any task with a non-done todo keyword subtask."
+  (save-restriction
+    (widen)
+    (let ((is-a-task
+           (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
+      (and is-a-task
+           (let ((has-non-done-subtask))
+             (save-excursion
+               (when (org-goto-first-child)
+                 (while (and (not has-non-done-subtask)
+                             (org-goto-sibling))
+                   (when (member (org-get-todo-state) org-not-done-keywords)
+                     (setq has-non-done-subtask t)))))
+             has-non-done-subtask)))))
 
 (defun bh/is-subproject-p ()
   "Any task which is a subtask of another project"
