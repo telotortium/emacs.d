@@ -325,9 +325,9 @@ See also `my-minibuffer-setup-hook'."
   :ensure nil
   :defer t                              ; init-local-google will locate this
   :config
+  (add-hook 'after-init-hook #'global-flycheck-mode)
   ;; Don't re-run Flycheck syntax checkers on inserting new lines, to save
   ;; performance.
-  (add-hook 'after-init-hook #'global-flycheck-mode)
   (c-setq flycheck-check-syntax-automatically '(save idle-change mode-enabled))
   (c-setq flycheck-idle-change-delay 4))
 
