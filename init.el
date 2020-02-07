@@ -326,6 +326,9 @@ See also `my-minibuffer-setup-hook'."
   :defer t                              ; init-local-google will locate this
   :config
   (add-hook 'after-init-hook #'global-flycheck-mode)
+  ;; Inherit Emacs load-path from current session - prevents annoying errors
+  ;; from custom packages.
+  (c-setq flycheck-emacs-lisp-load-path 'inherit)
   ;; Don't re-run Flycheck syntax checkers on inserting new lines, to save
   ;; performance.
   (c-setq flycheck-check-syntax-automatically '(save idle-change mode-enabled))
