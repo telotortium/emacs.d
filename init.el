@@ -297,12 +297,22 @@ See also `my-minibuffer-setup-hook'."
 (column-number-mode 1)
 
 (use-package rg
-  :commands (rg rg-project rg-dwin))
-(rg-define-search rg-org
-  "Run rg on my Org files"
-  :query ask
-  :files "org"
-  :dir "~/Documents/org")
+  :commands (rg rg-project rg-dwim)
+  :config
+  (c-setq rg-custom-type-aliases
+          '(("org" . "*.org *.org_archive")))
+  (rg-define-search rg-org
+    "Run rg on my Org files"
+    :query ask
+    :files "org"
+    :dir "~/Documents/org"
+    :confirm prefix
+    :menu ("Custom" "o" "Org-mode files"))
+  (defun rg-org-save-files (&rest unused)
+    "Run ‘org-save-all-org-buffers’ so ‘rg-org’ searches all file contents."
+    (org-save-all-org-buffers))
+  (advice-add 'rg-org :before #'rg-org-save-files))
+
 
 ;;; Company
 (use-package company-flx
