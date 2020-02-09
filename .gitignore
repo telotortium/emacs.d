@@ -3,11 +3,14 @@
 /auto-save-list
 /bookmarks
 /cache
+/.cask
 /custom.el
 /elpa
 /ido.last
 /network-security.data
 /org-clock-save.el
+/org-gtasks-google.el
+/persist
 /.persistent-scratch
 /quelpa
 /recentf
