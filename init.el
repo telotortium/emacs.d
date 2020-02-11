@@ -18,6 +18,10 @@ set it.  Otherwise, use just `set-default'.  Taken from http://lists.gnu.org/arc
        (customize-set-variable ',variable ,value ,comment)
      (set-default ',variable ,value)))
 
+;;;* Storage for variables configured via the interactive 'customize' interface
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(load custom-file t)
+
 ;;;* gc-cons-threshold
 
 ;;; Set this higher in the minibuffer, but don't make it too bad other wise
@@ -2607,10 +2611,6 @@ See http://stackoverflow.com/a/9060267."
   :init
   (fmakunbound 'gdb)
   (fmakunbound 'gdb-enable-debug))
-
-;;;* Storage for variables configured via the interactive 'customize' interface
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-(load custom-file t)
 
 ;;; Update environment - https://emacs.stackexchange.com/a/6107
 (defun my-update-env (fn &optional unset)
