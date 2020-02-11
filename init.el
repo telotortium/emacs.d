@@ -307,6 +307,7 @@ See also `my-minibuffer-setup-hook'."
     :files "org"
     :dir "~/Documents/org"
     :confirm prefix
+    :flags ("--smart-case")             ; Emacs default search is smart case
     :menu ("Custom" "o" "Org-mode files"))
   (defun rg-org-save-files (&rest unused)
     "Run ‘org-save-all-org-buffers’ so ‘rg-org’ searches all file contents."
