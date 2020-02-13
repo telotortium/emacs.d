@@ -59,30 +59,44 @@ See also `my-minibuffer-setup-hook'."
 
 (c-setq tls-checktrust 'ask)
 
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+(straight-use-package 'use-package)
+
 ;;; Load all the packages that are REQUIRE'd below
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") 'append)
 (package-initialize)
 
-(mapc
- (lambda (package)
-  (unless (package-installed-p package)
-    (package-refresh-contents)
-    (package-install package)))
- '(use-package quelpa quelpa-use-package))
-(eval-when-compile
-  (require 'use-package)
-  (require 'quelpa)
-  (require 'quelpa-use-package)
-  (customize-set-variable 'use-package-always-ensure t)
-  (quelpa-use-package-activate-advice))
+;; (mapc
+;;  (lambda (package)
+;;   (unless (package-installed-p package)
+;;     (package-refresh-contents)
+;;     (package-install package)))
+;;  '(use-package quelpa quelpa-use-package))
+;; (eval-when-compile
+;;   (require 'use-package)
+;;   (require 'quelpa)
+;;   (require 'quelpa-use-package)
+;;   (customize-set-variable 'use-package-always-ensure t)
+;;   (quelpa-use-package-activate-advice))
 (use-package bind-key)                  ; To make :bind work
 (use-package diminish)                  ; To use :diminish
 (c-setq use-package-always-ensure t)
 
 (use-package benchmark-init
-  :ensure t
+  :straight t
   :config
   ;; To disable collection of benchmark data after init is done.
   (add-hook 'after-init-hook 'benchmark-init/deactivate))
@@ -95,7 +109,7 @@ See also `my-minibuffer-setup-hook'."
 
 ;;; Convenience commands to upgrade packages.
 (use-package package-utils
-  :ensure t
+  :straight t
   :ensure epl)
 
 
@@ -135,7 +149,7 @@ See also `my-minibuffer-setup-hook'."
 (use-package counsel
   :diminish ivy-mode
   :diminish counsel-mode
-  :ensure t
+  :straight t
   :ensure amx
   :custom
   (ivy-use-virtual-buffers t)
@@ -188,7 +202,7 @@ See also `my-minibuffer-setup-hook'."
 (c-setq evil-search-module 'evil-search)
 
 (use-package evil-collection
-  :ensure t
+  :straight t
   :after evil
   :init (evil-collection-init)
   :config
@@ -408,13 +422,13 @@ See also `my-minibuffer-setup-hook'."
 
 ;; Java
 (use-package eclim
-  :ensure t
+  :straight t
   :config
   (require 'eclimd)
   (global-eclim-mode))
 (use-package company-emacs-eclim
   :ensure eclim
-  :ensure t
+  :straight t
   :config
   (company-emacs-eclim-setup))
 
@@ -499,7 +513,7 @@ See also `my-minibuffer-setup-hook'."
 
 ;;; Parinfer
 (use-package parinfer
-  :ensure t
+  :straight t
   :ensure paredit
   :bind
   (("C-," . parinfer-toggle-mode))
@@ -520,7 +534,7 @@ See also `my-minibuffer-setup-hook'."
 
 ;;; Slime
 (use-package slime
-  :ensure t
+  :straight t
   :config
   (require 'slime-autoloads)
   (add-hook 'slime-repl-mode-hook #'activate-paredit-mode)
@@ -1407,7 +1421,7 @@ to get the latest version of the file, then make the change again.")
 
 ;;;** Org-drill
 (use-package org-drill
-  :ensure t
+  :straight t
   :after org
   :init
   (require 'cl)                         ; org-drill uses old CL func names
@@ -1432,13 +1446,13 @@ don't support wrapping."
         (global-visual-line-mode old-global-visual-line-mode))))
   (advice-add #'org-drill :around #'my-org-drill-global-visual-line-mode))
 (use-package org-drill-table
-  :ensure t
+  :straight t
   :after org)
 (load-file (expand-file-name "lisp/org-clock-fix.el" user-emacs-directory))
 
 ;;;** Org-pomodoro
 (use-package org-pomodoro
-  :ensure t
+  :straight t
   :ensure s
   :ensure async
   :after org
@@ -1691,7 +1705,7 @@ number of seconds."
       (org-clock-in)))
 
 (use-package evil-org
-  :ensure t
+  :straight t
   :after org
   :hook ((org-mode . evil-org-mode)
          (evil-org-mode
@@ -2368,7 +2382,7 @@ sparse tree or with the help of occur.  The original buffer is not modified.
 (require 'org-inlinetask)
 
 (use-package org-randomnote
-  :ensure t
+  :straight t
   :bind ("C-c r" . org-randomnote)
   :config
   (c-setq org-randomnote-candidates
@@ -2412,7 +2426,7 @@ Follows the same rules as `org-agenda-files'"
                 (org-agenda-archives-mode nil))))
 
 (use-package org-super-agenda
-  :ensure t
+  :straight t
   :config
   (c-setq org-super-agenda-groups
           '(;; Each group has an implicit boolean OR operator between its selectors.
@@ -2456,7 +2470,7 @@ Follows the same rules as `org-agenda-files'"
 
   (org-super-agenda-mode 1))
 (use-package org-ql
-  :ensure t)
+  :straight t)
 
 ;; Use sticky agenda's so they persist
 (c-setq org-agenda-sticky t)
@@ -2513,6 +2527,7 @@ See http://stackoverflow.com/a/9060267."
 
 ;; Don't use Evil for image-mode.
 (add-to-list 'evil-emacs-state-modes 'image-mode)
+(add-to-list 'evil-emacs-state-modes 'Custom-mode)
 (delete 'git-commit-mode evil-emacs-state-modes)
 
 
@@ -2553,12 +2568,13 @@ See http://stackoverflow.com/a/9060267."
 
 ;;;* Preserve scratch file across sessions
 (use-package persistent-scratch
+  :straight t
   :config
   (persistent-scratch-setup-default))
 
 ;;;* which-key
 (use-package which-key
-  :ensure t
+  :straight t
   :config
   (which-key-mode 1))
 
@@ -2604,13 +2620,34 @@ See http://stackoverflow.com/a/9060267."
   :custom
   (dtrt-indent-mode t))
 
-;;;* Faster GDB-MI interface
-(use-package gdb-mi :quelpa (gdb-mi :fetcher git
-                                    :url "https://github.com/weirdNox/emacs-gdb.git"
-                                    :files ("*.el" "*.c" "*.h" "Makefile"))
-  :init
-  (fmakunbound 'gdb)
-  (fmakunbound 'gdb-enable-debug))
+;; ;;;* Faster GDB-MI interface
+;; (use-package gdb-mi :quelpa (gdb-mi :fetcher git
+;;                                     :url "https://github.com/weirdNox/emacs-gdb.git"
+;;                                     :files ("*.el" "*.c" "*.h" "Makefile"))
+;;   :init
+;;   (fmakunbound 'gdb)
+;;   (fmakunbound 'gdb-enable-debug))
+
+
+;;;* Org-roam
+(use-package org-roam
+      :after org
+      :hook (org-mode . org-roam-mode)
+      :straight (:host github :repo "jethrokuan/org-roam")
+      :custom
+      (org-roam-directory "~/Documents/org/jethrokuan-braindump/org")
+      :bind
+      ("C-c n l" . org-roam)
+      ("C-c n t" . org-roam-today)
+      ("C-c n f" . org-roam-find-file)
+      ("C-c n i" . org-roam-insert)
+      ("C-c n g" . org-roam-show-graph)
+      ("C-c n n" . org-roam-new-file))
+
+;;;* Useful packages suggested by
+;;;* https://blog.jethro.dev/posts/zettelkasten_with_org/.
+(use-package org-download :straight t)
+(use-package org-cliplink :straight t)
 
 ;;; Update environment - https://emacs.stackexchange.com/a/6107
 (defun my-update-env (fn &optional unset)
