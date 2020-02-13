@@ -71,29 +71,10 @@ See also `my-minibuffer-setup-hook'."
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
-(straight-use-package 'use-package)
+(straight-use-package 'use-package)     ; Enable :straight in ‘use-package’
 
-;;; Load all the packages that are REQUIRE'd below
-(require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") 'append)
-(package-initialize)
-
-;; (mapc
-;;  (lambda (package)
-;;   (unless (package-installed-p package)
-;;     (package-refresh-contents)
-;;     (package-install package)))
-;;  '(use-package quelpa quelpa-use-package))
-;; (eval-when-compile
-;;   (require 'use-package)
-;;   (require 'quelpa)
-;;   (require 'quelpa-use-package)
-;;   (customize-set-variable 'use-package-always-ensure t)
-;;   (quelpa-use-package-activate-advice))
-(use-package bind-key)                  ; To make :bind work
-(use-package diminish)                  ; To use :diminish
-(c-setq use-package-always-ensure t)
+(use-package bind-key :straight t)      ; To make :bind work
+(use-package diminish :straight t)      ; To use :diminish
 
 (use-package benchmark-init
   :straight t
@@ -103,15 +84,10 @@ See also `my-minibuffer-setup-hook'."
 
 ;;; Use auto-compile to recompile bytecode whenever files are loaded or saved.
 (use-package auto-compile
+  :straight t
   :config
   (auto-compile-on-load-mode)
   (auto-compile-on-save-mode))
-
-;;; Convenience commands to upgrade packages.
-(use-package package-utils
-  :straight t
-  :ensure epl)
-
 
 ;;;* Basic startup configuration
 
@@ -119,7 +95,7 @@ See also `my-minibuffer-setup-hook'."
 (c-setq inhibit-startup-message t)
 
 ;;; Command to restart emacs from within emacs
-(use-package restart-emacs)
+(use-package restart-emacs :straight t)
 
 ;;; Allow access from emacsclient
 (use-package server
@@ -139,6 +115,7 @@ See also `my-minibuffer-setup-hook'."
 
 ;;;* Leuven theme
 (use-package leuven-theme
+  :straight t
   :custom
   (leuven-scale-outline-headlines nil)
   :config
@@ -146,11 +123,12 @@ See also `my-minibuffer-setup-hook'."
   (load-theme 'leuven-customization t))
 
 ;;;* Ivy configuration
+(use-package amx :straight t)
 (use-package counsel
   :diminish ivy-mode
   :diminish counsel-mode
   :straight t
-  :ensure amx
+  :after amx
   :custom
   (ivy-use-virtual-buffers t)
   (ivy-count-format "%d/%d ")
@@ -178,16 +156,19 @@ See also `my-minibuffer-setup-hook'."
 
 ;; Dependency of evil-mode
 (use-package undo-tree
+  :straight t
   :diminish undo-tree-mode)
 
 (use-package evil
-  :ensure undo-tree
+  :straight t
+  :after undo-tree
   :init
   (c-setq evil-want-keybinding nil)
   :config (evil-mode 1))
 
 ;; Space as leader
 (use-package evil-leader
+  :straight t
   :config
   (global-evil-leader-mode)
   (evil-leader/set-leader "<SPC>"))
@@ -233,6 +214,7 @@ See also `my-minibuffer-setup-hook'."
 (define-key evil-normal-state-map "Q" 'kill-this-buffer)
 
 (use-package evil-commentary
+  :straight t
   :config
   (evil-commentary-mode))
 
@@ -262,14 +244,17 @@ See also `my-minibuffer-setup-hook'."
                 (set-face-foreground 'mode-line (cdr color))))))
 
 (use-package evil-surround
+  :straight t
   :config
   (global-evil-surround-mode 1))
 
 (use-package evil-visualstar
+  :straight t
   :config
   (global-evil-visualstar-mode))
 
 (use-package evil-numbers
+  :straight t
   :bind (:map evil-normal-state-map
          ("C-c =" . evil-numbers/inc-at-pt)
          ("C-c +" . evil-numbers/inc-at-pt)
@@ -288,6 +273,7 @@ See also `my-minibuffer-setup-hook'."
 
 ;; Auto-indent
 (use-package clean-aindent-mode
+  :straight t
   :bind (:map global-map ("RET" . #'newline-and-indent))
   :config (clean-aindent-mode 1))
 
@@ -315,6 +301,7 @@ See also `my-minibuffer-setup-hook'."
 (column-number-mode 1)
 
 (use-package rg
+  :straight t
   :commands (rg rg-project rg-dwim)
   :config
   (c-setq rg-custom-type-aliases
@@ -335,10 +322,12 @@ See also `my-minibuffer-setup-hook'."
 
 ;;; Company
 (use-package company-flx
+  :straight t
   :config
   (with-eval-after-load 'company
     (company-flx-mode +1)))
 (use-package company
+  :straight t
   :diminish company-mode
   :custom
   (company-tooltip-limit 20 "bigger popup window")
@@ -347,7 +336,8 @@ See also `my-minibuffer-setup-hook'."
   :config
   (add-hook 'after-init-hook 'global-company-mode))
 (use-package company-go
-  :ensure company)
+  :straight t
+  :after company)
 
 ;;; Flycheck
 (use-package flycheck
@@ -366,10 +356,12 @@ See also `my-minibuffer-setup-hook'."
 
 ;;; Syntax highlighting for Vimscript files
 (use-package vimrc-mode
+  :straight t
   :mode ".vim\\(rc\\)?$")
 
 ;;; Markdown
 (use-package markdown-mode
+  :straight t
   :commands (markdown-mode gfm-mode)
   :mode (("README\\.md\\'" . gfm-mode)
          ("\\.md\\'" . markdown-mode)
@@ -413,10 +405,12 @@ See also `my-minibuffer-setup-hook'."
 
 ;; Rust mode
 (use-package rust-mode
+  :straight t
   :mode "\\.rs\\'")
 
 ;; Lua mode
 (use-package lua-mode
+  :straight t
   :mode "\\.lua$"
   :interpreter "lua")
 
@@ -427,8 +421,8 @@ See also `my-minibuffer-setup-hook'."
   (require 'eclimd)
   (global-eclim-mode))
 (use-package company-emacs-eclim
-  :ensure eclim
   :straight t
+  :after eclim
   :config
   (company-emacs-eclim-setup))
 
@@ -439,6 +433,7 @@ See also `my-minibuffer-setup-hook'."
 
 ;; Multi Web Mode - automatically switch to right major mode in HTML files
 (use-package multi-web-mode
+  :straight t
   :custom
   (mweb--major-mode 'html-mode)
   (mweb-tags '((php-mode "<\\?php\\|<\\? \\|<\\?=" "\\?>")
@@ -449,6 +444,7 @@ See also `my-minibuffer-setup-hook'."
   (multi-web-global-mode 1))
 
 (use-package rainbow-delimiters
+  :straight t
   :commands rainbow-delimiters-mode
   :init (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
@@ -458,8 +454,9 @@ See also `my-minibuffer-setup-hook'."
 
 ;;; Go
 (use-package go-mode
+  :straight t
+  :after company-go
   :config
-  (use-package company-go)
   (defun my-go-mode-settings ()
     (setq-local whitespace-line-column 99)
     ;; Use 4-space tabs since gofmt formats with tabs by default
@@ -478,6 +475,7 @@ See also `my-minibuffer-setup-hook'."
 
 ;;; Enable escaping from yasnippet snippets
 (use-package yasnippet
+  :straight t
   :diminish yas-minor-mode
   :config
   (yas-global-mode 1))
@@ -514,7 +512,6 @@ See also `my-minibuffer-setup-hook'."
 ;;; Parinfer
 (use-package parinfer
   :straight t
-  :ensure paredit
   :bind
   (("C-," . parinfer-toggle-mode))
   :hook ((clojure-mode emacs-lisp-mode common-lisp-mode scheme-mode lisp-mode)
@@ -554,9 +551,10 @@ See also `my-minibuffer-setup-hook'."
 
 
 ;;;* Org configuration
+(use-package htmlize :straight t)
 (use-package org
   :ensure nil
-  :ensure htmlize                       ; For org-publish
+  :after htmlize                       ; For org-publish
   :load-path ("~/.emacs.d/lisp/org-mode.git/lisp"
               "~/.emacs.d/lisp/org-mode.git/contrib/lisp")
   :init
@@ -1453,8 +1451,8 @@ don't support wrapping."
 ;;;** Org-pomodoro
 (use-package org-pomodoro
   :straight t
-  :ensure s
-  :ensure async
+  :after s
+  :after async
   :after org
   :config
   ;; Complice.co Less Wrong study hall
@@ -1774,6 +1772,7 @@ TAG is chosen interactively from the global tags completion table."
 
 ;;;** Org-gcal
 (use-package alert
+  :straight t
   :config
   (c-setq alert-default-style
         (cond ((executable-find "notify-send")
@@ -1783,6 +1782,7 @@ TAG is chosen interactively from the global tags completion table."
               (t 'message))))
 (use-package org-gcal
   :after org
+  :after request-deferred
   :ensure nil
   :load-path "~/.emacs.d/rmi-org-gcal"
   :config
@@ -2489,6 +2489,7 @@ Follows the same rules as `org-agenda-files'"
 
 ;;;* Remove trailing whitespace intelligently
 (use-package ws-butler
+  :straight t
   :diminish ws-butler-mode
   :commands ws-butler-mode
   :init
@@ -2533,6 +2534,7 @@ See http://stackoverflow.com/a/9060267."
 
 ;;;* Magit
 (use-package magit
+  :straight t
   :init
   (c-setq magit-last-seen-setup-instructions "1.4.0")
   :config
@@ -2540,14 +2542,18 @@ See http://stackoverflow.com/a/9060267."
 
 ;;;* git-auto-commit-mode
 (use-package git-auto-commit-mode
+  :straight t
   :ensure nil
   :load-path "~/.emacs.d/lisp/git-auto-commit-mode/")
 
 ;;;* https://codearsonist.com/reading-for-programmers
-(use-package pdf-tools)
-(pdf-tools-install)
-(use-package interleave)
+(use-package pdf-tools
+  :straight t
+  :config
+  (pdf-tools-install))
+(use-package interleave :straight t)
 (use-package org-ref
+  :straight t
   :after org
   :config
   (c-setq org-ref-notes-directory "~/Documents/org/home-org")
@@ -2555,6 +2561,7 @@ See http://stackoverflow.com/a/9060267."
   (c-setq org-ref-default-bibliography '("~/Documents/org/home-org/index.bib"))
   (c-setq org-ref-pdf-directory "~/Documents/org/home-org/lib/"))
 (use-package helm-bibtex
+  :straight t
   :config
   (c-setq helm-bibtex-bibliography "~/Documents/org/home-org/index.bib") ;; where your references are stored
   (c-setq helm-bibtex-library-path "~/Documents/org/home-org/lib/") ;; where your pdfs etc are stored
@@ -2577,6 +2584,7 @@ See http://stackoverflow.com/a/9060267."
 
 ;;;* browse-kill-ring
 (use-package browse-kill-ring
+  :straight t
   :config
   (browse-kill-ring-default-keybindings))
 
@@ -2613,6 +2621,7 @@ See http://stackoverflow.com/a/9060267."
 
 ;;;* Automatic indentation detection
 (use-package dtrt-indent
+  :straight t
   :custom
   (dtrt-indent-mode t))
 
