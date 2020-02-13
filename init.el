@@ -123,7 +123,7 @@ See also `my-minibuffer-setup-hook'."
 
 ;;; Allow access from emacsclient
 (use-package server
-  :ensure nil
+  :straight (:type built-in)
   :config
   (c-setq server-name "server")
   (c-setq server-socket-dir "~/.emacs.d/server")
@@ -351,7 +351,7 @@ See also `my-minibuffer-setup-hook'."
 
 ;;; Flycheck
 (use-package flycheck
-  :ensure nil
+  :straight t                           ; May want to use built-in version at Google
   :defer t                              ; init-local-google will locate this
   :config
   (add-hook 'after-init-hook #'global-flycheck-mode)
@@ -390,13 +390,13 @@ See also `my-minibuffer-setup-hook'."
 ;; Give buffers editing files with the same basename more distinctive names
 ;; based on directory.
 (use-package uniquify
-  :ensure nil
+  :straight (:type built-in)
   :custom
   (uniquify-buffer-name-style 'post-forward-angle-brackets))
 
 ;; Save mini-buffer history
 (use-package savehist
-  :ensure nil
+  :straight (:type built-in)
   :custom
   (savehist-additional-variables
    '(kill-ring search-ring regexp-search-ring compile-history))
@@ -434,7 +434,7 @@ See also `my-minibuffer-setup-hook'."
 
 ;; Javascript
 (use-package js-mode
-  :ensure nil
+  :straight (:type built-in)
   :mode ("\\.js\\'" "\\.javascript\\'"))
 
 ;; Multi Web Mode - automatically switch to right major mode in HTML files
@@ -453,7 +453,7 @@ See also `my-minibuffer-setup-hook'."
   :init (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
 (use-package paren
-  :ensure nil
+  :straight (:type built-in)
   :config (show-paren-mode 1))
 
 ;;; Go
@@ -1783,8 +1783,6 @@ TAG is chosen interactively from the global tags completion table."
               (t 'message))))
 (use-package org-gcal
   :after org
-  :ensure alert
-  :ensure request-deferred
   :ensure nil
   :load-path "~/.emacs.d/rmi-org-gcal"
   :config
@@ -1868,8 +1866,6 @@ data in the entry):
 ;;;** Org-gtasks
 (use-package org-gtasks
   :after org
-  :ensure alert
-  :ensure request-deferred
   :ensure nil
   :load-path "~/.emacs.d/lisp/org-gtasks.git/")
 
@@ -2479,13 +2475,13 @@ Follows the same rules as `org-agenda-files'"
 
 ;;;* Autorevert
 (use-package autorevert
-  :ensure nil
+  :straight (:type built-in)
   :diminish auto-revert-mode
   :config (global-auto-revert-mode t))
 
 ;;;* Flyspell
 (use-package flyspell
-  :ensure nil
+  :straight t
   :diminish flyspell-mode
   :config
   (add-hook 'text-mode-hook 'flyspell-mode 'append)
