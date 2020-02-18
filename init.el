@@ -511,8 +511,10 @@ See also `my-minibuffer-setup-hook'."
 
 
 ;;; Parinfer
+(use-package paredit :straight t)
 (use-package parinfer
   :straight t
+  :after paredit
   :bind
   (("C-," . parinfer-toggle-mode))
   :hook ((clojure-mode emacs-lisp-mode common-lisp-mode scheme-mode lisp-mode)
