@@ -1,12 +1,3 @@
-[submodule "lisp/org-mode.git"]
-	path = lisp/org-mode.git
-	url = https://code.orgmode.org/bzg/org-mode.git
-[submodule "lisp/git-auto-commit-mode"]
-	path = lisp/git-auto-commit-mode
-	url = git@github.com:telotortium/git-auto-commit-mode
-[submodule "rmi-org-gcal"]
-	path = rmi-org-gcal
-	url = git@github.com:telotortium/org-gcal.el
 [submodule "lisp/org-gtasks.git"]
 	path = lisp/org-gtasks.git
 	url = git@github.com:telotortium/org-gtasks.git
