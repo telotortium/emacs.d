@@ -29,3 +29,9 @@ calendar.dat
 client_secrets.json
 oauth2.plstore
 request/curl-cookie-jar
+
+# Straight (except for lockfiles, which live in /straight/versions)
+/straight/build
+/straight/build-cache.el
+/straight/modified
+/straight/repos
