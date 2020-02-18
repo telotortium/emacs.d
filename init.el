@@ -2544,9 +2544,9 @@ See http://stackoverflow.com/a/9060267."
 
 ;;;* git-auto-commit-mode
 (use-package git-auto-commit-mode
-  :straight t
-  :ensure nil
-  :load-path "~/.emacs.d/lisp/git-auto-commit-mode/")
+  :straight (:host github :repo "ryuslash/git-auto-commit-mode"
+             :fork (:host github :repo "telotortium/git-auto-commit-mode"
+                    :branch "gac-merge")))
 
 ;;;* https://codearsonist.com/reading-for-programmers
 (use-package pdf-tools
