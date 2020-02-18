@@ -555,11 +555,10 @@ See also `my-minibuffer-setup-hook'."
 
 ;;;* Org configuration
 (use-package htmlize :straight t)
+(straight-use-package 'org-plus-contrib)
 (use-package org
-  :ensure nil
+  :straight
   :after htmlize                       ; For org-publish
-  :load-path ("~/.emacs.d/lisp/org-mode.git/lisp"
-              "~/.emacs.d/lisp/org-mode.git/contrib/lisp")
   :init
   :config
   (add-to-list 'org-modules 'org-habit)
@@ -1423,7 +1422,7 @@ to get the latest version of the file, then make the change again.")
 ;;;** Org-drill
 (use-package org-drill
   :straight t
-  :after org
+  :after org-plus-contrib
   :init
   (require 'cl)                         ; org-drill uses old CL func names
   (require 'org)                        ; org variables need to be in scope
@@ -1448,7 +1447,7 @@ don't support wrapping."
   (advice-add #'org-drill :around #'my-org-drill-global-visual-line-mode))
 (use-package org-drill-table
   :straight t
-  :after org)
+  :after org-plus-contrib)
 (load-file (expand-file-name "lisp/org-clock-fix.el" user-emacs-directory))
 
 ;;;** Org-pomodoro
@@ -1456,7 +1455,7 @@ don't support wrapping."
   :straight t
   :after s
   :after async
-  :after org
+  :after org-plus-contrib
   :config
   ;; Complice.co Less Wrong study hall
   ;; (https://complice.co/room/lesswrong/interstitial). Reference:
@@ -1707,7 +1706,7 @@ number of seconds."
 
 (use-package evil-org
   :straight t
-  :after org
+  :after org-plus-contrib
   :hook ((org-mode . evil-org-mode)
          (evil-org-mode
           . (lambda () (evil-org-set-key-theme))))
@@ -1784,10 +1783,9 @@ TAG is chosen interactively from the global tags completion table."
                'notifier)
               (t 'message))))
 (use-package org-gcal
-  :after org
-  :after request-deferred
-  :ensure nil
-  :load-path "~/.emacs.d/rmi-org-gcal"
+  :straight (:host github :repo "kidd/org-gcal.el"
+             :fork (:host github :repo "telotortium/org-gcal.el"))
+  :after org-plus-contrib
   :config
   (c-setq org-gcal-config-file (expand-file-name "org-gcal-config.el" user-emacs-directory))
   ;; Disable Auto Archive - my gcal.org_archive is so big that this majorly
@@ -1868,7 +1866,8 @@ data in the entry):
 
 ;;;** Org-gtasks
 (use-package org-gtasks
-  :after org
+  :after org-plus-contrib
+  :after request
   :ensure nil
   :load-path "~/.emacs.d/lisp/org-gtasks.git/")
 
@@ -2557,7 +2556,7 @@ See http://stackoverflow.com/a/9060267."
 (use-package interleave :straight t)
 (use-package org-ref
   :straight t
-  :after org
+  :after org-plus-contrib
   :config
   (c-setq org-ref-notes-directory "~/Documents/org/home-org")
   (c-setq org-ref-bibliography-notes "~/Documents/org/home-org/index.org")
@@ -2639,7 +2638,7 @@ See http://stackoverflow.com/a/9060267."
 
 ;;;* Org-roam
 (use-package org-roam
-      :after org
+      :after org-plus-contrib
       :hook (org-mode . org-roam-mode)
       :straight (:host github :repo "jethrokuan/org-roam")
       :custom
@@ -2690,7 +2689,7 @@ ignored."
   :load-path "~/.emacs.d/lisp")
 (use-package org-drill-cloze-enhancement
   :ensure nil
-  :after org
+  :after org-plus-contrib
   :load-path "~/.emacs.d/lisp")
 
 ;;;* Local configuration
