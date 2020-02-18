@@ -2638,18 +2638,20 @@ See http://stackoverflow.com/a/9060267."
 
 ;;;* Org-roam
 (use-package org-roam
-      :after org-plus-contrib
-      :hook (org-mode . org-roam-mode)
-      :straight (:host github :repo "jethrokuan/org-roam")
-      :custom
-      (org-roam-directory "~/Documents/org/jethrokuan-braindump/org")
-      :bind
-      ("C-c n l" . org-roam)
-      ("C-c n t" . org-roam-today)
-      ("C-c n f" . org-roam-find-file)
-      ("C-c n i" . org-roam-insert)
-      ("C-c n g" . org-roam-show-graph)
-      ("C-c n n" . org-roam-new-file))
+  :straight (:host github :repo "jethrokuan/org-roam")
+  :after org-plus-contrib
+  :hook (org-mode . org-roam-mode)
+  :custom
+  (org-roam-directory "~/Documents/org/jethrokuan-braindump/org")
+  (org-roam-link-title-format "§%s")
+  (org-roam-link-representation 'title)
+  :bind
+  ("C-c n l" . org-roam)
+  ("C-c n t" . org-roam-today)
+  ("C-c n f" . org-roam-find-file)
+  ("C-c n i" . org-roam-insert)
+  ("C-c n g" . org-roam-show-graph)
+  ("C-c n n" . org-roam-new-file))
 
 ;;;* Useful packages suggested by
 ;;;* https://blog.jethro.dev/posts/zettelkasten_with_org/.
