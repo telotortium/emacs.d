@@ -1448,7 +1448,6 @@ don't support wrapping."
 (use-package org-drill-table
   :straight t
   :after org-plus-contrib)
-(load-file (expand-file-name "lisp/org-clock-fix.el" user-emacs-directory))
 
 ;;;** Org-pomodoro
 (use-package org-pomodoro
