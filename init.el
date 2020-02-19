@@ -149,6 +149,22 @@ See also `my-minibuffer-setup-hook'."
   (global-set-key (kbd "C-x l") 'counsel-locate)
   (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
   (global-set-key (kbd "C-x b") 'ivy-switch-buffer)
+  (defun counsel-rg-org (search-archives)
+    "Specialize ‘counsel-rg’ for Org-mode files.
+
+  Unless ‘\\[universal-argument]’ prefix ARG is used, don’t include archives in
+  the search. Saves all Org buffers beforehand so that ‘counsel-rg’ sees the
+  contents of all Org-mode buffers."
+    (interactive "P")
+    (org-save-all-org-buffers)
+    (let* ((extra-rg-args (concat "--smart-case"
+                                  " --type-add 'org:*.org'"
+                                  " --type-add 'org:*.org_archive'"
+                                  " --type org")))
+      (when (not search-archives)
+        (setq extra-rg-args (concat extra-rg-args " '-g!*.org_archive'")))
+      (counsel-rg nil "~/Documents/org/" extra-rg-args nil)))
+  (global-set-key (kbd "C-c q") #'counsel-rg-org)
   ;; Unbind ivy-restrict-to-matches - always annoys me during org-capture.
   (define-key ivy-minibuffer-map (kbd "S-SPC") nil)
   (define-key read-expression-map (kbd "C-r") 'counsel-expression-history))
@@ -589,7 +605,6 @@ See also `my-minibuffer-setup-hook'."
               (throw 'aaa buffer))))))
     (org-refile '(4))))
 
-
 (defun swiper-multi-org-agenda-files (prefix)
   "Swiper-based replacement for ‘org-occur-in-agenda-files’.
 
@@ -622,8 +637,6 @@ if `agenda-archives' is not in `org-agenda-text-search-extra-files'."
               :action 'swiper-multi-action-2
               :unwind #'swiper--cleanup
               :caller 'swiper-multi)))
-
-(global-set-key (kbd "C-c q") #'swiper-multi-org-agenda-files)
 
 
 ;;;** Org capture
