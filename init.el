@@ -129,7 +129,6 @@ See also `my-minibuffer-setup-hook'."
   :diminish ivy-mode
   :diminish counsel-mode
   :straight t
-  :after amx
   :custom
   (ivy-use-virtual-buffers t)
   (ivy-count-format "%d/%d ")
@@ -178,7 +177,6 @@ See also `my-minibuffer-setup-hook'."
 
 (use-package evil
   :straight t
-  :after undo-tree
   :init
   (c-setq evil-want-keybinding nil)
   :config (evil-mode 1))
@@ -201,7 +199,6 @@ See also `my-minibuffer-setup-hook'."
 
 (use-package evil-collection
   :straight t
-  :after evil
   :init (evil-collection-init)
   :config
   ;; Avoid conflict with evil-org
@@ -352,9 +349,7 @@ See also `my-minibuffer-setup-hook'."
   (company-echo-delay 0 "remove annoying blinking")
   :config
   (add-hook 'after-init-hook 'global-company-mode))
-(use-package company-go
-  :straight t
-  :after company)
+(use-package company-go :straight t)
 
 ;;; Flycheck
 (use-package flycheck
@@ -439,7 +434,6 @@ See also `my-minibuffer-setup-hook'."
   (global-eclim-mode))
 (use-package company-emacs-eclim
   :straight t
-  :after eclim
   :config
   (company-emacs-eclim-setup))
 
@@ -472,7 +466,6 @@ See also `my-minibuffer-setup-hook'."
 ;;; Go
 (use-package go-mode
   :straight t
-  :after company-go
   :config
   (defun my-go-mode-settings ()
     (setq-local whitespace-line-column 99)
@@ -530,7 +523,6 @@ See also `my-minibuffer-setup-hook'."
 (use-package paredit :straight t)
 (use-package parinfer
   :straight t
-  :after paredit
   :bind
   (("C-," . parinfer-toggle-mode))
   :hook ((clojure-mode emacs-lisp-mode common-lisp-mode scheme-mode lisp-mode)
@@ -570,11 +562,10 @@ See also `my-minibuffer-setup-hook'."
 
 
 ;;;* Org configuration
-(use-package htmlize :straight t)
+(use-package htmlize :straight t)      ; For org-publish
 (straight-use-package 'org-plus-contrib)
 (use-package org
   :straight
-  :after htmlize                       ; For org-publish
   :init
   :config
   (add-to-list 'org-modules 'org-habit)
@@ -1435,7 +1426,6 @@ to get the latest version of the file, then make the change again.")
 ;;;** Org-drill
 (use-package org-drill
   :straight t
-  :after org-plus-contrib
   :init
   (require 'cl)                         ; org-drill uses old CL func names
   (require 'org)                        ; org variables need to be in scope
@@ -1458,16 +1448,11 @@ don't support wrapping."
             (apply org-drill r))
         (global-visual-line-mode old-global-visual-line-mode))))
   (advice-add #'org-drill :around #'my-org-drill-global-visual-line-mode))
-(use-package org-drill-table
-  :straight t
-  :after org-plus-contrib)
+(use-package org-drill-table :straight t)
 
 ;;;** Org-pomodoro
 (use-package org-pomodoro
   :straight t
-  :after s
-  :after async
-  :after org-plus-contrib
   :config
   ;; Complice.co Less Wrong study hall
   ;; (https://complice.co/room/lesswrong/interstitial). Reference:
@@ -1718,7 +1703,6 @@ number of seconds."
 
 (use-package evil-org
   :straight t
-  :after org-plus-contrib
   :hook ((org-mode . evil-org-mode)
          (evil-org-mode
           . (lambda () (evil-org-set-key-theme))))
@@ -1797,7 +1781,6 @@ TAG is chosen interactively from the global tags completion table."
 (use-package org-gcal
   :straight (:host github :repo "kidd/org-gcal.el"
              :fork (:host github :repo "telotortium/org-gcal.el"))
-  :after org-plus-contrib
   :config
   (c-setq org-gcal-config-file (expand-file-name "org-gcal-config.el" user-emacs-directory))
   ;; Disable Auto Archive - my gcal.org_archive is so big that this majorly
@@ -1878,8 +1861,6 @@ data in the entry):
 
 ;;;** Org-gtasks
 (use-package org-gtasks
-  :after org-plus-contrib
-  :after request
   :ensure nil
   :load-path "~/.emacs.d/lisp/org-gtasks.git/")
 
@@ -2568,7 +2549,6 @@ See http://stackoverflow.com/a/9060267."
 (use-package interleave :straight t)
 (use-package org-ref
   :straight t
-  :after org-plus-contrib
   :config
   (c-setq org-ref-notes-directory "~/Documents/org/home-org")
   (c-setq org-ref-bibliography-notes "~/Documents/org/home-org/index.org")
@@ -2594,7 +2574,6 @@ See http://stackoverflow.com/a/9060267."
   :straight t
   :config
   (which-key-mode 1))
-
 
 ;;;* browse-kill-ring
 (use-package browse-kill-ring
@@ -2651,7 +2630,6 @@ See http://stackoverflow.com/a/9060267."
 ;;;* Org-roam
 (use-package org-roam
   :straight (:host github :repo "jethrokuan/org-roam")
-  :after org-plus-contrib
   :hook (org-mode . org-roam-mode)
   :custom
   (org-roam-directory "~/Documents/org/jethrokuan-braindump/org")
@@ -2703,7 +2681,6 @@ ignored."
   :load-path "~/.emacs.d/lisp")
 (use-package org-drill-cloze-enhancement
   :ensure nil
-  :after org-plus-contrib
   :load-path "~/.emacs.d/lisp")
 
 ;;;* Local configuration
