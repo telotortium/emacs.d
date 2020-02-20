@@ -1780,7 +1780,7 @@ TAG is chosen interactively from the global tags completion table."
               (t 'message))))
 (use-package org-gcal
   :straight (:host github :repo "kidd/org-gcal.el"
-             :fork (:host github :repo "telotortium/org-gcal.el"))
+             :fork (:host nil :repo "git@github.com:telotortium/org-gcal.el"))
   :config
   (c-setq org-gcal-config-file (expand-file-name "org-gcal-config.el" user-emacs-directory))
   ;; Disable Auto Archive - my gcal.org_archive is so big that this majorly
@@ -2538,8 +2538,8 @@ See http://stackoverflow.com/a/9060267."
 ;;;* git-auto-commit-mode
 (use-package git-auto-commit-mode
   :straight (:host github :repo "ryuslash/git-auto-commit-mode"
-             :fork (:host github :repo "telotortium/git-auto-commit-mode"
-                    :branch "gac-merge")))
+             :fork (:repo "git@github.com:telotortium/git-auto-commit-mode"
+                    :host nil :branch "gac-merge")))
 
 ;;;* https://codearsonist.com/reading-for-programmers
 (use-package pdf-tools
