@@ -565,7 +565,7 @@ See also `my-minibuffer-setup-hook'."
 (use-package htmlize :straight t)      ; For org-publish
 (straight-use-package 'org-plus-contrib)
 (use-package org
-  :straight
+  :straight t
   :init
   :config
   (add-to-list 'org-modules 'org-habit)
