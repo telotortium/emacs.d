@@ -2630,7 +2630,7 @@ See http://stackoverflow.com/a/9060267."
 ;;;* Org-roam
 (use-package org-roam
   :straight (:host github :repo "jethrokuan/org-roam")
-  :hook (org-mode . org-roam-mode)
+  :hook (after-init . org-roam-mode)
   :custom
   (org-roam-directory "~/Documents/org/jethrokuan-braindump/org")
   (org-roam-link-title-format "§%s")
