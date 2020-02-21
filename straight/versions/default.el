@@ -32,7 +32,7 @@
  ("f.el" . "1814209e2ff43cf2e6d38c4cd476218915f550fb")
  ("flx" . "17f5c9cb2af18aa6f52910ff4a5a63591261ced5")
  ("flycheck" . "30c7046a5474b2838ef1d2cb7e2859f5cfdab67f")
- ("git-auto-commit-mode" . "f89ed36c3807461fbbff7afbf3f89146ab8c8cb9")
+ ("git-auto-commit-mode" . "6feccd0614a5e78ee15c4656a03e1b57b3054cab")
  ("gntp.el" . "767571135e2c0985944017dc59b0be79af222ef5")
  ("gnu-elpa-mirror" . "3decb53aacf461b99799351f549a9b0f93eb80f8")
  ("go-mode.el" . "53c76cddf54638dea5e4cae99ce0181de28e1064")
