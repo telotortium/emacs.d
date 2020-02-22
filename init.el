@@ -2632,7 +2632,7 @@ See http://stackoverflow.com/a/9060267."
   :straight (:host github :repo "jethrokuan/org-roam")
   :hook (after-init . org-roam-mode)
   :custom
-  (org-roam-directory "~/Documents/org/jethrokuan-braindump/org")
+  (org-roam-directory "~/Documents/org/roam-org")
   (org-roam-link-title-format "§%s")
   (org-roam-link-representation 'title)
   :bind
