@@ -2638,8 +2638,9 @@ See http://stackoverflow.com/a/9060267."
   ("C-c n l" . org-roam)
   ("C-c n t" . org-roam-today)
   ("C-c n f" . org-roam-find-file)
-  ("C-c n i" . org-roam-insert)
   ("C-c n g" . org-roam-show-graph)
+  (:map org-mode-map
+        ("C-c n i" . org-roam-insert)))
 
 ;;;* Useful packages suggested by
 ;;;* https://blog.jethro.dev/posts/zettelkasten_with_org/.
