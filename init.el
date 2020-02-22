@@ -2634,7 +2634,6 @@ See http://stackoverflow.com/a/9060267."
   :custom
   (org-roam-directory "~/Documents/org/roam-org")
   (org-roam-link-title-format "§%s")
-  (org-roam-link-representation 'title)
   :bind
   ("C-c n l" . org-roam)
   ("C-c n t" . org-roam-today)
