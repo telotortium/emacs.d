@@ -2640,7 +2640,6 @@ See http://stackoverflow.com/a/9060267."
   ("C-c n f" . org-roam-find-file)
   ("C-c n i" . org-roam-insert)
   ("C-c n g" . org-roam-show-graph)
-  ("C-c n n" . org-roam-new-file))
 
 ;;;* Useful packages suggested by
 ;;;* https://blog.jethro.dev/posts/zettelkasten_with_org/.
