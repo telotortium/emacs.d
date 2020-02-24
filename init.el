@@ -1421,6 +1421,35 @@ to get the latest version of the file, then make the change again.")
 
 ;; Display images inline, but not too wide by default.
 (c-setq org-startup-with-inline-images t)
+(defun org-resize-inline-images-hook (frame)
+  "Hook to update Org-mode image width in resized Org-mode windows.
+
+Iterates over all buffers in FRAME."
+  (let ((buffers (delete-dups (mapcar #'window-buffer (window-list frame)))))
+    (dolist (buf buffers)
+      (with-current-buffer buf
+        (org-resize-inline-images)))))
+(defvar-local org-resize-inline-images--timer nil)
+(defun org-redisplay-inline-images-in-buffer (buffer)
+  "Redisplay inline images in Org-mode buffer BUFFER."
+  (setq org-resize-inline-images--timer nil)
+  (when (buffer-live-p buffer)
+    (with-current-buffer buffer
+        (org-redisplay-inline-images))))
+(defun org-resize-inline-images ()
+  "Update Org-mode image size in current buffer after window is resized."
+  (when
+      (and (eq major-mode 'org-mode)
+           (not (= (window-pixel-width)
+                   (window-pixel-width-before-size-change))))
+    (when org-resize-inline-images--timer
+        (cancel-timer org-resize-inline-images--timer))
+    (setq org-resize-inline-images--timer
+          (run-at-time
+           1 nil #'org-redisplay-inline-images-in-buffer (current-buffer)))
+    (setq-local org-image-actual-width (list (window-pixel-width)))))
+(add-hook 'window-size-change-functions #'org-resize-inline-images-hook)
+(add-hook 'org-mode-hook #'org-resize-inline-images)
 (c-setq org-image-actual-width '(800))
 
 ;;;** Org-drill
