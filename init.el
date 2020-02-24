@@ -355,15 +355,15 @@ See also `my-minibuffer-setup-hook'."
 (use-package flycheck
   :straight t                           ; May want to use built-in version at Google
   :defer t                              ; init-local-google will locate this
-  :config
-  (add-hook 'after-init-hook #'global-flycheck-mode)
+  :hook (after-init . global-flycheck-mode)
+  :custom
   ;; Inherit Emacs load-path from current session - prevents annoying errors
   ;; from custom packages.
-  (c-setq flycheck-emacs-lisp-load-path 'inherit)
+  (flycheck-emacs-lisp-load-path 'inherit)
   ;; Don't re-run Flycheck syntax checkers on inserting new lines, to save
   ;; performance.
-  (c-setq flycheck-check-syntax-automatically '(save idle-change mode-enabled))
-  (c-setq flycheck-idle-change-delay 4))
+  (flycheck-check-syntax-automatically '(save idle-change mode-enabled))
+  (flycheck-idle-change-delay 4))
 
 
 ;;; Syntax highlighting for Vimscript files
@@ -2644,7 +2644,12 @@ See http://stackoverflow.com/a/9060267."
 
 ;;;* Useful packages suggested by
 ;;;* https://blog.jethro.dev/posts/zettelkasten_with_org/.
-(use-package org-download :straight t)
+(use-package org-download
+  :straight t
+  :hook (dired-mode . org-download-enable)
+  :custom
+  (org-download-method 'attach)
+  (org-download-backend "curl \"%s\" -o \"%s\""))
 (use-package org-cliplink :straight t)
 
 ;;; Update environment - https://emacs.stackexchange.com/a/6107
