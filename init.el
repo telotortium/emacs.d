@@ -1933,67 +1933,64 @@ data in the entry):
 
 ;;; Recompute effort of a parent headline from the efforts of the children if
 ;;; they sum to a higher value.
-(defun my-org-update-heading-effort-from-children (pt)
-  "Compute the sum of efforts for each child of the heading at point PT. If
-the sum is greater than the current effort for this heading, offer to update
-it. This function is called recursively on each child, so the entire tree's
+(defun my-org-update-heading-effort-from-children (marker)
+  "Compute the sum of efforts for each child of the heading at MARKER.
+
+If the sum is greater than the current effort for this heading, offer to update
+it.  This function is called recursively on each child, so the entire tree's
 efforts may be updated by this function."
   (let*
-      ((abort-at-point)
-       (abort-at-buffer)
+      ((abort-at-marker)
        (ret
         (catch
             'break
-          (save-excursion
-            (save-restriction
-              (goto-char pt)
-              (org-back-to-heading)
-              (org-narrow-to-subtree)
-              (outline-show-all)
-              (let*
-                  ((current-effort
-                    (org-duration-to-minutes
-                     (or (org-entry-get (point) org-effort-property) 0)))
-                   (children-effort 0))
-                (while (outline-next-heading)
-                  (pcase (my-org-update-heading-effort-from-children (point))
-                    ('abort
-                     (throw 'break 'abort))
-                    (x
-                     (setq children-effort (+ children-effort (nth 0 x)))
-                     (goto-char (nth 1 x)))))
-                (goto-char pt)
-                (let ((children-effort-duration
-                       (org-duration-from-minutes children-effort)))
-                  (when (< current-effort children-effort)
-                    (pcase (read-char-choice
-                            (format
-                             "Update effort in \"%s\" to children's sum (%s)? (y,n,j) "
-                             (org-get-heading 'no-tags 'no-todo 'no-priority 'no-comment)
-                             children-effort-duration)
-                            '(?y ?n ?j))
-                      (?n nil)
-                      (?y
-                       (org-entry-put (point) org-effort-property
-                                      children-effort-duration)
-                       (setq current-effort children-effort))
-                      (?j
-                       (setq abort-at-point (point)
-                             abort-at-buffer (current-buffer))
-                       (throw 'break 'abort-at-buffer-point)))))
-                (list current-effort (point-max))))))))
+          (org-with-point-at marker
+            (org-back-to-heading)
+            (org-narrow-to-subtree)
+            (outline-show-all)
+            (let*
+                ((current-effort
+                  (org-duration-to-minutes
+                   (or (org-entry-get marker org-effort-property) 0)))
+                 (children-effort 0))
+              (while (outline-next-heading)
+                (pcase (my-org-update-heading-effort-from-children (point-marker))
+                  ('abort
+                   (throw 'break 'abort))
+                  (x
+                   (setq children-effort (+ children-effort (nth 0 x)))
+                   (goto-char (marker-position (nth 1 x))))))
+              (goto-char (marker-position marker))
+              (let ((children-effort-duration
+                     (org-duration-from-minutes children-effort)))
+                (when (< current-effort children-effort)
+                  (pcase (read-char-choice
+                          (format
+                           "Update effort in \"%s\" to children's sum (%s)? (y,n,j) "
+                           (org-get-heading 'no-tags 'no-todo 'no-priority 'no-comment)
+                           children-effort-duration)
+                          '(?y ?n ?j))
+                    (?n nil)
+                    (?y
+                     (org-entry-put marker org-effort-property
+                                    children-effort-duration)
+                     (setq current-effort children-effort))
+                    (?j
+                     (setq abort-at-marker marker)
+                     (throw 'break 'abort-at-marker)))))
+              (list current-effort (point-max-marker)))))))
     (pcase ret
-      ('abort-at-buffer-point
-       (message "%S %S" abort-at-buffer abort-at-point)
-       (pop-to-buffer-same-window abort-at-buffer)
-       (set-buffer abort-at-buffer)
-       (goto-char abort-at-point)
+      ('abort-at-marker
+       (message "%S" abort-at-marker)
+       (pop-to-buffer-same-window (marker-buffer abort-at-marker))
+       (set-buffer (marker-buffer abort-at-marker))
+       (goto-char (marker-position abort-at-marker))
        'abort)
       ('abort 'abort)
       (_ ret))))
 (defun my-org-effort-from-children-hook ()
   "Update effort of a heading from its children before clocking in."
-  (pcase (my-org-update-heading-effort-from-children (point))
+  (pcase (my-org-update-heading-effort-from-children (point-marker))
     ('abort 'abort)
     (_ nil)))
 (add-hook 'org-clock-in-prepare-hook 'my-org-effort-from-children-hook)
