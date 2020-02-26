@@ -1950,13 +1950,14 @@ data in the entry):
 If the sum is greater than the current effort for this heading, offer to update
 it.  This function is called recursively on each child, so the entire tree's
 efforts may be updated by this function."
+  (require 'call-log)                   ; For clog/msg
   (let*
       ((abort-at-marker)
        (ret
         (catch
             'break
           (org-with-point-at marker
-            (org-back-to-heading)
+            (clog/msg "At %S (%s)" (point-marker) (org-get-heading))
             (org-narrow-to-subtree)
             (outline-show-all)
             (let*
@@ -1964,14 +1965,17 @@ efforts may be updated by this function."
                   (org-duration-to-minutes
                    (or (org-entry-get marker org-effort-property) 0)))
                  (children-effort 0))
-              (while (outline-next-heading)
-                (pcase (my-org-update-heading-effort-from-children (point-marker))
-                  ('abort
-                   (throw 'break 'abort))
-                  (x
-                   (setq children-effort (+ children-effort (nth 0 x)))
-                   (goto-char (marker-position (nth 1 x))))))
-              (goto-char (marker-position marker))
+              (save-excursion
+                (save-restriction
+                  (when (org-goto-first-child)
+                    ;; Use while loop with empty body to simulate a C do-while
+                    ;; loop - in other words, we test at the end of the loop
+                    ;; "body" whether a next sibling exists.
+                    (while
+                        (let ((x (my-org-update-heading-effort-from-children (point-marker))))
+                         (clog/msg "x = %S" x)
+                         (setq children-effort (+ children-effort (nth 0 x)))
+                         (org-get-next-sibling))))))
               (let ((children-effort-duration
                      (org-duration-from-minutes children-effort)))
                 (when (< current-effort children-effort)
@@ -1983,8 +1987,8 @@ efforts may be updated by this function."
                           '(?y ?n ?j))
                     (?n nil)
                     (?y
-                     (org-entry-put marker org-effort-property
-                                    children-effort-duration)
+                     (org-entry-put
+                      marker org-effort-property children-effort-duration)
                      (setq current-effort children-effort))
                     (?j
                      (setq abort-at-marker marker)
@@ -1992,7 +1996,7 @@ efforts may be updated by this function."
               (list current-effort (point-max-marker)))))))
     (pcase ret
       ('abort-at-marker
-       (message "%S" abort-at-marker)
+       (clog/msg "%S" abort-at-marker)
        (pop-to-buffer-same-window (marker-buffer abort-at-marker))
        (set-buffer (marker-buffer abort-at-marker))
        (goto-char (marker-position abort-at-marker))
@@ -2012,19 +2016,20 @@ efforts may be updated by this function."
 Pressing ‘j’ will abort the run, leaving the point at the heading we were at
 when ‘j’ was pressed."
   (interactive)
+  (require 'call-log)
   (org-map-entries
    (lambda ()
      (display-buffer (current-buffer) '(display-buffer-same-window))
      (recenter nil)
      (pcase (my-org-effort-from-children-hook)
        ('abort
-        (message "'abort")
+        (clog/msg "'abort")
         (setq org-map-continue-from (point))
         (let ((debug-on-quit nil))
           (signal 'quit nil)))
        (x x)))
    nil 'agenda #'bh/skip-tasks)
-  (message "Updating efforts complete."))
+  (clog/msg "Updating efforts complete."))
 
 ;;; bh clocking functions
 (c-setq bh/keep-clock-running nil)
