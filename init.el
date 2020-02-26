@@ -83,6 +83,11 @@ See also `my-minibuffer-setup-hook'."
   ;; To disable collection of benchmark data after init is done.
   (add-hook 'after-init-hook 'benchmark-init/deactivate))
 
+;;; For logging messages prefixed with function name.
+(use-package call-log
+  :straight (:host github :repo "jordonbiondo/call-log"
+             :fork (:host nil :repo "git@github.com:telotortium/call-log")))
+
 ;;; Use auto-compile to recompile bytecode whenever files are loaded or saved.
 (use-package auto-compile
   :straight t
@@ -700,24 +705,25 @@ the newly-created frame. This can be set using the `--frame-parameters' flag to
 (defun my-org-capture-buffer-sole-window--inner (buf)
   "Function scheduled from `my-org-capture-capture-buffer-sole-window' to run
 after org-capture-mode is entered."
+  (require 'call-log)
   (dolist (frame (frame-list))
-    (message "frame %S" frame)
+    (clog/msg "frame %S" frame)
     (when (frame-parameter frame 'org-protocol-capture)
-      (message "my-org-capture-capture-buffer-sole-window: %S"
-               (get-buffer-window-list nil nil t))
+      (clog/msg "my-org-capture-capture-buffer-sole-window: %S"
+                (get-buffer-window-list nil nil t))
       (let* ((wnd (frame-root-window frame)))
         (with-current-buffer buf
-            ;; Set the newly-created frame's window to the capture buffer.
-            (set-window-buffer wnd buf)
-            ;; Delete all windows except `wnd' containing the capture buffer.
-            (dolist (w (get-buffer-window-list buf nil t))
-              (message "gbwl: %S, %S : %S"
-                       wnd w (eq wnd w))
-              (unless (or (eq wnd w))
-                (message "gbwl: deleting window %S" w)
-                (delete-window w)))
-            ;; Ensure newly-created frame is in the foreground.
-            (select-frame-set-input-focus frame))))))
+          ;; Set the newly-created frame's window to the capture buffer.
+          (set-window-buffer wnd buf)
+          ;; Delete all windows except `wnd' containing the capture buffer.
+          (dolist (w (get-buffer-window-list buf nil t))
+            (clog/msg "gbwl: %S, %S : %S"
+                      wnd w (eq wnd w))
+            (unless (or (eq wnd w))
+              (clog/msg "gbwl: deleting window %S" w)
+              (delete-window w)))
+          ;; Ensure newly-created frame is in the foreground.
+          (select-frame-set-input-focus frame))))))
 
 (advice-add 'org-capture :before #'my-org-capture-steal-focus)
 (add-hook 'org-capture-mode-hook #'my-org-capture-buffer-sole-window)
@@ -946,10 +952,11 @@ Source: [[%:link][%:description]]
 (defun my-org-daily-log-goto-today ()
   "Go to today's default log, or create it if not created yet."
   (interactive)
+  (require 'call-log)
   (let ((daily-log-marker (my-org-daily-log--goto-daily-log-headline)))
     (if daily-log-marker
         (progn
-          (message "in marker branch")
+          (clog/msg "in marker branch")
           (switch-to-buffer (marker-buffer daily-log-marker))
           (widen)
           (goto-char (marker-position daily-log-marker))
@@ -1223,6 +1230,7 @@ argument when called in `org-agenda-custom-commands'."
 (defun my-org-agenda-write-combined ()
   "Combine several agenda views into one PDF suitable for printing"
   (interactive)
+  (require 'call-log)
   ;; (org-store-agenda-views)
   (call-process "pdfnup" nil (get-buffer-create "*Async Shell Command*") nil
                 "--nup" "2x2" "--no-landscape"
@@ -1230,7 +1238,7 @@ argument when called in `org-agenda-custom-commands'."
                 (expand-file-name (my-org-agenda--get-export-file "n"))
                 (expand-file-name (my-org-agenda--get-export-file "u"))
                 (expand-file-name (my-org-agenda--get-export-file "U")))
-  (message "Wrote %s" my-org-agenda-combined-output-file))
+  (clog/msg "Wrote %s" my-org-agenda-combined-output-file))
 
 (c-setq org-stuck-projects
       '("TODO={TODO\\|NEXT}-HOLD-CANCELLED-REFILE" ("NEXT" "HOLD") nil ""))
@@ -1285,6 +1293,7 @@ argument when called in `org-agenda-custom-commands'."
 (defadvice ask-user-about-supersession-threat (around ediff-supersession-threat)
   "Wrap `ask-user-about-supersession-threat' to provide the option to run)
 `ediff-current-buffer' instead."
+  (require 'call-log)
   (save-window-excursion
     (let ((prompt
            (format "%s changed on disk; \
@@ -1307,7 +1316,7 @@ really edit the buffer? (y, n, r, d or C-h) "
               ((eq answer ?n)
                (signal 'file-supersession
                        (list "File changed on disk" fn)))))
-      (message
+      (clog/msg
        "File on disk now will become a backup file if you save these changes.")
       (setq buffer-backed-up nil))))
 
@@ -1557,9 +1566,10 @@ don't support wrapping."
     (my-org-pomodoro-finished-lock-screen))
   (defun my-org-pomodoro-finished-clock-in-break-hook ()
     "Clock into task with ID my-org-pomodoro-break-id during breaks if set."
-    (message "%s %s" my-org-pomodoro-break-id org-pomodoro-state)
+    (require 'call-log)
+    (clog/msg "%s %s" my-org-pomodoro-break-id org-pomodoro-state)
     (when my-org-pomodoro-break-id
-      (message "About to start clock")
+      (clog/msg "About to start clock")
       (my-org-pomodoro-start-break)))
   (defun my-org-pomodoro-break-finished-notify-hook ()
     (let ((msg "Pomodoro break finished -- get back to work!"))
@@ -1600,9 +1610,10 @@ number of seconds."
   (defun my-org-pomodoro-time-today-set ()
     "Manually prompt for elapsed pomodoro time for today to set."
     (interactive)
+    (require 'call-log)
     (let* ((input
             (read-from-minibuffer "Org Pomodoro Time Elapsed Today: ")))
-      (message "Setting elapsed time to %s" input)
+      (clog/msg "Setting elapsed time to %s" input)
       (setq my-org-pomodoro-time-today-var
             (* 60 (org-duration-to-minutes input)))))
   (defun my-org-pomodoro-reset-today (&optional arg)
@@ -2271,6 +2282,7 @@ range of dates, doing a search for it and displaying the results either as a
 sparse tree or with the help of occur.  The original buffer is not modified.
 "
   (interactive)
+  (require 'call-log)
   (let ((occur-buffer-name "*Occur*")
         (occur-header-regex "^[0-9]+ match\\(es\\)?") ;; regexp to match for header-lines in *Occur* buffer
         first-date
@@ -2340,10 +2352,10 @@ sparse tree or with the help of occur.  The original buffer is not modified.
     ;; Postprocessing: Optionally sort buffer with results
     ;; org-occur operates on the current buffer, so we cannot modify its results afterwards
     (if (string= collect-method "org-occur")
-        (message (concat "Sparse tree with matches " pretty-dates))
+        (clog/msg (concat "Sparse tree with matches " pretty-dates))
       ;; switch to occur-buffer and modify it
       (if (not (get-buffer occur-buffer-name))
-          (message (concat "Did not find any matches " pretty-dates))
+          (clog/msg (concat "Did not find any matches " pretty-dates))
         (let ((original-inhibit-read-only inhibit-read-only))
           (unwind-protect
               (progn
@@ -2382,7 +2394,7 @@ sparse tree or with the help of occur.  The original buffer is not modified.
                 (insert "Searched " pretty-dates "\n")
                 (goto-char (point-min))
                 (set-buffer-modified-p nil)
-                (message (concat "occur-buffer with matches " pretty-dates "(`C-h m' for help)")))
+                (clog/msg (concat "occur-buffer with matches " pretty-dates "(`C-h m' for help)")))
 
             (setq inhibit-read-only original-inhibit-read-only))))
 
@@ -2611,11 +2623,12 @@ See http://stackoverflow.com/a/9060267."
 (defun my-fold-setup ()
   "Set up folding in current buffer."
   (interactive)
+  (require 'call-log)
   (hs-minor-mode)
   (condition-case nil
     (hs-hide-all)
     (scan-error
-     (message "scan-error: not folding")
+     (clog/msg "scan-error: not folding")
      nil))
   (diminish 'hs-minor-mode))
 (defun my-fold-setup-hook ()
