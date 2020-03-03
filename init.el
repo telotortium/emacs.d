@@ -463,6 +463,19 @@ See also `my-minibuffer-setup-hook'."
   :straight t
   :commands rainbow-delimiters-mode
   :init (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+(use-package rainbow-identifiers
+  :straight t
+  :hook (prog-mode . rainbow-identifiers-mode)
+  :config
+  :custom
+  (rainbow-identifiers-choose-face-function
+   #'rainbow-identifiers-cie-l*a*b*-choose-face)
+  (rainbow-identifiers-cie-l*a*b*-saturation 30)
+  (rainbow-identifiers-cie-l*a*b*-color-count 64)
+  (rainbow-identifiers-face-count 64)
+  ;; Disable distinctive variable name face so that rainbow-identifiers-mode
+  ;; highlights the variable at its declaration the same way as its use.
+  (rainbow-identifiers-faces-to-override '(font-lock-variable-name-face)))
 
 (use-package paren
   :straight (:type built-in)

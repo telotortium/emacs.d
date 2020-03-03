@@ -76,6 +76,7 @@
  ("pkg-info" . "76ba7415480687d05a4353b27fea2ae02b8d9d61")
  ("popup-el" . "80829dd46381754639fb764da11c67235fe63282")
  ("rainbow-delimiters" . "5125f4e47604ad36c3eb4706310fcafac729ca8c")
+ ("rainbow-identifiers" . "19fbfded1baa98d12335f26f6d7b20e5ae44ce2e")
  ("restart-emacs" . "9aa90d3df9e08bc420e1c9845ee3ff568e911bd9")
  ("rg.el" . "2b01b8bb77e687f3f9243a8649b289ca9823edb4")
  ("rust-mode" . "63ec74c45231051f8bb64226d1a864f5635ac07a")
