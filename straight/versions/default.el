@@ -6,6 +6,7 @@
  ("benchmark-init-el" . "7a0f263282bbc86b01b662636306f22813082647")
  ("biblio.el" . "efeeab720cb8e3f95ddb4298d0cc62393cf237e9")
  ("browse-kill-ring" . "1ef72cc6accd94cd7032c02b1b2c78ae7f1d1965")
+ ("call-log" . "6e25dda69abf6f85fece2632f1bbd23165c53b5f")
  ("clean-aindent-mode" . "a97bcae8f43a9ff64e95473e4ef0d8bafe829211")
  ("company-flx" . "16ca0d2f84e8e768bf2db8c5cfe421230a00bded")
  ("company-mode" . "490d3e4e7ef3fbc90fb3e8747f902bf839a924cc")
