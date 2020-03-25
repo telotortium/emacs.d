@@ -1503,7 +1503,8 @@ don't support wrapping."
 
 ;;;** Org-pomodoro
 (use-package org-pomodoro
-  :straight t
+  :straight (:host github :repo "marcinkoziej/org-pomodoro"
+             :fork (:host nil :repo "git@github.com:telotortium/org-pomodoro"))
   :config
   ;; Complice.co Less Wrong study hall
   ;; (https://complice.co/room/lesswrong/interstitial). Reference:
