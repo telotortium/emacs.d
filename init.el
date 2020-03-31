@@ -369,7 +369,7 @@ See also `my-minibuffer-setup-hook'."
   (flycheck-idle-change-delay 4))
 
 
-;;; Syntax highlighting for Vimscript files
+;;; syntax highlighting for vimscript files
 (use-package vimrc-mode
   :straight t
   :mode ".vim\\(rc\\)?$")
