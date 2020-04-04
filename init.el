@@ -115,9 +115,7 @@ See also `my-minibuffer-setup-hook'."
       (warn "server-name = \"%s\", should be \"%s\""
             server-name original-server-name)))
   (run-at-time nil 30 #'warn-server-name-changed server-name)
-  (if (server-running-p)
-      (warn "Not starting server - server with name \"%s\" already running" server-name)
-    (server-start)))
+  (unless (eq (server-running-p) t) (server-start)))
 
 ;;;* Leuven theme
 (use-package leuven-theme
