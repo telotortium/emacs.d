@@ -65,7 +65,7 @@
  ("org-ql" . "b3ee9a9c08f07c3f139777c58df09e5df7aa3cb8")
  ("org-randomnote" . "ea8cf4385970637efffff8f79e14576ba6d7ad13")
  ("org-ref" . "e3eb9215a540ba62a0b0253d003c704b7740deeb")
- ("org-roam" . "3add2c5a8bd5b9b42f4781c3006c9d004ab5c1da")
+ ("org-roam" . "4ca2606a28f8898299f2e0cc01c01b57cf848006")
  ("org-super-agenda" . "dd0d104c269fab9ebe5af7009bc1dd2a3a8f3c12")
  ("ov" . "3b246691d5b728ef1f0164f0cefffe00c9554e64")
  ("packed" . "c41c3dfda86ae33832ffc146923e2a4675cbacfa")
