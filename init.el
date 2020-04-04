@@ -2688,7 +2688,7 @@ See http://stackoverflow.com/a/9060267."
   :straight (:host github :repo "jethrokuan/org-roam")
   :hook (after-init . org-roam-mode)
   :custom
-  (org-roam-directory "~/Documents/org/roam-org")
+  (org-roam-directory "~/Documents/org/home-org/roam")
   (org-roam-link-title-format "§%s")
   :bind
   ("C-c n l" . org-roam)
