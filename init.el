@@ -2696,6 +2696,7 @@ See http://stackoverflow.com/a/9060267."
   :custom
   (org-roam-directory "~/Documents/org/home-org/roam")
   (org-roam-link-title-format "§%s")
+  (org-roam-completion-system 'ivy)
   :bind
   ("C-c n l" . org-roam)
   ("C-c n t" . org-roam-today)
