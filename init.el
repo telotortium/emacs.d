@@ -2689,7 +2689,7 @@ See http://stackoverflow.com/a/9060267."
 
 ;;;* Org-roam
 (use-package org-roam
-  :straight (:host github :repo "jethrokuan/org-roam")
+  :straight t
   :hook (after-init . org-roam-mode)
   :config
   (require 'org-roam-protocol)
