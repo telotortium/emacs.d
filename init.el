@@ -586,6 +586,7 @@ See also `my-minibuffer-setup-hook'."
   :config
   (add-to-list 'org-modules 'org-habit)
   (require 'org-agenda)
+  (require 'org-attach)                 ; Needed for attachment: links to work
   (require 'org-protocol)
   (require 'org-tempo))
 (global-set-key (kbd "C-c a") 'org-agenda)
