@@ -546,11 +546,11 @@ See also `my-minibuffer-setup-hook'."
   :init
   (c-setq parinfer-extensions
         '(defaults        ; should be included.
-           pretty-parens  ; different paren styles for different modes.
-           evil           ; If you use Evil.
-           paredit        ; Introduce some paredit commands.
-           smart-tab      ; C-b & C-f jump positions and smart shift with tab & S-tab.
-           smart-yank))   ; Yank behavior depend on mode.
+          pretty-parens  ; different paren styles for different modes.
+          evil           ; If you use Evil.
+          paredit        ; Introduce some paredit commands.
+          smart-tab      ; C-b & C-f jump positions and smart shift with tab & S-tab.
+          smart-yank))   ; Yank behavior depend on mode.
   (c-setq parinfer-auto-switch-indent-mode t)
   :config
   (c-setq parinfer-lighters '(" pi:I" " pi:P")))
