@@ -27,7 +27,7 @@ set it.  Otherwise, use just `set-default'.  Taken from http://lists.gnu.org/arc
 ;;; Set this higher in the minibuffer, but don't make it too bad other wise
 ;;; you'll figure out quick
 
-(c-setq gc-cons-threshold (* 4 1024 1024) "\
+(c-setq gc-cons-threshold (* 16 1024 1024) "\
 Set gc-cons-threshold to a higher value. This should be done before
 searching for packages because package searches and installation tend to
 generate a lot of garbage. Cite:
@@ -43,7 +43,7 @@ See also `my-minibuffer-exit-hook'."
   "Re-enable GC upon exiting minibuffer.
 
 See also `my-minibuffer-setup-hook'."
-  (setq gc-cons-threshold (* 4 1024 1024)))
+  (setq gc-cons-threshold (* 16 1024 1024)))
 
 (add-hook 'minibuffer-setup-hook #'my-minibuffer-setup-hook)
 (add-hook 'minibuffer-exit-hook #'my-minibuffer-exit-hook)
