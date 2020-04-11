@@ -2572,7 +2572,13 @@ Follows the same rules as `org-agenda-files'"
   "Set RET key to use the behavior of M-j by default.
 
 See http://stackoverflow.com/a/9060267."
-  (local-set-key (kbd "RET") (key-binding (kbd "M-j")))
+  (let ((ret-binding (key-binding (kbd "M-j"))))
+    (cond
+     ;; Work around Emacs 27 binding, which isn't working for me in Elisp mode.
+     ((eq ret-binding #'default-indent-new-line)
+      (local-set-key (kbd "RET") #'indent-new-comment-line))
+     (t
+      (local-set-key (kbd "RET") (key-binding (kbd "M-j"))))))
   (local-set-key (kbd "<S-return>") 'newline))
 (add-hook 'prog-mode-hook 'my-coding-config)
 
