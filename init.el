@@ -1306,9 +1306,11 @@ argument when called in `org-agenda-custom-commands'."
 
 ;;; Add option to merge current buffer and file on disk using emerge if both
 ;;; buffer and disk have changed.
-(defadvice ask-user-about-supersession-threat (around ediff-supersession-threat)
-  "Wrap `ask-user-about-supersession-threat' to provide the option to run)
-`ediff-current-buffer' instead."
+(defun ediff-supersession-threat (unused-orig-fn &optional fn)
+  "Wrap ‘ask-user-about-supersession-threat’ to provide the option to run \
+‘ediff-current-buffer’ instead.
+
+UNUSED-ORIG-FN is unused.  Uses argument FN from original function."
   (require 'call-log)
   (save-window-excursion
     (let ((prompt
@@ -1335,9 +1337,12 @@ really edit the buffer? (y, n, r, d or C-h) "
       (clog/msg
        "File on disk now will become a backup file if you save these changes.")
       (setq buffer-backed-up nil))))
+(advice-add 'ask-user-about-supersession-threat :around #'ediff-supersession-threat)
 
-(defadvice ask-user-about-supersession-help (around ediff-supersession-help)
-  "Add help for wrapped version of `ask-user-about-supersession-threat'."
+(defun ediff-supersession-help (unused-original-fn)
+  "Add help for wrapped version of ‘ask-user-about-supersession-threat’.
+
+UNUSED-ORIGINAL-FN is unused."
   (with-output-to-temp-buffer "*Help*"
     (princ "You want to modify a buffer whose disk file has changed
 since you last read it in or saved it with this buffer.
@@ -1354,6 +1359,7 @@ Usually, you should type `n' and then `\\[revert-buffer]',
 to get the latest version of the file, then make the change again.")
     (with-current-buffer standard-output
       (help-mode))))
+(advice-add 'ask-user-about-supersession-help :around #'ediff-supersession-help)
 
 
 ;; Fix org-column fonts
