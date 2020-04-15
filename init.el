@@ -2717,6 +2717,10 @@ See http://stackoverflow.com/a/9060267."
   ("C-c n g" . org-roam-show-graph)
   (:map org-mode-map
         ("C-c n i" . org-roam-insert)))
+(use-package company-org-roam
+  :straight t
+  :config
+  (push 'company-org-roam company-backends))
 
 ;;;* Useful packages suggested by
 ;;;* https://blog.jethro.dev/posts/zettelkasten_with_org/.
