@@ -61,7 +61,7 @@
  ("org-download" . "b96fd7ba02cbdae95cc37970ebcfae8afa8b25d2")
  ("org-drill" . "4c114489e682e514e79701045d541ab6f3dc3fb4")
  ("org-drill-table" . "2729aaa42c1e2720d9bf7bcc125e92dcf48b7f7d")
- ("org-gcal.el" . "3cec62ee93d798840f411bd21b17d276078f3fab")
+ ("org-gcal.el" . "5537a8f4163f226965e913c8367ef9dd92458028")
  ("org-pomodoro" . "462ac54337096a2309ee5ef301f70409a866c581")
  ("org-ql" . "b3ee9a9c08f07c3f139777c58df09e5df7aa3cb8")
  ("org-randomnote" . "ea8cf4385970637efffff8f79e14576ba6d7ad13")

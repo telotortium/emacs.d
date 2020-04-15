@@ -1870,9 +1870,7 @@ data in the entry):
            (tobj (org-element-property :scheduled elem))
            (duration (org-element-property :EFFORT elem))
            (calendar-id
-            (org-element-property
-             (org-gcal--property-from-name org-gcal-calendar-id-property)
-             elem)))
+            (org-entry-get (point) "calendar-id")))
       (unless calendar-id
         (setq calendar-id
               (read-from-minibuffer "Calendar ID: "
