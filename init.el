@@ -2538,6 +2538,11 @@ Follows the same rules as `org-agenda-files'"
   :diminish auto-revert-mode
   :config (global-auto-revert-mode t))
 
+;;;* Backup files
+(add-to-list 'backup-directory-alist
+  '(".*" . "~/.cache/emacs-backup/")
+  'append)
+
 ;;;* Flyspell
 (use-package flyspell
   :straight t
