@@ -2536,7 +2536,9 @@ Follows the same rules as `org-agenda-files'"
 (use-package autorevert
   :straight (:type built-in)
   :diminish auto-revert-mode
-  :config (global-auto-revert-mode t))
+  :config (global-auto-revert-mode t)
+  ;; Throwing a lot of errors in Emacs 27.0, at least.
+  :disabled t)
 
 ;;;* Backup files
 (add-to-list 'backup-directory-alist
