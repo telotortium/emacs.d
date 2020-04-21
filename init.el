@@ -1521,9 +1521,55 @@ don't support wrapping."
   (c-setq org-pomodoro-length 32)
   (c-setq org-pomodoro-short-break-length 8)
   (c-setq org-pomodoro-long-break-length 30)
-  (c-setq org-pomodoro-ticking-sound-p t)
-  (c-setq org-pomodoro-ticking-sound-states '(:pomodoro))
   (require 's)
+
+  ;; Simulate
+  ;;
+  ;; (c-setq org-pomodoro-ticking-sound-p t)
+  ;; (c-setq org-pomodoro-ticking-sound-states '(:pomodoro))
+  ;;
+  ;; but use \"play\" from the SoX package so that playback is smoother and
+  ;; takes less CPU.
+  (defvar org-pomodoro-ticking-process nil)
+  (c-setq org-pomodoro-ticking-sound-p nil)
+  (defun my-org-pomodoro-start-tick ()
+    "Start ticks for org-pomodoro-mode.
+
+  Requires the \"play\" executable from the SoX package
+  \(http://sox.sourceforge.net/sox.html)."
+    (let ((cmd
+           ;; Pad with 0.79 seconds of silence because tick.wav included with
+           ;; ‘org-pomodoro’ is 0.21 seconds long, to get a 1-second tick.
+           (format "play %s pad 0 0.79 repeat - </dev/null"
+                   (shell-quote-argument org-pomodoro-ticking-sound))))
+      (setq org-pomodoro-ticking-process
+            (start-process
+             "*org-pomodoro-ticking-process*"
+             "*org-pomodoro-ticking-process*"
+             "python3"
+             "-c"
+             (format
+              "\
+import os, signal, subprocess, sys, time
+x = subprocess.Popen(r'''%s''', shell=True)
+while True:
+    # Kill process tree if parent process exits.
+    if os.getppid() == 1:
+        os.killpg(os.getpgid(os.getpid()), signal.SIGKILL)
+    # Exit if child exits.
+    if x.poll() is not None:
+        sys.exit(x.returncode)
+    time.sleep(1)
+"
+              cmd)))))
+  (defun my-org-pomodoro-stop-tick ()
+    "Stop ticks for org-pomodoro-mode."
+    (when org-pomodoro-ticking-process
+      (signal-process org-pomodoro-ticking-process 15) ; SIGTERM
+      (setq org-pomodoro-ticking-process nil)))
+  (add-hook 'org-pomodoro-started-hook #'my-org-pomodoro-start-tick)
+  (add-hook 'org-pomodoro-finished-hook #'my-org-pomodoro-stop-tick)
+  (add-hook 'org-pomodoro-killed-hook #'my-org-pomodoro-stop-tick)
 
   (defun org-pomodoro-end-in (minutes)
     "Force the current Pomodoro to end in MINUTES minutes."
