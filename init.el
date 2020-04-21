@@ -1570,6 +1570,8 @@ don't support wrapping."
     (org-notify "Pomodoro started - snooze notifications in Hangouts Chat."))
   (defun my-org-pomodoro-finished-notify-hook ()
     (org-notify "Pomodoro phase finished"))
+  (defvar my-org-pomodoro-clock-idle-time nil
+    "Variable in which ‘org-clock-idle-time’ is saved.")
   (defun my-org-pomodoro-start-break ()
     "Start break - clock into task with ID my-org-pomodoro-break-id."
     (interactive)
