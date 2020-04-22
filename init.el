@@ -987,6 +987,10 @@ Source: [[%:link][%:description]]
 
 (c-setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
 (c-setq org-refile-use-outline-path t)
+(c-setq org-refile-use-cache t)
+(run-with-idle-timer 300 t (lambda ()
+                             (org-refile-cache-clear)
+                             (org-refile-get-targets)))
 (c-setq org-alphabetical-lists t)
 (c-setq org-src-fontify-natively t)
 (c-setq org-pretty-entities t)
