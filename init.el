@@ -2753,6 +2753,8 @@ See http://stackoverflow.com/a/9060267."
 ;;   (fmakunbound 'gdb-enable-debug))
 
 
+(diminish 'eldoc-mode)
+
 ;;;* Org-roam
 (use-package org-roam
   :straight t
