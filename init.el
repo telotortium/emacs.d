@@ -2758,6 +2758,7 @@ See http://stackoverflow.com/a/9060267."
 ;;;* Org-roam
 (use-package org-roam
   :straight t
+  :diminish org-roam-mode
   :hook (after-init . org-roam-mode)
   :config
   (require 'org-roam-protocol)
