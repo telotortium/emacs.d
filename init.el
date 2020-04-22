@@ -904,9 +904,11 @@ Checklist:
          "
 * %?REPLACE_ME
 Source: [[%:link][%:description]]
-#+BEGIN_QUOTE
+#+BEGIN_SRC html
+<blockquote>
 %i
-#+END_QUOTE
+</blockquote>
+#+END_SRC
 
 %U
 ")
