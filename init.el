@@ -920,6 +920,50 @@ Source: [[%:link][%:description]]
   %U
 " :jump-to-captured t)))
 
+;; Create ‘C-u 2 M-x org-capture’ command to refile org-capture template under
+;; headline at point.
+(defvar my-org-capture-rfloc nil
+  "Holds the RFLOC argument to pass to ‘org-refile’.")
+(defun my-org-capture-under-headline (&optional goto keys)
+  "Capture a headline using ‘org-capture’, according to the template you \
+select, and then immediately refile that headline under the headline at the \
+current point.  GOTO and KEYS are passed to ‘org-capture’."
+  (interactive "P")
+  (unwind-protect
+      (progn
+        (unless (eq major-mode 'org-mode)
+          (user-error "Must be called from an Org-mode buffer"))
+        ;; Capture refile target at point. For format see
+        ;; ‘org-refile-target-table’.
+        (setq my-org-capture-rfloc
+              (list
+               (org-display-outline-path t t nil t)
+               (buffer-file-name (buffer-base-buffer))
+               nil
+               (org-with-wide-buffer
+                (org-back-to-heading t)
+                (point-marker))))
+        (funcall #'org-capture goto keys)
+        (when my-org-capture-rfloc
+          (org-capture-goto-last-stored)
+          ;; Refile last-captured target under the headline stored earlier.
+          (org-refile nil nil my-org-capture-rfloc)
+          ;; Ensure point is at the newly-captured and refiled headline.
+          (org-refile-goto-last-stored)))
+    ;; Ensure ‘my-org-capture-rfloc’ is reset.
+    (setq my-org-capture-rfloc nil)))
+(defun my-org-capture-under-headline-prefix (_orig-fn &rest _args)
+  "Provide an additional “C-u 2” prefix arg to `org-capture'.
+
+When ‘org-capture’ is called with this prefix argument, it will capture a
+headline according to the template you select, and then immediately refile that
+headline under the headline at the current point."
+  (let ((goto (nth 0 _args)))
+    (if (equal goto 2)
+        (apply #'my-org-capture-under-headline _args)
+      (apply _orig-fn _args))))
+(advice-add 'org-capture :around #'my-org-capture-under-headline-prefix)
+
 (defun org-today-overridden ()
   (if (null org-overriding-default-time)
       (org-today)
