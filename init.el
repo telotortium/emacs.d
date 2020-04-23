@@ -2775,7 +2775,7 @@ See http://stackoverflow.com/a/9060267."
 (use-package org-roam
   :straight t
   :diminish org-roam-mode
-  :hook (after-init . org-roam-mode)
+  :hook (emacs-startup . org-roam-mode)
   :config
   (debug-on-entry #'org-roam-mode)
   (require 'org-roam-protocol)
