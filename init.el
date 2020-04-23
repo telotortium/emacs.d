@@ -79,14 +79,15 @@ See also `my-minibuffer-setup-hook'."
 
 (use-package benchmark-init
   :straight t
-  :config
   ;; To disable collection of benchmark data after init is done.
-  (add-hook 'after-init-hook 'benchmark-init/deactivate))
+  :hook (after-init . benchmark-init/deactivate)
+  :config
+  (debug-on-entry #'benchmark-init/deactivate))
 
 ;;; For logging messages prefixed with function name.
 (use-package call-log
   :straight (:host github :repo "jordonbiondo/call-log"
-             :fork (:host nil :repo "git@github.com:telotortium/call-log")))
+                   :fork (:host nil :repo "git@github.com:telotortium/call-log")))
 
 ;;; Use auto-compile to recompile bytecode whenever files are loaded or saved.
 (use-package auto-compile
@@ -346,6 +347,9 @@ See also `my-minibuffer-setup-hook'."
 (use-package company
   :straight t
   :diminish company-mode
+  ;; Force company to load eagerly, which loads the version from straight in
+  ;; preference to any system-installed versions.
+  :demand t
   :bind
   (:map company-active-map
         ("RET" . company-complete-selection))
@@ -353,15 +357,18 @@ See also `my-minibuffer-setup-hook'."
   (company-tooltip-limit 20 "bigger popup window")
   (company-idle-delay .3 "decrease delay before autocompletion popup shows")
   (company-echo-delay 0 "remove annoying blinking")
+  :hook (emacs-startup . global-company-mode)
   :config
-  (add-hook 'after-init-hook 'global-company-mode))
+  (debug-on-entry #'global-company-mode))
 (use-package company-go :straight t)
 
 ;;; Flycheck
 (use-package flycheck
   :straight t                           ; May want to use built-in version at Google
   :defer t                              ; init-local-google will locate this
-  :hook (after-init . global-flycheck-mode)
+  :hook (emacs-startup . global-flycheck-mode)
+  :config
+  (debug-on-entry #'global-flycheck-mode)
   :custom
   ;; Inherit Emacs load-path from current session - prevents annoying errors
   ;; from custom packages.
@@ -2770,6 +2777,7 @@ See http://stackoverflow.com/a/9060267."
   :diminish org-roam-mode
   :hook (after-init . org-roam-mode)
   :config
+  (debug-on-entry #'org-roam-mode)
   (require 'org-roam-protocol)
   :custom
   (org-roam-directory "~/Documents/org/home-org/roam")
