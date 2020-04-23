@@ -80,11 +80,7 @@ See also `my-minibuffer-setup-hook'."
 (use-package benchmark-init
   :straight t
   ;; To disable collection of benchmark data after init is done.
-  :hook (after-init . benchmark-init/deactivate)
-  :config
-  (debug-on-entry #'benchmark-init/deactivate))
-
-;;; For logging messages prefixed with function name.
+  :hook (after-init . benchmark-init/deactivate))
 (use-package call-log
   :straight (:host github :repo "jordonbiondo/call-log"
                    :fork (:host nil :repo "git@github.com:telotortium/call-log")))
@@ -357,18 +353,14 @@ See also `my-minibuffer-setup-hook'."
   (company-tooltip-limit 20 "bigger popup window")
   (company-idle-delay .3 "decrease delay before autocompletion popup shows")
   (company-echo-delay 0 "remove annoying blinking")
-  :hook (emacs-startup . global-company-mode)
-  :config
-  (debug-on-entry #'global-company-mode))
+  :hook (after-init . global-company-mode))
 (use-package company-go :straight t)
 
 ;;; Flycheck
 (use-package flycheck
   :straight t                           ; May want to use built-in version at Google
   :defer t                              ; init-local-google will locate this
-  :hook (emacs-startup . global-flycheck-mode)
-  :config
-  (debug-on-entry #'global-flycheck-mode)
+  :hook (after-init . global-flycheck-mode)
   :custom
   ;; Inherit Emacs load-path from current session - prevents annoying errors
   ;; from custom packages.
@@ -2775,9 +2767,7 @@ See http://stackoverflow.com/a/9060267."
 (use-package org-roam
   :straight t
   :diminish org-roam-mode
-  :hook (emacs-startup . org-roam-mode)
-  :config
-  (debug-on-entry #'org-roam-mode)
+  :hook (after-init . org-roam-mode)
   (require 'org-roam-protocol)
   :custom
   (org-roam-directory "~/Documents/org/home-org/roam")
