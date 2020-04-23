@@ -346,6 +346,9 @@ See also `my-minibuffer-setup-hook'."
 (use-package company
   :straight t
   :diminish company-mode
+  :bind
+  (:map company-active-map
+        ("RET" . company-complete-selection))
   :custom
   (company-tooltip-limit 20 "bigger popup window")
   (company-idle-delay .3 "decrease delay before autocompletion popup shows")
