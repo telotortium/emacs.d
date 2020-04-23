@@ -18,6 +18,9 @@ set it.  Otherwise, use just `set-default'.  Taken from http://lists.gnu.org/arc
        (customize-set-variable ',variable ,value ,comment)
      (set-default ',variable ,value)))
 
+(setq debug-on-error t)
+(add-to-list 'debug-ignored-errors 'search-failed)
+
 ;;;* Storage for variables configured via the interactive 'customize' interface
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file t)
