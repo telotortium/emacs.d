@@ -2815,7 +2815,18 @@ See http://stackoverflow.com/a/9060267."
   :straight t
   :diminish org-roam-mode
   :hook (after-init . org-roam-mode)
+  :config
   (require 'org-roam-protocol)
+  (nconc (assoc "d" org-roam-capture-templates)
+         '(:immediate-finish t :jump-to-captured t))
+  (nconc (assoc "r" org-roam-capture-ref-templates)
+         '(:immediate-finish t :jump-to-captured t))
+  (defun my-org-roam-capture-split-window (&rest _args)
+    "Split current window and select new window."
+    (message "org-roam-capture--context: %S" org-roam-capture--context)
+    (unless (eq org-roam-capture--context 'ref)
+      (select-window (split-window))))
+  (advice-add 'org-roam--capture :before #'my-org-roam-capture-split-window)
   :custom
   (org-roam-directory "~/Documents/org/home-org/roam")
   (org-roam-link-title-format "§%s")
