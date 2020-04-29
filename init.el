@@ -2768,7 +2768,10 @@ See http://stackoverflow.com/a/9060267."
   (require 'call-log)
   (hs-minor-mode)
   (condition-case nil
-    (hs-hide-all)
+      (progn
+       (save-excursion
+         (hs-hide-all))
+       (hs-show-block))
     (scan-error
      (clog/msg "scan-error: not folding")
      nil))
