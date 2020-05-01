@@ -2556,6 +2556,20 @@ sparse tree or with the help of occur.  The original buffer is not modified.
 (c-setq org-log-done (quote time))
 (c-setq org-log-redeadline (quote time))
 (c-setq org-log-reschedule (quote time))
+(defun my-org-log-next-action ()
+  "Prompt for the very next action to take when changing heading status to NEXT.
+
+Include a checkbox to force acknowledging the action provided before marking
+the item done."
+  (when (string= org-log-note-state "NEXT")
+      (goto-char (point-max))
+      (insert "- [ ] The *very next* action to take")
+      (search-backward "The"))
+  (when (string= org-log-note-state "WAITING")
+      (goto-char (point-max))
+      (insert "- [ ] What *exactly* am I waiting on?")
+      (search-backward "What")))
+(add-hook 'org-log-buffer-setup-hook #'my-org-log-next-action)
 
 ;;; Week in review (https://emacs.stackexchange.com/a/7864)
 (defcustom org-timeline-files nil
