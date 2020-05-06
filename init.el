@@ -946,7 +946,7 @@ current point.  GOTO and KEYS are passed to ‘org-capture’."
                (org-with-wide-buffer
                 (org-back-to-heading t)
                 (point-marker))))
-        (funcall #'org-capture goto keys)
+        (funcall #'org-capture nil keys)
         (when my-org-capture-rfloc
           (org-capture-goto-last-stored)
           ;; Refile last-captured target under the headline stored earlier.
