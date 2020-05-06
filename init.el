@@ -2795,7 +2795,12 @@ See http://stackoverflow.com/a/9060267."
   :ensure nil
   :load-path "~/.emacs.d/lisp"
   :config
-  (global-so-long-mode 1))
+  (global-so-long-mode 1)
+  ;; See
+  ;; https://www.reddit.com/r/emacs/comments/ccoksw/solong_mitigating_slowness_due_to_extremely_long/etpi51l/
+  (if (boundp 'backtrace-mode-hook)
+      (add-hook 'backtrace-mode-hook 'so-long-minor-mode)
+    (add-hook 'debugger-mode-hook 'so-long-minor-mode)))
 
 ;;;* Automatic indentation detection
 (use-package dtrt-indent
