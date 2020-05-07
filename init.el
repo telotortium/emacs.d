@@ -2650,10 +2650,15 @@ Follows the same rules as `org-agenda-files'"
   'append)
 
 ;;;* Flyspell
+(use-package flyspell-lazy
+  :straight t
+  :custom
+  (flyspell-lazy-extra-lazy t))
 (use-package flyspell
   :straight t
   :diminish flyspell-mode
   :config
+  (flyspell-lazy-mode 1)
   (add-hook 'text-mode-hook 'flyspell-mode 'append)
   (add-hook 'prog-mode-hook 'flyspell-prog-mode 'append))
 
