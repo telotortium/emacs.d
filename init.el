@@ -2701,6 +2701,7 @@ See http://stackoverflow.com/a/9060267."
 ;; Don't use Evil for image-mode.
 (add-to-list 'evil-emacs-state-modes 'image-mode)
 (add-to-list 'evil-emacs-state-modes 'Custom-mode)
+(add-to-list 'evil-emacs-state-modes 'profiler-report-mode)
 (delete 'git-commit-mode evil-emacs-state-modes)
 
 
